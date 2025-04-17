@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智途Career+</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .job-card {
+            margin-bottom: 20px;
+            transition: transform 0.2s;
+        }
+        .job-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .search-section {
+            background-color: #f8f9fa;
+            padding: 40px 0;
+            margin-bottom: 30px;
+        }
+        .analysis-section {
+            margin-bottom: 30px;
+            display: none;
+        }
+        .match-score {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #28a745;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">智途Career+</a>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-12 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">个人信息分析</h4>
+                        <form id="careerForm" class="career-form">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="education" class="form-label">教育背景</label>
+                                        <select name="education" id="education" class="form-select" required>
+                                            <option value="高中">高中</option>
+                                            <option value="专科">专科</option>
+                                            <option value="本科">本科</option>
+                                            <option value="硕士">硕士</option>
+                                            <option value="博士">博士</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="major" class="form-label">专业</label>
+                                        <input type="text" name="major" id="major" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="skills" class="form-label">技能特长</label>
+                                        <textarea name="skills" id="skills" class="form-control" rows="3" placeholder="请列出您的主要技能和特长" required></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="experience" class="form-label">工作经验</label>
+                                        <textarea name="experience" id="experience" class="form-control" rows="3" placeholder="请描述您的工作经验" required></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="career_goals" class="form-label">职业目标</label>
+                                        <textarea name="career_goals" id="career_goals" class="form-control" rows="3" placeholder="请描述您的职业目标" required></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-12 mt-3">
+                                    <button type="submit" class="btn btn-primary">获取职业分析</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="analysisResult" class="card-body d-none">
+                        <h5 class="card-title mb-4">分析结果</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h6 class="card-subtitle mb-3">职业发展方向</h6>
+                                        <div id="careerPath" class="analysis-content"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h6 class="card-subtitle mb-3">求职建议</h6>
+                                        <div id="jobAdvice" class="analysis-content"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h6 class="card-subtitle mb-3">需要提升的能力</h6>
+                                        <div id="skillsToImprove" class="analysis-content"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h6 class="card-subtitle mb-3">推荐职位</h6>
+                                        <div id="recommendedPositions" class="analysis-content"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="loadingSpinner" class="text-center d-none">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">正在分析中，请稍候...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="analysisSection" class="analysis-section">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h4 class="card-title">职业分析结果</h4>
+                    <div id="analysisContent"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="search-section card">
+            <div class="card-body">
+                <h4 class="card-title mb-4">职位搜索</h4>
+                <form id="searchForm" class="row g-3">
+                    <div class="col-md-5">
+                        <input type="text" class="form-control" id="keyword" placeholder="职位关键词">
+                    </div>
+                    <div class="col-md-5">
+                        <input type="text" class="form-control" id="location" placeholder="城市">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">搜索</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="jobList" class="row">
+            <!-- 职位列表将通过JavaScript动态添加 -->
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('careerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // 显示加载动画
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const analysisResult = document.getElementById('analysisResult');
+            
+            loadingSpinner.classList.remove('d-none');
+            analysisResult.classList.remove('d-none');
+            
+            try {
+                const formData = new FormData(this);
+                const response = await fetch('/analyze_profile', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    try {
+                        const analysis = JSON.parse(data.analysis);
+                        
+                        // 更新各个部分的内容
+                        document.getElementById('careerPath').textContent = analysis.career_path;
+                        document.getElementById('jobAdvice').textContent = analysis.job_advice;
+                        document.getElementById('skillsToImprove').textContent = analysis.skills_to_improve;
+                        
+                        // 更新推荐职位列表
+                        const positionsList = analysis.recommended_positions.map(pos => `<li>${pos}</li>`).join('');
+                        document.getElementById('recommendedPositions').innerHTML = `<ul class="mb-0">${positionsList}</ul>`;
+                        
+                    } catch (parseError) {
+                        console.error('Error parsing JSON:', parseError);
+                        // 如果不是JSON格式，直接显示原始内容
+                        document.getElementById('careerPath').textContent = data.analysis;
+                    }
+                } else {
+                    throw new Error(data.error || '分析过程中出现错误');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('careerPath').textContent = `错误: ${error.message}`;
+            } finally {
+                loadingSpinner.classList.add('d-none');
+            }
+        });
+
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const keyword = document.getElementById('keyword').value;
+            const location = document.getElementById('location').value;
+
+            fetch('/search_jobs', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `keyword=${encodeURIComponent(keyword)}&location=${encodeURIComponent(location)}`
+            })
+            .then(response => response.json())
+            .then(jobs => updateJobList(jobs))
+            .catch(error => console.error('Error:', error));
+        });
+
+        function updateJobList(jobs) {
+            const jobList = document.getElementById('jobList');
+            jobList.innerHTML = '';
+            
+            jobs.forEach(job => {
+                const jobCard = `
+                    <div class="col-md-6">
+                        <div class="card job-card">
+                            <div class="card-body">
+                                <span class="match-score">${job.match_score}% 匹配</span>
+                                <h5 class="card-title">${job.title}</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">${job.company}</h6>
+                                <p class="card-text">
+                                    <strong>地点：</strong>${job.location}<br>
+                                    <strong>薪资：</strong>${job.salary}<br>
+                                    <strong>描述：</strong>${job.description}
+                                </p>
+                                <button class="btn btn-outline-primary">申请职位</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                jobList.innerHTML += jobCard;
+            });
+        }
+    </script>
+</body>
+</html>

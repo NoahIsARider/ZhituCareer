@@ -14,19 +14,17 @@ class UserProfileAgent:
 """
         try:
             response = self.client.chat.completions.create(
-                model="deepseek-ai/DeepSeek-V3-0324",
+                model="LLM-Research/Meta-Llama-3.1-8B-Instruct",
                 messages=[
                     {'role': 'system', 'content': '你是一个专业的职业规划顾问。'},
                     {'role': 'user', 'content': prompt}
                 ],
                 stream=True
             )
-            print('Received response from user_profile API')
-        except Exception as api_error:
-            print(f'API call error: {str(api_error)}')
-            raise ValueError(f"API call failed: {str(api_error)}")
+            
 
-        try:
+
+            print('Received response from user_profile API')
             full_response = ''
             for chunk in response:
                 if chunk is None:
@@ -53,7 +51,7 @@ class UserProfileAgent:
                 if end != -1:
                     full_response = full_response[start:end].strip()
 
-            print("User Profile Evaluation Result:", full_response)
+            print("\nUser Profile Evaluation Result:", full_response)
             return full_response
         except Exception as e:
             print(f'Error processing API response: {str(e)}')

@@ -15,19 +15,21 @@ class JobMatchingAgent:
 
         try:
             response = self.client.chat.completions.create(
-                model="deepseek-ai/DeepSeek-V3-0324",
+                model='LLM-Research/Meta-Llama-3.1-8B-Instruct',
                 messages=[
-                    {'role': 'system', 'content': '你是一个专业的职业匹配顾问。'},
-                    {'role': 'user', 'content': prompt}
+                    {
+                        'role': 'system',
+                        'content': 'You are a helpful assistant.'
+                    },
+                    {
+                        'role': 'user',
+                        'content': prompt
+                    }
                 ],
                 stream=True
             )
             print('Received response from job matching API')
-        except Exception as api_error:
-            print(f'API call error: {str(api_error)}')
-            raise ValueError(f"API call failed: {str(api_error)}")
-
-        try:
+            
             full_response = ''
             for chunk in response:
                 if chunk is None:
@@ -39,11 +41,11 @@ class JobMatchingAgent:
                             full_response += content
                             print(content, end='', flush=True)
 
-            if not full_response:
+            if not full_response.strip():
                 raise ValueError("Empty response from API")
 
             # Process the response to extract the best job match
-            print("Best Job Match Result:", full_response)
+            print("\nBest Job Match Result:", full_response)
             return full_response
         except Exception as e:
             print(f'Error processing API response: {str(e)}')

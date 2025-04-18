@@ -58,5 +58,6 @@ class CareerAnalyzer:
                 'match_score': 85
             }
         ]
-        matched_jobs = self.job_matching_agent.match_job(user_input, job_search_criteria, jobs)
+        # Fix: Pass the analysis as user_input and location as job_search_criteria
+        matched_jobs = self.job_matching_agent.match_job(analysis, location, jobs)
         return matched_jobs

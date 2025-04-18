@@ -48,7 +48,7 @@ class MarketAnalysisAgent:
         prompt = f"请基于以下实时市场数据，对当前就业市场进行分析：\n\n{market_data}"
         try:
             response = self.client.chat.completions.create(
-                model="deepseek-ai/DeepSeek-V3-0324",
+                model="LLM-Research/Meta-Llama-3.1-8B-Instruct",
                 messages=[
                     {'role': 'system', 'content': '你是一个专业的市场分析师。'},
                     {'role': 'user', 'content': prompt}
@@ -56,11 +56,7 @@ class MarketAnalysisAgent:
                 stream=True
             )
             print('Received response from market analysis API')
-        except Exception as api_error:
-            print(f'API call error: {str(api_error)}')
-            raise ValueError(f"API call failed: {str(api_error)}")
-
-        try:
+            
             full_response = ''
             for chunk in response:
                 if chunk is None:
@@ -87,7 +83,7 @@ class MarketAnalysisAgent:
                 if end != -1:
                     full_response = full_response[start:end].strip()
 
-            print("Market Analysis Result:", full_response)
+            print("\nMarket Analysis Result:", full_response)
             return full_response
         except Exception as e:
             print(f'Error processing API response: {str(e)}')

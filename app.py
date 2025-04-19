@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 from career_model import CareerAnalyzer
+from job_matching import JobMatcher
+from course_matching import CourseMatcher
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -9,8 +11,10 @@ app.config['SECRET_KEY'] = 'dev-secret-key-2025'
 # 简化的表单字段
 FORM_FIELDS = ['education', 'major', 'skills', 'experience', 'career_goals']
 
-# 创建CareerAnalyzer实例
+# 创建实例
 career_analyzer = CareerAnalyzer()
+job_matcher = JobMatcher()
+course_matcher = CourseMatcher()
 
 @app.route('/')
 def index():
@@ -46,22 +50,41 @@ def analyze_profile():
             'error': str(e)
         })
 
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)
-
 @app.route('/search_jobs', methods=['POST'])
 def search_jobs():
     keyword = request.form.get('keyword', '')
     location = request.form.get('location', '')
-    
-    # 基于关键词和位置搜索职位
-    # Integrate JobMatchingAgent
-    agent = JobMatchingAgent(client)
-    user_input = {'keyword': keyword, 'location': location}
-    job_search_criteria = {'location': location}
-    available_jobs = recommend_jobs(None, location)
-    recommended_job = agent.match_job(user_input, job_search_criteria, available_jobs)
+    career_analysis = request.form.get('career_analysis', '')
+    user_input = {
+        'keyword': keyword,
+        'location': location,
+        'career_analysis': career_analysis
+    }
+    print('\n用户输入信息:')
+    print(f"keyword: {keyword}, location: {location}")
+    print(f"career analysis: {career_analysis}")
+    recommended_job = job_matcher.job_matching(user_input)
     return jsonify(recommended_job)
+
+@app.route('/search_course', methods=['POST'])
+def search_course():
+    try:
+        keyword = request.form.get('keyword', '')
+        career_analysis = request.form.get('career_analysis', '')
+        user_input = {'keyword': keyword}
+        
+        print('\n用户课程搜索信息:')
+        print(f"keyword: {keyword}")
+        print(f"career analysis: {career_analysis}")
+        
+        recommended_courses = course_matcher.course_matching(user_input, career_analysis)
+        return jsonify(recommended_courses)
+    except Exception as e:
+        print(f'Error in course search: {str(e)}')
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        })
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

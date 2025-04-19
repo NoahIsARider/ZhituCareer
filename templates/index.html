@@ -147,7 +147,7 @@
             </div>
         </div>
 
-        <div class="search-section card">
+        <div class="search-section card mb-4">
             <div class="card-body">
                 <h4 class="card-title mb-4">职位搜索</h4>
                 <form id="searchForm" class="row g-3">
@@ -164,8 +164,26 @@
             </div>
         </div>
 
-        <div id="jobList" class="row">
+        <div id="jobList" class="row mb-4">
             <!-- 职位列表将通过JavaScript动态添加 -->
+        </div>
+
+        <div class="search-section card mb-4">
+            <div class="card-body">
+                <h4 class="card-title mb-4">课程推荐</h4>
+                <form id="courseSearchForm" class="row g-3">
+                    <div class="col-md-10">
+                        <input type="text" class="form-control" id="courseKeyword" placeholder="课程关键词">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">搜索</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="courseList" class="row">
+            <!-- 课程列表将通过JavaScript动态添加 -->
         </div>
     </div>
 
@@ -193,6 +211,7 @@
                 if (data.success) {
                     try {
                         const analysis = JSON.parse(data.analysis);
+                        window.careerAnalysis = data.analysis; // Store the analysis for course search
                         
                         // 更新各个部分的内容
                         document.getElementById('careerPath').textContent = analysis.career_path;
@@ -224,22 +243,96 @@
             const keyword = document.getElementById('keyword').value;
             const location = document.getElementById('location').value;
 
+            const careerAnalysis = window.careerAnalysis || '';
             fetch('/search_jobs', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: `keyword=${encodeURIComponent(keyword)}&location=${encodeURIComponent(location)}`
+                body: `keyword=${encodeURIComponent(keyword)}&location=${encodeURIComponent(location)}&career_analysis=${encodeURIComponent(careerAnalysis)}`
             })
             .then(response => response.json())
             .then(jobs => updateJobList(jobs))
             .catch(error => console.error('Error:', error));
         });
 
+        document.getElementById('courseSearchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const keyword = document.getElementById('courseKeyword').value;
+            const careerAnalysis = window.careerAnalysis || '';
+
+            fetch('/search_course', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `keyword=${encodeURIComponent(keyword)}&career_analysis=${encodeURIComponent(careerAnalysis)}`
+            })
+            .then(response => response.json())
+            .then(courses => updateCourseList(courses))
+            .catch(error => console.error('Error:', error));
+        });
+
+        function updateCourseList(courses) {
+            const courseList = document.getElementById('courseList');
+            courseList.innerHTML = '';
+            
+            try {
+                const courseData = typeof courses === 'string' ? JSON.parse(courses) : courses;
+                courseData.forEach(course => {
+                    const courseElement = document.createElement('div');
+                    courseElement.className = 'card mb-3';
+                    courseElement.innerHTML = `
+                        <div class="card-body">
+                            <h5 class="card-title">${course.title}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">${course.provider} - ${course.level}</h6>
+                            <p class="card-text">${course.description}</p>
+                            <p class="card-text"><small class="text-muted">Duration: ${course.duration} | Price: ${course.price}</small></p>
+                            <p class="card-text"><strong>Skills:</strong> ${course.skills.join(', ')}</p>
+                            <p class="card-text"><strong>Career Paths:</strong> ${course.career_paths.join(', ')}</p>
+                            <p class="card-text"><strong>Match Reason:</strong> ${course.match_reason}</p>
+                        </div>
+                    `;
+                    courseList.appendChild(courseElement);
+                });
+            } catch (error) {
+                console.error('Error updating course list:', error);
+                courseList.innerHTML = '<div class="alert alert-danger">Error loading course recommendations</div>';
+            }
+        }
+
         function updateJobList(jobs) {
             const jobList = document.getElementById('jobList');
             jobList.innerHTML = '';
             
+            try {
+                const job = typeof jobs === 'string' ? JSON.parse(jobs) : jobs;
+                const jobCard = `
+                    <div class="col-md-6">
+                        <div class="card job-card">
+                            <div class="card-body">
+                                <h5 class="card-title">${job.title}</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">${job.company}</h6>
+                                <p class="card-text">
+                                    <strong>地点：</strong>${job.location}<br>
+                                    <strong>薪资：</strong>${job.salary}<br>
+                                    <strong>描述：</strong>${job.description}<br>
+                                    <strong>要求：</strong>
+                                    <ul>
+                                        ${job.requirements.map(req => `<li>${req}</li>`).join('')}
+                                    </ul>
+                                    <strong>匹配原因：</strong>${job.match_reason}
+                                </p>
+                                <button class="btn btn-outline-primary">申请职位</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                jobList.innerHTML = jobCard;
+            } catch (error) {
+                console.error('Error displaying job:', error);
+                jobList.innerHTML = '<div class="alert alert-danger">无法显示职位信息</div>';
+            }
             jobs.forEach(job => {
                 const jobCard = `
                     <div class="col-md-6">

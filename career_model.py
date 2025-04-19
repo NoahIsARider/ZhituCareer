@@ -38,26 +38,3 @@ class CareerAnalyzer:
             print(f'Error in career analysis: {str(e)}')
             raise ValueError(f"Career analysis failed: {str(e)}")
 
-    def recommend_jobs(self, analysis, location=''):
-        # 基于分析结果推荐职位
-        jobs = [
-            {
-                'title': 'Python开发工程师',
-                'company': '智图科技',
-                'location': '北京市海淀区',
-                'salary': '25k-35k',
-                'description': '负责公司核心产品开发',
-                'match_score': 95
-            },
-            {
-                'title': '前端开发工程师',
-                'company': '智图科技',
-                'location': '上海市浦东新区',
-                'salary': '20k-30k',
-                'description': '负责公司前端开发工作',
-                'match_score': 85
-            }
-        ]
-        # Fix: Pass the analysis as user_input and location as job_search_criteria
-        matched_jobs = self.job_matching_agent.match_job(analysis, location, jobs)
-        return matched_jobs

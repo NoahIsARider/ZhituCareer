@@ -92,7 +92,7 @@ ZhiTuCareer+ employs a modular architecture where agents are integrated with Pla
 - **Market Analysis Agent**: Utilizes Playwright to scrape and analyze market trends, providing real-time insights that inform job recommendations and career advice.
 - **Course Matching Agent**: Suggests relevant courses and educational resources aligned with user career goals, enhancing skill development.
 - **Job Recommendation Agent**: Leverages AI to match user profiles with suitable job opportunities, ensuring personalized job suggestions.
-- 
+
 ![image](https://github.com/user-attachments/assets/94c7ebcd-d338-4c6e-b2d3-2a2194fb3436)
 
 This integration allows for dynamic data collection and processing, ensuring users receive the most relevant and up-to-date information.

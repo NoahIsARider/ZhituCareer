@@ -69,6 +69,7 @@ Ensure you have the following installed:
 ### Administrator Usage
 
 Administrators can manage courses and jobs through the admin interface. This includes adding, updating, and removing entries. To access the admin interface, navigate to the admin.html page and log in with your administrator credentials.
+
 <img width="1280" alt="image" src="https://github.com/user-attachments/assets/2118c453-ac3c-4d99-ab1a-e52755b06a24" />
 
 ### User Identity Information
@@ -91,6 +92,7 @@ ZhiTuCareer+ employs a modular architecture where agents are integrated with Pla
 - **Market Analysis Agent**: Utilizes Playwright to scrape and analyze market trends, providing real-time insights that inform job recommendations and career advice.
 - **Course Matching Agent**: Suggests relevant courses and educational resources aligned with user career goals, enhancing skill development.
 - **Job Recommendation Agent**: Leverages AI to match user profiles with suitable job opportunities, ensuring personalized job suggestions.
+- 
 ![image](https://github.com/user-attachments/assets/94c7ebcd-d338-4c6e-b2d3-2a2194fb3436)
 
 This integration allows for dynamic data collection and processing, ensuring users receive the most relevant and up-to-date information.
@@ -104,12 +106,15 @@ This integration allows for dynamic data collection and processing, ensuring use
    - Career goals
 
 2. Click "获取职业分析" to receive career analysis and recommendations
+
 ![image](https://github.com/user-attachments/assets/57730262-2676-4f0a-bca1-ce4e2a590af6)
 
 3. Use the job search function to find specific positions based on keywords and location
+
 ![image](https://github.com/user-attachments/assets/8c754877-60c6-418b-a5ee-0adbea9c5a24)
 
 4. Review recommended courses and learning paths aligned with your career goals
+
 ![image](https://github.com/user-attachments/assets/4f7ea2c5-87d8-43b3-97c5-a55bd302448b)
 
 ## System Architecture

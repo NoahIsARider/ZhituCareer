@@ -10,12 +10,7 @@ ZhiTuCareer+ is a comprehensive web-based platform designed to assist users in a
 - **Job Search Functionality**: Advanced search tools to find relevant positions
 - **Course Recommendations**: Educational resources aligned with career goals
 
-## Prerequisites
 
-Before you begin, ensure you have the following installed:
-
-- [Anaconda](https://www.anaconda.com/download) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
-- Python 3.9 or higher
 
 ## Deployment Instructions
 

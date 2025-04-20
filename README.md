@@ -36,7 +36,7 @@ Ensure you have the following installed:
 2. **Clone the Repository**
    ```bash
    git clone https://github.com/NoahIsARider/ZhituCareer.git
-   cd ZhiTuCareer
+   cd ZhituCareer
    ```
 
 3. **Install Dependencies**

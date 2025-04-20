@@ -1,6 +1,6 @@
 # ZhiTuCareer+ Career Analysis System
 
-ZhiTuCareer+ is a web-based career analysis and job recommendation system that helps users analyze their career path and find suitable job opportunities based on their profile. The system leverages advanced AI technology to provide personalized career guidance and job matching services.
+ZhiTuCareer+ is a comprehensive web-based platform designed to assist users in analyzing their career paths and finding suitable job opportunities. By leveraging advanced AI technology, the system offers personalized career guidance and job matching services, ensuring users receive tailored recommendations based on their unique profiles.
 
 ## Features
 
@@ -17,57 +17,78 @@ Before you begin, ensure you have the following installed:
 - [Anaconda](https://www.anaconda.com/download) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
 - Python 3.9 or higher
 
-## Installation and Setup
+## Deployment Instructions
 
-### 1. Create and Activate Conda Environment
+### Prerequisites
 
-```bash
-# Create a new conda environment
-conda create -n zhitu_career python=3.9
+Ensure you have the following installed:
+- [Anaconda](https://www.anaconda.com/download) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
+- Python 3.9 or higher
 
-# Activate the environment
-conda activate zhitu_career
-```
+### Step-by-Step Setup
 
-### 2. Clone the Repository
+1. **Create and Activate Conda Environment**
+   ```bash
+   conda create -n zhitu_career python=3.12
+   conda activate zhitu_career
+   ```
 
-```bash
-git clone [repository-url]
-cd ZhiTuCareer+
-```
+2. **Clone the Repository**
+   ```bash
+   git clone [repository-url]
+   cd ZhiTuCareer+
+   ```
 
-### 3. Install Dependencies
+3. **Install Dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-```bash
-pip install -r requirements.txt
-```
+4. **Configure Environment Variables**
+   Create a `.env` file in the project root directory and add your ModelScope API key:
+   ```env
+   OPENAI_API_KEY=your_api_key_here
+   ```
 
-### 4. Configure Environment Variables
+5. **Run the Application**
+   - Ensure your conda environment is activated:
+     ```bash
+     conda activate zhitu_career
+     ```
+   - Start the Flask application:
+     ```bash
+     python app.py
+     ```
+   - Access the application at:
+     ```
+     http://localhost:5000
+     ```
 
-Create a `.env` file in the project root directory and add your ModelScope API key:
+## UI Guide for Administrators and Users
 
-```env
-# ModelScope API配置 (使用OpenAI客户端)
-OPENAI_API_KEY=your_api_key_here
-```
+### Administrator Usage
 
-## Running the Application
+Administrators can manage courses and jobs through the admin interface. This includes adding, updating, and removing entries. To access the admin interface, navigate to the admin.html page and log in with your administrator credentials.
 
-1. Make sure you are in the project directory and your conda environment is activated:
-```bash
-conda activate zhitu_career
-```
+### User Identity Information
 
-2. Start the Flask application:
-```bash
-python app.py
-```
+Users should store their identity information in the users.json file located in the data directory. This includes details such as name, email, and role. Proper role assignment is crucial for access control within the system.
+- **Monitoring User Activity**: Track user interactions and gather insights to improve the platform.
 
-3. Open your web browser and navigate to:
-```
-http://localhost:5000
-```
+### User Guide
+- **Profile Setup**: Users should fill in their educational background, skills, work experience, and career goals.
+- **Career Analysis**: Click "获取职业分析" to receive personalized career analysis and job recommendations.
+- **Job Search**: Utilize the search function to find jobs based on keywords and location.
+- **Course Recommendations**: Explore suggested courses and learning paths aligned with career objectives.
 
+## Core Concept: Integrating Agents with Playwright
+
+ZhiTuCareer+ employs a modular architecture where agents are integrated with Playwright for enhanced market analysis and job recommendations.
+
+- **Market Analysis Agent**: Utilizes Playwright to scrape and analyze market trends, providing real-time insights.
+- **Job Recommendation Agent**: Leverages AI to match user profiles with suitable job opportunities.
+
+This integration allows for dynamic data collection and processing, ensuring users receive the most relevant and up-to-date information.
 ## Usage
 
 1. Fill in your profile information in the web interface:

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>智途职业生涯规划 - 管理后台</title>
+    <title>智途Career+ - 管理后台</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <style>
@@ -14,228 +14,287 @@
             --orange-border: rgba(255,102,0,0.15);
         }
 
-        body {
-            background-color: var(--orange-light);
+        /* 全局卡片样式 */
+        .card {
+            background: linear-gradient(
+                145deg, 
+                rgba(255,255,255,0.95) 30%,
+                rgba(255,102,0,0.05) 100%
+            );
+            border: 1px solid var(--orange-border);
+            box-shadow: 0 4px 20px var(--orange-border);
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
         }
 
+        /* 卡片悬停效果 */
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px var(--orange-border);
+        }
+
+        /* 导航样式 */
         .navbar {
             background: linear-gradient(90deg, var(--vivid-orange), var(--sunset-orange)) !important;
         }
 
+        /* 按钮样式 */
+        .btn-primary {
+            background-color: var(--vivid-orange) !important;
+            border-color: var(--vivid-orange) !important;
+        }
+        .btn-primary:hover {
+            background-color: var(--sunset-orange) !important;
+            border-color: var(--sunset-orange) !important;
+        }
+
+        /* 管理页面特有样式 */
         .admin-container {
             padding: 20px;
         }
-
         .section-title {
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--orange-border);
             color: var(--vivid-orange);
+            margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-
-        .data-container {
-            background: linear-gradient(145deg, rgba(255,255,255,0.95) 30%, rgba(255,102,0,0.05) 100%);
-            border: 1px solid var(--orange-border);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 20px var(--orange-border);
-            transition: all 0.3s ease;
+        .badge {
+            font-weight: normal;
+            padding: 5px 10px;
         }
-
-        .data-container:hover {
-            transform: translateY(-3px);
+        .action-btn {
+            margin-right: 5px;
         }
-
-        .btn-primary {
-            background: var(--vivid-orange) !important;
-            border: none !important;
-        }
-
-        .btn-primary:hover {
-            background: var(--sunset-orange) !important;
-        }
-
-        .table {
-            margin-bottom: 1rem;
-        }
-
-        .action-buttons {
-            white-space: nowrap;
-        }
-
         .modal-header {
             background: linear-gradient(90deg, var(--vivid-orange), var(--sunset-orange));
             color: white;
         }
-
-        .modal-content {
-            border: none;
+        .course-card, .job-card {
+            height: 100%;
+        }
+        .card-footer {
+            background: transparent;
+            border-top: 1px solid var(--orange-border);
+        }
+        
+        /* 快速导航目录样式 */
+        .quick-nav {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white;
             border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            padding: 10px;
+            z-index: 1000;
+            border: 1px solid var(--orange-border);
+        }
+        
+        .quick-nav-title {
+            color: var(--vivid-orange);
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        
+        .quick-nav-item {
+            display: block;
+            padding: 8px 15px;
+            margin: 5px 0;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+        
+        .quick-nav-item:hover {
+            background-color: var(--orange-light);
+            color: var(--vivid-orange);
+        }
+        
+        .quick-nav-item i {
+            margin-right: 5px;
         }
     </style>
 </head>
 <body>
+    <!-- 快速导航目录 -->
+    <div class="quick-nav">
+        <div class="quick-nav-title">快速导航</div>
+        <a href="#courses-section" class="quick-nav-item"><i class="bi bi-book"></i> 课程管理</a>
+        <a href="#jobs-section" class="quick-nav-item"><i class="bi bi-briefcase"></i> 职位管理</a>
+    </div>
+    
     <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">智途职业生涯规划 - 管理后台</a>
+        <div class="container">
+            <a class="navbar-brand" href="/">智途Career+ - 管理后台</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/logout">退出登录</a>
+                        <a class="nav-link text-white" href="/"><i class="bi bi-house-door"></i> 首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/logout"><i class="bi bi-box-arrow-right"></i> 退出登录</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div class="container admin-container">
-        <div class="row">
-            <div class="col-12 mb-4">
-                <div class="data-container">
-                    <h3 class="section-title">
-                        课程管理
-                        <button class="btn btn-primary btn-sm" onclick="showAddCourseModal()"><i class="bi bi-plus-lg"></i> 添加课程</button>
-                    </h3>
-                    <div class="table-responsive">
-                        <table class="table table-hover" id="courseTable">
-                            <thead>
-                                <tr>
-                                    <th>课程名称</th>
-                                    <th>描述</th>
-                                    <th>类型</th>
-                                    <th>操作</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
+    <div class="container admin-container mt-4">
+        <!-- 页面标题 -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">后台管理中心</h3>
+                        <p class="card-text text-muted">在这里管理智途Career+平台的课程和职位信息</p>
                     </div>
                 </div>
             </div>
+        </div>
+        
+        <!-- 课程管理部分 -->
+        <div class="row mb-4" id="courses-section">
             <div class="col-12">
-                <div class="data-container">
-                    <h3 class="section-title">
-                        职位管理
-                        <button class="btn btn-primary btn-sm" onclick="showAddJobModal()"><i class="bi bi-plus-lg"></i> 添加职位</button>
-                    </h3>
-                    <div class="table-responsive">
-                        <table class="table table-hover" id="jobTable">
-                            <thead>
-                                <tr>
-                                    <th>职位名称</th>
-                                    <th>公司</th>
-                                    <th>地点</th>
-                                    <th>薪资范围</th>
-                                    <th>操作</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
+                <div class="section-title">
+                    <h4><i class="bi bi-book"></i> 课程管理</h4>
+                    <button class="btn btn-primary" onclick="showCourseModal()"><i class="bi bi-plus-lg"></i> 添加课程</button>
+                </div>
+                
+                <!-- 课程卡片列表 -->
+                <div class="row" id="courseList">
+                    <!-- 课程卡片将通过JS动态生成 -->
+                </div>
+                
+
+            </div>
+        </div>
+        
+        <!-- 职位管理部分 -->
+        <div class="row" id="jobs-section">
+            <div class="col-12">
+                <div class="section-title">
+                    <h4><i class="bi bi-briefcase"></i> 职位管理</h4>
+                    <button class="btn btn-primary" onclick="showJobModal()"><i class="bi bi-plus-lg"></i> 添加职位</button>
+                </div>
+                
+                <!-- 职位卡片列表 -->
+                <div class="row" id="jobList">
+                    <!-- 职位卡片将通过JS动态生成 -->
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Course Modal -->
-    <div class="modal fade" id="courseModal" tabindex="-1">
-        <div class="modal-dialog">
+    <!-- 课程模态框 -->
+    <div class="modal fade" id="courseModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="courseModalTitle">课程信息</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title" id="courseModalLabel">课程信息</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="courseForm">
                         <input type="hidden" id="courseIndex">
-                        <div class="mb-3">
-                            <label class="form-label">课程名称</label>
-                            <input type="text" class="form-control" id="courseName" required>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="courseTitle" class="form-label">课程名称</label>
+                                <input type="text" class="form-control" id="courseTitle" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="courseLevel" class="form-label">级别</label>
+                                <select class="form-select" id="courseLevel" required>
+                                    <option value="Beginner">初级</option>
+                                    <option value="Intermediate">中级</option>
+                                    <option value="Advanced">高级</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="courseProvider" class="form-label">提供方</label>
+                                <input type="text" class="form-control" id="courseProvider" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="courseDuration" class="form-label">时长</label>
+                                <input type="text" class="form-control" id="courseDuration" placeholder="例如: 10 weeks" required>
+                            </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">课程提供方</label>
-                            <input type="text" class="form-control" id="courseProvider" required>
+                            <label for="coursePrice" class="form-label">价格</label>
+                            <input type="text" class="form-control" id="coursePrice" placeholder="例如: $599" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">课程级别</label>
-                            <select class="form-control" id="courseType" required>
-                                <option value="Beginner">初级</option>
-                                <option value="Intermediate">中级</option>
-                                <option value="Advanced">高级</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">课程时长</label>
-                            <input type="text" class="form-control" id="courseDuration" required placeholder="例如: 12 weeks">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">课程价格</label>
-                            <input type="text" class="form-control" id="coursePrice" required placeholder="例如: $499">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">课程描述</label>
+                            <label for="courseDescription" class="form-label">课程描述</label>
                             <textarea class="form-control" id="courseDescription" rows="3" required></textarea>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">技能标签</label>
-                            <input type="text" class="form-control" id="courseSkills" required placeholder="用逗号分隔，例如: Python, Flask, Django">
+                            <label for="courseSkills" class="form-label">技能标签 (逗号分隔)</label>
+                            <input type="text" class="form-control" id="courseSkills" placeholder="例如: Python, Flask, Web开发" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">职业发展方向</label>
-                            <input type="text" class="form-control" id="careerPaths" required placeholder="用逗号分隔，例如: Web Developer, Backend Developer">
+                            <label for="coursePaths" class="form-label">职业方向 (逗号分隔)</label>
+                            <input type="text" class="form-control" id="coursePaths" placeholder="例如: Web开发工程师, 后端开发工程师" required>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-primary" onclick="saveCourse()">保存</button>
+                    <button type="button" class="btn btn-primary" id="saveCourseBtn">保存</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Job Modal -->
-    <div class="modal fade" id="jobModal" tabindex="-1">
-        <div class="modal-dialog">
+    <!-- 职位模态框 -->
+    <div class="modal fade" id="jobModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="jobModalTitle">职位信息</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title" id="jobModalLabel">职位信息</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="jobForm">
                         <input type="hidden" id="jobIndex">
-                        <div class="mb-3">
-                            <label class="form-label">职位名称</label>
-                            <input type="text" class="form-control" id="jobTitle" required>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="jobTitle" class="form-label">职位名称</label>
+                                <input type="text" class="form-control" id="jobTitle" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="jobCompany" class="form-label">公司</label>
+                                <input type="text" class="form-control" id="jobCompany" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="jobLocation" class="form-label">地点</label>
+                                <input type="text" class="form-control" id="jobLocation" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="jobSalary" class="form-label">薪资范围</label>
+                                <input type="text" class="form-control" id="jobSalary" placeholder="例如: 15k-25k" required>
+                            </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">公司</label>
-                            <input type="text" class="form-control" id="jobCompany" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">地点</label>
-                            <input type="text" class="form-control" id="jobLocation" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">薪资范围</label>
-                            <input type="text" class="form-control" id="jobSalary" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">职位描述</label>
+                            <label for="jobDescription" class="form-label">职位描述</label>
                             <textarea class="form-control" id="jobDescription" rows="3" required></textarea>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-primary" onclick="saveJob()">保存</button>
+                    <button type="button" class="btn btn-primary" id="saveJobBtn">保存</button>
                 </div>
             </div>
         </div>
@@ -243,176 +302,237 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // 全局变量
         let courseData = [];
         let jobData = [];
-        const courseModal = new bootstrap.Modal(document.getElementById('courseModal'));
-        const jobModal = new bootstrap.Modal(document.getElementById('jobModal'));
+        let courseModal, jobModal;
 
-        // Load and render course data
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化Bootstrap模态框
+            courseModal = new bootstrap.Modal(document.getElementById('courseModal'));
+            jobModal = new bootstrap.Modal(document.getElementById('jobModal'));
+            
+            // 绑定保存按钮事件
+            document.getElementById('saveCourseBtn').addEventListener('click', saveCourse);
+            document.getElementById('saveJobBtn').addEventListener('click', saveJob);
+            
+            // 加载数据
+            loadCourseData();
+            loadJobData();
+        });
+
+        // 加载课程数据
         function loadCourseData() {
             fetch('/api/courses')
                 .then(response => response.json())
                 .then(data => {
-                    courseData = Array.isArray(data) ? data : [];
-                    renderCourseTable();
+
+                    
+                    // 保存课程数据
+                    courseData = data.courses || [];
+                    
+                    // 渲染课程列表
+                    renderCourseList();
                 })
-                .catch(error => console.error('Error loading course data:', error));
+                .catch(error => {
+                    console.error('加载课程数据失败:', error);
+
+                });
         }
 
-        // Load and render job data
+        // 加载职位数据
         function loadJobData() {
             fetch('/api/jobs')
                 .then(response => response.json())
                 .then(data => {
+                    // 保存职位数据
                     jobData = data.jobs || [];
-                    renderJobTable();
+                    
+                    // 渲染职位列表
+                    renderJobList();
                 })
-                .catch(error => console.error('Error loading job data:', error));
+                .catch(error => {
+                    console.error('加载职位数据失败:', error);
+                });
         }
 
-        // Render course table
-        function renderCourseTable() {
-            const tbody = document.querySelector('#courseTable tbody');
-            tbody.innerHTML = '';
+        // 渲染课程列表
+        function renderCourseList() {
+            const courseList = document.getElementById('courseList');
+            courseList.innerHTML = '';
+            
+            if (courseData.length === 0) {
+                courseList.innerHTML = '<div class="col-12"><div class="alert alert-info">暂无课程数据</div></div>';
+                return;
+            }
+            
             courseData.forEach((course, index) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${course.title}</td>
-                    <td>${course.description}</td>
-                    <td>${course.level}</td>
-                    <td class="action-buttons">
-                        <button class="btn btn-sm btn-primary" onclick="editCourse(${index})"><i class="bi bi-pencil"></i></button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteCourse(${index})"><i class="bi bi-trash"></i></button>
-                    </td>
+                const courseCard = document.createElement('div');
+                courseCard.className = 'col-md-4 mb-4';
+                courseCard.innerHTML = `
+                    <div class="card course-card">
+                        <div class="card-body">
+                            <h5 class="card-title">${course.title || '未命名课程'}</h5>
+                            <div class="mb-2">
+                                <span class="badge bg-primary">${course.level || '未知级别'}</span>
+                                <span class="badge bg-secondary">${course.provider || '未知提供方'}</span>
+                            </div>
+                            <p class="card-text">${course.description || '无描述'}</p>
+                            <div class="mb-2"><strong>时长:</strong> ${course.duration || '未知'}</div>
+                            <div class="mb-2"><strong>价格:</strong> ${course.price || '未知'}</div>
+                            <div class="mb-2">
+                                <strong>技能:</strong> ${Array.isArray(course.skills) ? course.skills.join(', ') : '无'}
+                            </div>
+                            <div class="mb-2">
+                                <strong>职业方向:</strong> ${Array.isArray(course.career_paths) ? course.career_paths.join(', ') : '无'}
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-sm btn-primary action-btn" onclick="editCourse(${index})"><i class="bi bi-pencil"></i> 编辑</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteCourse(${index})"><i class="bi bi-trash"></i> 删除</button>
+                        </div>
+                    </div>
                 `;
-                tbody.appendChild(tr);
+                courseList.appendChild(courseCard);
             });
         }
 
-        // Render job table
-        function renderJobTable() {
-            const tbody = document.querySelector('#jobTable tbody');
-            tbody.innerHTML = '';
+        // 渲染职位列表
+        function renderJobList() {
+            const jobList = document.getElementById('jobList');
+            jobList.innerHTML = '';
+            
+            if (jobData.length === 0) {
+                jobList.innerHTML = '<div class="col-12"><div class="alert alert-info">暂无职位数据</div></div>';
+                return;
+            }
+            
             jobData.forEach((job, index) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${job.title}</td>
-                    <td>${job.company}</td>
-                    <td>${job.location}</td>
-                    <td>${job.salary}</td>
-                    <td class="action-buttons">
-                        <button class="btn btn-sm btn-primary" onclick="editJob(${index})"><i class="bi bi-pencil"></i></button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteJob(${index})"><i class="bi bi-trash"></i></button>
-                    </td>
+                const jobCard = document.createElement('div');
+                jobCard.className = 'col-md-4 mb-4';
+                jobCard.innerHTML = `
+                    <div class="card job-card">
+                        <div class="card-body">
+                            <h5 class="card-title">${job.title || '未命名职位'}</h5>
+                            <div class="mb-2">
+                                <span class="badge bg-info">${job.company || '未知公司'}</span>
+                                <span class="badge bg-secondary">${job.location || '未知地点'}</span>
+                            </div>
+                            <p class="card-text">${job.description || '无描述'}</p>
+                            <div class="mb-2"><strong>薪资:</strong> ${job.salary || '未知'}</div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-sm btn-primary action-btn" onclick="editJob(${index})"><i class="bi bi-pencil"></i> 编辑</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteJob(${index})"><i class="bi bi-trash"></i> 删除</button>
+                        </div>
+                    </div>
                 `;
-                tbody.appendChild(tr);
+                jobList.appendChild(jobCard);
             });
         }
 
-        // Course operations
-        function showAddCourseModal() {
-            document.getElementById('courseModalTitle').textContent = '添加课程';
+        // 显示课程模态框
+        function showCourseModal(index = null) {
+            // 重置表单
             document.getElementById('courseForm').reset();
-            document.getElementById('courseIndex').value = '';
+            document.getElementById('courseIndex').value = index === null ? '' : index;
+            
+            // 设置标题
+            document.getElementById('courseModalLabel').textContent = index === null ? '添加课程' : '编辑课程';
+            
+            // 如果是编辑，填充表单数据
+            if (index !== null) {
+                const course = courseData[index];
+                document.getElementById('courseTitle').value = course.title || '';
+                document.getElementById('courseDescription').value = course.description || '';
+                document.getElementById('courseLevel').value = course.level || 'Beginner';
+                document.getElementById('courseProvider').value = course.provider || '';
+                document.getElementById('courseDuration').value = course.duration || '';
+                document.getElementById('coursePrice').value = course.price || '';
+                document.getElementById('courseSkills').value = Array.isArray(course.skills) ? course.skills.join(', ') : '';
+                document.getElementById('coursePaths').value = Array.isArray(course.career_paths) ? course.career_paths.join(', ') : '';
+            }
+            
+            // 显示模态框
             courseModal.show();
         }
 
-        function editCourse(index) {
-            const course = courseData[index];
-            document.getElementById('courseModalTitle').textContent = '编辑课程';
-            document.getElementById('courseIndex').value = index;
-            document.getElementById('courseName').value = course.title;
-            document.getElementById('courseDescription').value = course.description;
-            document.getElementById('courseType').value = course.level;
-            document.getElementById('courseProvider').value = course.provider;
-            document.getElementById('courseDuration').value = course.duration;
-            document.getElementById('coursePrice').value = course.price;
-                const method = index === '' ? 'POST' : 'PUT';
-                const url = index === '' ? '/api/courses' : `/api/courses/${courseData[parseInt(index)].id}`;
-                
-                const response = await fetch(url, {
-                    method: method,
-            courseModal.show();
-        },
+        // 显示职位模态框
+        function showJobModal(index = null) {
+            // 重置表单
+            document.getElementById('jobForm').reset();
+            document.getElementById('jobIndex').value = index === null ? '' : index;
+            
+            // 设置标题
+            document.getElementById('jobModalLabel').textContent = index === null ? '添加职位' : '编辑职位';
+            
+            // 如果是编辑，填充表单数据
+            if (index !== null) {
+                const job = jobData[index];
+                document.getElementById('jobTitle').value = job.title || '';
+                document.getElementById('jobCompany').value = job.company || '';
+                document.getElementById('jobLocation').value = job.location || '';
+                document.getElementById('jobSalary').value = job.salary || '';
+                document.getElementById('jobDescription').value = job.description || '';
+            }
+            
+            // 显示模态框
+            jobModal.show();
+        }
 
+        // 保存课程
         function saveCourse() {
+            // 获取表单数据
             const index = document.getElementById('courseIndex').value;
             const course = {
-                id: index === '' ? String(courseData.length + 1) : courseData[parseInt(index)].id,
-                title: document.getElementById('courseName').value,
+                title: document.getElementById('courseTitle').value,
                 description: document.getElementById('courseDescription').value,
-                level: document.getElementById('courseType').value,
+                level: document.getElementById('courseLevel').value,
                 provider: document.getElementById('courseProvider').value,
                 duration: document.getElementById('courseDuration').value,
                 price: document.getElementById('coursePrice').value,
-                skills: document.getElementById('courseSkills').value.split(',').map(s => s.trim()),
-                career_paths: document.getElementById('careerPaths').value.split(',').map(p => p.trim())
+                skills: document.getElementById('courseSkills').value.split(',').map(s => s.trim()).filter(s => s),
+                career_paths: document.getElementById('coursePaths').value.split(',').map(s => s.trim()).filter(s => s)
             };
-
+            
+            // 如果是新增，添加ID
             if (index === '') {
+                course.id = Date.now().toString();
                 courseData.push(course);
             } else {
-                courseData[parseInt(index)] = course;
+                // 保留原ID
+                course.id = courseData[index].id;
+                courseData[index] = course;
             }
-
+            
+            // 保存到服务器
             fetch('/api/courses', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({ courses: courseData })
             })
             .then(response => response.json())
             .then(result => {
                 if (result.success) {
+                    // 关闭模态框
                     courseModal.hide();
+                    // 重新加载数据
                     loadCourseData();
                 } else {
-                    alert('保存失败：' + result.error);
+                    alert('保存失败: ' + (result.error || '未知错误'));
                 }
             })
-            .catch(error => alert('保存失败，请检查网络连接'));
-        },
+            .catch(error => {
+                alert('保存失败: ' + error.message);
+            });
+        }
 
-        function deleteCourse(index) {
-            if (confirm('确定要删除这个课程吗？')) {
-                courseData.splice(index, 1);
-                fetch('/api/courses', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ courses: courseData })
-                })
-                .then(response => response.json())
-                .then(result => {
-                    if (result.success) {
-                        loadCourseData();
-                    } else {
-                        alert('删除失败：' + result.error);
-                    }
-                })
-                .catch(error => alert('删除失败，请检查网络连接'));
-            }
-        },
-
-        // Job operations
-        function showAddJobModal() {
-            document.getElementById('jobModalTitle').textContent = '添加职位';
-            document.getElementById('jobForm').reset();
-            document.getElementById('jobIndex').value = '';
-            jobModal.show();
-        },
-
-        function editJob(index) {
-            const job = jobData[index];
-            document.getElementById('jobModalTitle').textContent = '编辑职位';
-            document.getElementById('jobIndex').value = index;
-            document.getElementById('jobTitle').value = job.title;
-            document.getElementById('jobCompany').value = job.company;
-            document.getElementById('jobLocation').value = job.location;
-            document.getElementById('jobSalary').value = job.salary;
-            document.getElementById('jobDescription').value = job.description;
-            jobModal.show();
-        },
-
+        // 保存职位
         function saveJob() {
+            // 获取表单数据
             const index = document.getElementById('jobIndex').value;
             const job = {
                 title: document.getElementById('jobTitle').value,
@@ -421,55 +541,106 @@
                 salary: document.getElementById('jobSalary').value,
                 description: document.getElementById('jobDescription').value
             };
-
+            
+            // 如果是新增，添加ID
             if (index === '') {
+                job.id = Date.now().toString();
                 jobData.push(job);
             } else {
-                jobData[parseInt(index)] = job;
+                // 保留原ID
+                job.id = jobData[index].id || Date.now().toString();
+                jobData[index] = job;
             }
-
+            
+            // 保存到服务器
             fetch('/api/jobs', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({ jobs: jobData })
             })
             .then(response => response.json())
             .then(result => {
                 if (result.success) {
+                    // 关闭模态框
                     jobModal.hide();
+                    // 重新加载数据
                     loadJobData();
                 } else {
-                    alert('保存失败：' + result.error);
+                    alert('保存失败: ' + (result.error || '未知错误'));
                 }
             })
-            .catch(error => alert('保存失败，请检查网络连接'));
-        },
+            .catch(error => {
+                alert('保存失败: ' + error.message);
+            });
+        }
 
+        // 编辑课程
+        function editCourse(index) {
+            showCourseModal(index);
+        }
+
+        // 删除课程
+        function deleteCourse(index) {
+            if (confirm('确定要删除这个课程吗？')) {
+                courseData.splice(index, 1);
+                
+                // 保存到服务器
+                fetch('/api/courses', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ courses: courseData })
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        // 重新加载数据
+                        loadCourseData();
+                    } else {
+                        alert('删除失败: ' + (result.error || '未知错误'));
+                    }
+                })
+                .catch(error => {
+                    alert('删除失败: ' + error.message);
+                });
+            }
+        }
+
+        // 编辑职位
+        function editJob(index) {
+            showJobModal(index);
+        }
+
+        // 删除职位
         function deleteJob(index) {
             if (confirm('确定要删除这个职位吗？')) {
                 jobData.splice(index, 1);
+                
+                // 保存到服务器
                 fetch('/api/jobs', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
                     body: JSON.stringify({ jobs: jobData })
                 })
                 .then(response => response.json())
                 .then(result => {
                     if (result.success) {
+                        // 重新加载数据
                         loadJobData();
                     } else {
-                        alert('删除失败：' + result.error);
+                        alert('删除失败: ' + (result.error || '未知错误'));
                     }
                 })
-                .catch(error => alert('删除失败，请检查网络连接'));
+                .catch(error => {
+                    alert('删除失败: ' + error.message);
+                });
             }
-        },
-
-        // Initialize data when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            loadCourseData();
-            loadJobData();
-        });
+        }
     </script>
 </body>
 </html>

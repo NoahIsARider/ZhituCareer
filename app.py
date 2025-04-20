@@ -28,14 +28,17 @@ def load_users():
 
 @app.route('/')
 def index():
-    # Always redirect to login page if user is not in session
+    # Always redirect to login page first
+    # This ensures users always go through login page when accessing root URL
     if 'user' not in session:
         return redirect(url_for('login'))
-    # If user is logged in and is admin, redirect to admin page
+    
+    # Only after successful login, direct users based on their role
     if session.get('user', {}).get('role') == 'admin':
         return redirect(url_for('admin'))
-    # Otherwise show the index page
-    return render_template('index.html')
+    else:
+        return render_template('index.html')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -96,6 +99,8 @@ def manage_courses():
 
 @app.route('/api/jobs', methods=['GET', 'POST'])
 def manage_jobs():
+
+    
     if 'user' not in session or session['user']['role'] != 'admin':
         return jsonify({'error': 'Unauthorized'}), 401
     

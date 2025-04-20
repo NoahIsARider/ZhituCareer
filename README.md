@@ -111,10 +111,13 @@ This integration allows for dynamic data collection and processing, ensuring use
 
 ZhiTuCareer+ is built with a modular architecture:
 
-- **User Profile Agent**: Handles user information processing
-- **Job Matching Agent**: Processes job recommendations
-- **Market Analysis Agent**: Analyzes market trends
-- **Course Matching Agent**: Suggests relevant courses
+- **User Profile Agent**: Handles user information processing, ensuring that user profiles are accurately maintained and updated.
+- **Job Matching Agent**: Processes job recommendations by analyzing user profiles and matching them with suitable job opportunities.
+- **Market Analysis Agent**: Utilizes Playwright to scrape and analyze market trends, providing real-time insights that inform job recommendations and career advice.
+- **Course Matching Agent**: Suggests relevant courses and educational resources aligned with user career goals, enhancing skill development.
+- **Job Recommendation Agent**: Leverages AI to match user profiles with suitable job opportunities, ensuring personalized job suggestions.
+
+<img src="https://github.com/Chen-Yi-Ran/OnlineStudy/blob/master/file/course.jpg" width="300px">
 
 ## Contributing
 

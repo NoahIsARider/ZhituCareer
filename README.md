@@ -1,15 +1,18 @@
 # ZhiTuCareer+ Career Analysis System
 
-ZhiTuCareer+ is a web-based career analysis and job recommendation system that helps users analyze their career path and find suitable job opportunities based on their profile.
+ZhiTuCareer+ is a web-based career analysis and job recommendation system that helps users analyze their career path and find suitable job opportunities based on their profile. The system leverages advanced AI technology to provide personalized career guidance and job matching services.
 
 ## Features
 
-- Career path analysis based on user profile
-- Job recommendations based on skills and experience
-- Market trend analysis
-- Job search functionality
+- **Career Path Analysis**: Detailed analysis based on user's professional profile
+- **Job Recommendations**: Personalized job suggestions based on skills and experience
+- **Market Trend Analysis**: Insights into current industry and job market trends
+- **Job Search Functionality**: Advanced search tools to find relevant positions
+- **Course Recommendations**: Educational resources aligned with career goals
 
 ## Prerequisites
+
+Before you begin, ensure you have the following installed:
 
 - [Anaconda](https://www.anaconda.com/download) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
 - Python 3.9 or higher
@@ -29,31 +32,30 @@ conda activate zhitu_career
 ### 2. Clone the Repository
 
 ```bash
-# Clone the repository to your local machine
-git clone <repository-url>
+git clone [repository-url]
 cd ZhiTuCareer+
 ```
 
 ### 3. Install Dependencies
 
 ```bash
-# Install required packages
 pip install -r requirements.txt
 ```
 
 ### 4. Configure Environment Variables
 
-1. Create a `.env` file in the project root directory
-2. Add your ModelScope API key:
-```
-OPENAI_API_KEY=your_modelscope_api_key
+Create a `.env` file in the project root directory and add your ModelScope API key:
+
+```env
+# ModelScope API配置 (使用OpenAI客户端)
+OPENAI_API_KEY=your_api_key_here
 ```
 
 ## Running the Application
 
 1. Make sure you are in the project directory and your conda environment is activated:
 ```bash
-conda activate zhitucareer
+conda activate zhitu_career
 ```
 
 2. Start the Flask application:
@@ -79,18 +81,20 @@ http://localhost:5000
 
 3. Use the job search function to find specific positions based on keywords and location
 
-## Troubleshooting
+4. Review recommended courses and learning paths aligned with your career goals
 
-- If you encounter any package installation issues, try updating pip:
-  ```bash
-  python -m pip install --upgrade pip
-  ```
+## System Architecture
 
-- If the application fails to start, check that:
-  - The conda environment is activated
-  - All dependencies are installed
-  - The .env file is properly configured
-  - Port 5000 is not in use by another application
+ZhiTuCareer+ is built with a modular architecture:
+
+- **User Profile Agent**: Handles user information processing
+- **Job Matching Agent**: Processes job recommendations
+- **Market Analysis Agent**: Analyzes market trends
+- **Course Matching Agent**: Suggests relevant courses
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 

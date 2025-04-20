@@ -1,0 +1,646 @@
+{
+  "courses": [
+    {
+      "id": "4",
+      "title": "UI/UX Design Essentials",
+      "description": "Learn modern UI/UX design principles and tools",
+      "level": "Beginner",
+      "provider": "Design School",
+      "duration": "10 weeks",
+      "price": "$599",
+      "skills": [
+        "UI Design",
+        "UX Design",
+        "Figma",
+        "Adobe XD"
+      ],
+      "career_paths": [
+        "UI Designer",
+        "UX Designer",
+        "Product Designer"
+      ]
+    },
+    {
+      "career_paths": [
+        "Cybersecurity Analyst",
+        "Security Consultant"
+      ],
+      "description": "Understand the basics of cybersecurity and how to protect systems",
+      "duration": "8 weeks",
+      "id": "8",
+      "level": "Beginner",
+      "price": "$499",
+      "provider": "Cyber Institute",
+      "skills": [
+        "Network Security",
+        "Threat Analysis",
+        "Risk Management"
+      ],
+      "title": "Cybersecurity Fundamentals"
+    },
+    {
+      "career_paths": [
+        "Project Manager",
+        "Program Manager"
+      ],
+      "description": "Learn project management methodologies and best practices",
+      "duration": "10 weeks",
+      "id": "9",
+      "level": "Intermediate",
+      "price": "$699",
+      "provider": "PMI",
+      "skills": [
+        "Project Planning",
+        "Risk Management",
+        "Leadership"
+      ],
+      "title": "Project Management Professional"
+    },
+    {
+      "career_paths": [
+        "Data Scientist",
+        "Machine Learning Engineer"
+      ],
+      "description": "Comprehensive training in data analysis and machine learning",
+      "duration": "12 weeks",
+      "id": "10",
+      "level": "Advanced",
+      "price": "$899",
+      "provider": "DataCamp",
+      "skills": [
+        "Python",
+        "Machine Learning",
+        "Data Visualization",
+        "Statistics"
+      ],
+      "title": "Data Science Bootcamp"
+    },
+    {
+      "career_paths": [
+        "Digital Marketer",
+        "SEO Specialist"
+      ],
+      "description": "Learn all aspects of digital marketing from SEO to social media",
+      "duration": "6 weeks",
+      "id": "11",
+      "level": "Intermediate",
+      "price": "$399",
+      "provider": "Marketing Pro",
+      "skills": [
+        "SEO",
+        "Content Marketing",
+        "Social Media",
+        "Google Analytics"
+      ],
+      "title": "Digital Marketing Masterclass"
+    },
+    {
+      "career_paths": [
+        "Full Stack Developer",
+        "Web Developer"
+      ],
+      "description": "Become proficient in both front-end and back-end development",
+      "duration": "14 weeks",
+      "id": "12",
+      "level": "Intermediate",
+      "price": "$999",
+      "provider": "Code Academy",
+      "skills": [
+        "JavaScript",
+        "React",
+        "Node.js",
+        "MongoDB"
+      ],
+      "title": "Full Stack Web Development"
+    },
+    {
+      "career_paths": [
+        "Accountant",
+        "Financial Analyst"
+      ],
+      "description": "Learn the principles of financial accounting and reporting",
+      "duration": "8 weeks",
+      "id": "13",
+      "level": "Beginner",
+      "price": "$499",
+      "provider": "Finance University",
+      "skills": [
+        "Bookkeeping",
+        "Financial Statements",
+        "GAAP"
+      ],
+      "title": "Financial Accounting Fundamentals"
+    },
+    {
+      "career_paths": [
+        "AI Consultant",
+        "Business Analyst"
+      ],
+      "description": "Understand how AI can be applied to solve business problems",
+      "duration": "6 weeks",
+      "id": "14",
+      "level": "Intermediate",
+      "price": "$699",
+      "provider": "AI Institute",
+      "skills": [
+        "AI Strategy",
+        "Business Applications",
+        "Ethical AI"
+      ],
+      "title": "Artificial Intelligence for Business"
+    },
+    {
+      "career_paths": [
+        "Mobile Developer",
+        "Flutter Developer"
+      ],
+      "description": "Build cross-platform mobile applications using Flutter",
+      "duration": "10 weeks",
+      "id": "15",
+      "level": "Intermediate",
+      "price": "$799",
+      "provider": "App School",
+      "skills": [
+        "Dart",
+        "Flutter",
+        "Mobile UI",
+        "API Integration"
+      ],
+      "title": "Mobile App Development with Flutter"
+    },
+    {
+      "career_paths": [
+        "Cloud Engineer",
+        "DevOps Engineer"
+      ],
+      "description": "Master cloud services and infrastructure on Amazon Web Services",
+      "duration": "8 weeks",
+      "id": "16",
+      "level": "Intermediate",
+      "price": "$749",
+      "provider": "Cloud Academy",
+      "skills": [
+        "EC2",
+        "S3",
+        "Lambda",
+        "Cloud Architecture"
+      ],
+      "title": "Cloud Computing with AWS"
+    },
+    {
+      "career_paths": [
+        "Graphic Designer",
+        "Visual Designer"
+      ],
+      "description": "Learn the core principles of visual communication and design",
+      "duration": "6 weeks",
+      "id": "17",
+      "level": "Beginner",
+      "price": "$349",
+      "provider": "Art Institute",
+      "skills": [
+        "Typography",
+        "Color Theory",
+        "Adobe Photoshop",
+        "Illustration"
+      ],
+      "title": "Graphic Design Fundamentals"
+    },
+    {
+      "career_paths": [
+        "Blockchain Developer",
+        "Smart Contract Engineer"
+      ],
+      "description": "Learn to build decentralized applications on blockchain platforms",
+      "duration": "12 weeks",
+      "id": "18",
+      "level": "Advanced",
+      "price": "$1099",
+      "provider": "Blockchain University",
+      "skills": [
+        "Solidity",
+        "Smart Contracts",
+        "Ethereum",
+        "DApp Development"
+      ],
+      "title": "Blockchain Development"
+    },
+    {
+      "career_paths": [
+        "HR Manager",
+        "Talent Acquisition Specialist"
+      ],
+      "description": "Essential skills for managing people and organizational culture",
+      "duration": "8 weeks",
+      "id": "19",
+      "level": "Intermediate",
+      "price": "$549",
+      "provider": "HR Academy",
+      "skills": [
+        "Recruitment",
+        "Employee Relations",
+        "Performance Management"
+      ],
+      "title": "Human Resources Management"
+    },
+    {
+      "career_paths": [
+        "Game Developer",
+        "Unity Developer"
+      ],
+      "description": "Create interactive games using the Unity game engine",
+      "duration": "10 weeks",
+      "id": "20",
+      "level": "Intermediate",
+      "price": "$799",
+      "provider": "Game Dev School",
+      "skills": [
+        "C#",
+        "Unity",
+        "3D Modeling",
+        "Game Physics"
+      ],
+      "title": "Game Development with Unity"
+    },
+    {
+      "career_paths": [
+        "Medical Coder",
+        "Health Information Technician"
+      ],
+      "description": "Learn to translate medical procedures into standardized codes",
+      "duration": "12 weeks",
+      "id": "21",
+      "level": "Beginner",
+      "price": "$649",
+      "provider": "Healthcare Training",
+      "skills": [
+        "ICD-10",
+        "CPT",
+        "Medical Terminology",
+        "Health Records"
+      ],
+      "title": "Medical Coding Certification"
+    },
+    {
+      "career_paths": [
+        "DevOps Engineer",
+        "Site Reliability Engineer"
+      ],
+      "description": "Bridge development and operations with automation and CI/CD",
+      "duration": "10 weeks",
+      "id": "22",
+      "level": "Advanced",
+      "price": "$899",
+      "provider": "Tech Institute",
+      "skills": [
+        "Docker",
+        "Kubernetes",
+        "Jenkins",
+        "Infrastructure as Code"
+      ],
+      "title": "DevOps Engineering"
+    },
+    {
+      "career_paths": [
+        "Author",
+        "Content Writer"
+      ],
+      "description": "Develop your writing skills across various genres and formats",
+      "duration": "6 weeks",
+      "id": "23",
+      "level": "Beginner",
+      "price": "$299",
+      "provider": "Writing Center",
+      "skills": [
+        "Storytelling",
+        "Character Development",
+        "Editing",
+        "Publishing"
+      ],
+      "title": "Creative Writing Workshop"
+    },
+    {
+      "career_paths": [
+        "Penetration Tester",
+        "Security Engineer"
+      ],
+      "description": "Learn penetration testing and security assessment techniques",
+      "duration": "12 weeks",
+      "id": "24",
+      "level": "Advanced",
+      "price": "$1099",
+      "provider": "Security College",
+      "skills": [
+        "Penetration Testing",
+        "Vulnerability Assessment",
+        "Kali Linux",
+        "Security Auditing"
+      ],
+      "title": "Ethical Hacking"
+    },
+    {
+      "career_paths": [
+        "Business Analyst",
+        "Data Analyst"
+      ],
+      "description": "Use data to drive business decisions and strategy",
+      "duration": "8 weeks",
+      "id": "25",
+      "level": "Intermediate",
+      "price": "$699",
+      "provider": "Business School",
+      "skills": [
+        "Excel",
+        "SQL",
+        "Data Visualization",
+        "Business Intelligence"
+      ],
+      "title": "Business Analytics"
+    },
+    {
+      "career_paths": [
+        "iOS Developer",
+        "Mobile Engineer"
+      ],
+      "description": "Build native iOS applications using Swift and Xcode",
+      "duration": "10 weeks",
+      "id": "26",
+      "level": "Intermediate",
+      "price": "$899",
+      "provider": "Apple Developer Academy",
+      "skills": [
+        "Swift",
+        "Xcode",
+        "UIKit",
+        "Core Data"
+      ],
+      "title": "iOS App Development"
+    },
+    {
+      "career_paths": [
+        "Supply Chain Manager",
+        "Logistics Coordinator"
+      ],
+      "description": "Learn to optimize logistics and operations in global supply chains",
+      "duration": "8 weeks",
+      "id": "27",
+      "level": "Intermediate",
+      "price": "$649",
+      "provider": "Logistics Institute",
+      "skills": [
+        "Inventory Management",
+        "Procurement",
+        "Logistics",
+        "Operations"
+      ],
+      "title": "Supply Chain Management"
+    },
+    {
+      "career_paths": [
+        "Photographer",
+        "Photojournalist"
+      ],
+      "description": "Professional techniques for digital photography and editing",
+      "duration": "6 weeks",
+      "id": "28",
+      "level": "Beginner",
+      "price": "$449",
+      "provider": "Photo Academy",
+      "skills": [
+        "Composition",
+        "Lighting",
+        "Adobe Lightroom",
+        "Portrait Photography"
+      ],
+      "title": "Photography Masterclass"
+    },
+    {
+      "career_paths": [
+        "Quantum Researcher",
+        "Quantum Software Developer"
+      ],
+      "description": "Introduction to quantum algorithms and computing principles",
+      "duration": "10 weeks",
+      "id": "29",
+      "level": "Advanced",
+      "price": "$1199",
+      "provider": "Quantum Institute",
+      "skills": [
+        "Qubits",
+        "Quantum Algorithms",
+        "Linear Algebra",
+        "Quantum Mechanics"
+      ],
+      "title": "Quantum Computing Fundamentals"
+    },
+    {
+      "career_paths": [
+        "Public Speaker",
+        "Corporate Trainer"
+      ],
+      "description": "Develop confidence and skills for effective presentations",
+      "duration": "4 weeks",
+      "id": "30",
+      "level": "Beginner",
+      "price": "$249",
+      "provider": "Communication School",
+      "skills": [
+        "Speech Writing",
+        "Voice Modulation",
+        "Body Language",
+        "Audience Engagement"
+      ],
+      "title": "Public Speaking Excellence"
+    },
+    {
+      "career_paths": [
+        "Energy Consultant",
+        "Sustainability Engineer"
+      ],
+      "description": "Study sustainable energy technologies and their implementation",
+      "duration": "8 weeks",
+      "id": "31",
+      "level": "Intermediate",
+      "price": "$699",
+      "provider": "Energy College",
+      "skills": [
+        "Solar Power",
+        "Wind Energy",
+        "Energy Storage",
+        "Sustainable Design"
+      ],
+      "title": "Renewable Energy Systems"
+    },
+    {
+      "career_paths": [
+        "Forensic Scientist",
+        "Crime Lab Analyst"
+      ],
+      "description": "Learn scientific techniques used in criminal investigations",
+      "duration": "10 weeks",
+      "id": "32",
+      "level": "Intermediate",
+      "price": "$799",
+      "provider": "Criminal Justice Academy",
+      "skills": [
+        "DNA Analysis",
+        "Fingerprinting",
+        "Crime Scene Investigation",
+        "Toxicology"
+      ],
+      "title": "Forensic Science"
+    },
+    {
+      "career_paths": [
+        "Architect",
+        "Urban Planner"
+      ],
+      "description": "Principles of building design and spatial planning",
+      "duration": "12 weeks",
+      "id": "33",
+      "level": "Intermediate",
+      "price": "$899",
+      "provider": "Architecture School",
+      "skills": [
+        "AutoCAD",
+        "3D Modeling",
+        "Sustainable Design",
+        "Building Codes"
+      ],
+      "title": "Architectural Design"
+    },
+    {
+      "career_paths": [
+        "Neuroscientist",
+        "Clinical Researcher"
+      ],
+      "description": "Introduction to the structure and function of the nervous system",
+      "duration": "10 weeks",
+      "id": "34",
+      "level": "Advanced",
+      "price": "$899",
+      "provider": "Science Academy",
+      "skills": [
+        "Neuroanatomy",
+        "Cognitive Neuroscience",
+        "Neuroimaging",
+        "Research Methods"
+      ],
+      "title": "Neuroscience Fundamentals"
+    },
+    {
+      "career_paths": [
+        "Event Planner",
+        "Wedding Coordinator"
+      ],
+      "description": "Learn to organize and execute successful events",
+      "duration": "6 weeks",
+      "id": "35",
+      "level": "Beginner",
+      "price": "$399",
+      "provider": "Hospitality School",
+      "skills": [
+        "Vendor Management",
+        "Budgeting",
+        "Logistics",
+        "Marketing"
+      ],
+      "title": "Event Planning and Management"
+    },
+    {
+      "career_paths": [
+        "Robotics Engineer",
+        "Automation Specialist"
+      ],
+      "description": "Design and program robotic systems",
+      "duration": "12 weeks",
+      "id": "36",
+      "level": "Advanced",
+      "price": "$1099",
+      "provider": "Engineering Institute",
+      "skills": [
+        "ROS",
+        "CAD",
+        "Control Systems",
+        "Machine Vision"
+      ],
+      "title": "Robotics Engineering"
+    },
+    {
+      "career_paths": [
+        "Sommelier",
+        "Beverage Manager"
+      ],
+      "description": "Learn about wine regions, varieties, and tasting techniques",
+      "duration": "4 weeks",
+      "id": "37",
+      "level": "Beginner",
+      "price": "$299",
+      "provider": "Culinary Arts Academy",
+      "skills": [
+        "Wine Tasting",
+        "Food Pairing",
+        "Viticulture",
+        "Wine Regions"
+      ],
+      "title": "Wine Appreciation"
+    },
+    {
+      "career_paths": [
+        "Airport Manager",
+        "Aviation Operations"
+      ],
+      "description": "Learn the business and operations of the aviation industry",
+      "duration": "8 weeks",
+      "id": "38",
+      "level": "Intermediate",
+      "price": "$799",
+      "provider": "Aviation College",
+      "skills": [
+        "Airline Operations",
+        "Airport Management",
+        "Aviation Safety",
+        "Regulations"
+      ],
+      "title": "Aviation Management"
+    },
+    {
+      "career_paths": [
+        "Animator",
+        "Motion Graphics Designer"
+      ],
+      "description": "Create dynamic animations and visual effects",
+      "duration": "10 weeks",
+      "id": "39",
+      "level": "Intermediate",
+      "price": "$849",
+      "provider": "Animation School",
+      "skills": [
+        "After Effects",
+        "3D Animation",
+        "Character Rigging",
+        "Motion Design"
+      ],
+      "title": "Animation and Motion Graphics"
+    },
+    {
+      "career_paths": [
+        "Nonprofit Director",
+        "Program Coordinator"
+      ],
+      "description": "Learn to lead and manage nonprofit organizations effectively",
+      "duration": "8 weeks",
+      "id": "40",
+      "level": "Intermediate",
+      "price": "$599",
+      "provider": "Social Impact Institute",
+      "skills": [
+        "Fundraising",
+        "Grant Writing",
+        "Volunteer Management",
+        "Social Impact"
+      ],
+      "title": "Nonprofit Management"
+    }
+  ]
+}

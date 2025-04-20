@@ -1,0 +1,405 @@
+{
+  "jobs": [
+    {
+      "company": "闪电电商科技",
+      "description": "构建分布式电商交易系统，优化高并发场景下的订单处理性能",
+      "id": 30,
+      "location": "杭州市滨江区",
+      "requirements": [
+        "精通Java/Go",
+        "熟悉分库分表策略",
+        "有618/双11大促经验",
+        "了解电商风控体系"
+      ],
+      "salary": "30k-50k",
+      "title": "电商中台架构师"
+    },
+    {
+      "company": "音浪社交",
+      "description": "开发短视频推荐算法，优化内容分发CTR指标",
+      "location": "北京市朝阳区",
+      "salary": "35k-60k",
+      "title": "推荐算法工程师（短视频方向）",
+      "requirements": [
+        "熟悉召回/排序模型",
+        "TensorFlow/PyTorch实战经验",
+        "有千万级DAU产品经验",
+        "熟悉AB测试框架"
+      ]
+    },
+    {
+      "company": "云端未来",
+      "description": "设计Serverless计算平台资源调度策略，提升函数冷启动性能",
+      "id": 32,
+      "location": "深圳市南山区",
+      "requirements": [
+        "5年云计算研发经验",
+        "精通Kubernetes调度器",
+        "熟悉Faas架构",
+        "有开源项目贡献"
+      ],
+      "salary": "40k-70k",
+      "title": "云原生架构师"
+    },
+    {
+      "company": "数盾安全",
+      "description": "研究APT攻击检测技术，开发威胁情报分析平台",
+      "location": "成都市高新区",
+      "salary": "25k-45k",
+      "title": "高级安全研究员",
+      "requirements": [
+        "熟悉ATT&CK框架",
+        "逆向工程能力",
+        "有CVE漏洞发现经验",
+        "精通Python/IDA Pro"
+      ]
+    },
+    {
+      "company": "智能车联",
+      "description": "开发车机系统OTA升级模块，保障车载Linux系统稳定性",
+      "id": 34,
+      "location": "上海市嘉定区",
+      "requirements": [
+        "嵌入式Linux开发经验",
+        "熟悉CAN总线协议",
+        "有AutoSAR经验优先",
+        "了解AOSP架构"
+      ],
+      "salary": "28k-48k",
+      "title": "车载系统开发专家"
+    },
+    {
+      "company": "元宇宙工场",
+      "description": "开发Web3.0数字身份协议，设计DID分布式验证机制",
+      "location": "杭州市余杭区",
+      "salary": "32k-55k",
+      "title": "区块链协议工程师",
+      "requirements": [
+        "精通Rust/Solidity",
+        "熟悉零知识证明",
+        "有公链开发经验",
+        "理解ERC-3525标准"
+      ]
+    },
+    {
+      "company": "AI绘画工坊",
+      "description": "优化Stable Diffusion模型推理速度，开发LoRA微调工具链",
+      "id": 36,
+      "location": "广州市天河区",
+      "requirements": [
+        "熟悉Diffusion模型原理",
+        "CUDA编程经验",
+        "有模型量化经验",
+        "熟悉ONNX Runtime"
+      ],
+      "salary": "30k-50k",
+      "title": "AIGC算法优化工程师"
+    },
+    {
+      "company": "跨境支付通",
+      "description": "构建多币种清算系统，解决跨境支付合规性问题",
+      "location": "北京市海淀区",
+      "salary": "35k-65k",
+      "title": "支付系统开发总监",
+      "requirements": [
+        "10年金融系统经验",
+        "熟悉SWIFT/SEPA",
+        "了解反洗钱规则",
+        "有PCI-DSS认证经验"
+      ]
+    },
+    {
+      "company": "智慧医疗云",
+      "description": "开发医疗影像标注平台，集成DICOM标准与AI辅助诊断",
+      "id": 38,
+      "location": "武汉市光谷",
+      "requirements": [
+        "医学影像处理背景",
+        "熟悉ITK/VTK库",
+        "了解HIPAA规范",
+        "有医疗器械软件开发经验"
+      ],
+      "salary": "28k-45k",
+      "title": "医疗AI产品工程师"
+    },
+    {
+      "company": "物联网OS",
+      "description": "研发轻量级RTOS内核，优化LoRaWAN协议栈能耗表现",
+      "location": "南京市建邺区",
+      "salary": "25k-42k",
+      "title": "物联网操作系统开发",
+      "requirements": [
+        "精通C/ARM汇编",
+        "熟悉FreeRTOS架构",
+        "有传感器融合经验",
+        "了解Matter标准"
+      ]
+    },
+    {
+      "company": "深海生物制药",
+      "description": "负责抗癌新药的分子结构设计与优化，领导实验室团队进行临床试验",
+      "id": 5,
+      "location": "上海市浦东新区",
+      "requirements": [
+        "博士学历（生物化学/药学相关）",
+        "5年以上药物研发经验",
+        "熟悉FDA申报流程",
+        "英语文献阅读能力"
+      ],
+      "salary": "35k-60k",
+      "title": "首席药物研发专家"
+    },
+    {
+      "company": "极光新能源汽车",
+      "description": "负责电池管理系统(BMS)的硬件电路设计及热仿真分析",
+      "location": "深圳市龙岗区",
+      "salary": "30k-45k",
+      "title": "电池系统高级工程师"
+    },
+    {
+      "company": "星链航天科技",
+      "description": "参与商业卫星载荷设计，完成轨道动力学仿真与优化",
+      "id": 7,
+      "location": "北京市海淀区",
+      "requirements": [
+        "航空航天工程硕士学历",
+        "熟悉STK仿真软件",
+        "参与过卫星项目者优先",
+        "能接受不定期出差"
+      ],
+      "salary": "40k-70k",
+      "title": "卫星载荷设计师"
+    },
+    {
+      "company": "云端教育科技",
+      "description": "开发AI驱动的个性化学习系统，整合计算机视觉与NLP技术",
+      "id": 8,
+      "location": "杭州市余杭区",
+      "requirements": [
+        "3年以上机器学习经验",
+        "精通TensorFlow/PyTorch",
+        "有教育类产品经验加分",
+        "发表过相关论文者优先"
+      ],
+      "salary": "25k-50k",
+      "title": "教育AI算法工程师"
+    },
+    {
+      "company": "绿洲生态农业",
+      "description": "负责智慧大棚物联网系统部署与数据分析",
+      "location": "成都市温江区",
+      "salary": "15k-28k",
+      "title": "农业物联网工程师"
+    },
+    {
+      "company": "金色麦田证券",
+      "description": "构建量化交易策略，开发高频交易系统核心模块",
+      "id": 10,
+      "location": "广州市天河区",
+      "requirements": [
+        "数学/物理/计算机背景",
+        "精通C++/Rust",
+        "熟悉市场微观结构",
+        "有实盘经验者优先"
+      ],
+      "salary": "50k-100k+",
+      "title": "量化交易策略师"
+    },
+    {
+      "company": "幻影数字娱乐",
+      "description": "负责3A级游戏角色建模与材质制作，参与动作捕捉技术研发",
+      "location": "上海市徐汇区",
+      "salary": "20k-35k",
+      "title": "高级3D美术设计师"
+    },
+    {
+      "company": "平安守护保险",
+      "description": "开发基于大数据的精算模型，优化保险产品定价策略",
+      "id": 12,
+      "location": "深圳市福田区",
+      "requirements": [
+        "精算/统计专业硕士",
+        "ASA或FSA资格",
+        "5年以上非寿险经验",
+        "熟练使用R/Python"
+      ],
+      "salary": "45k-80k",
+      "title": "首席精算师"
+    },
+    {
+      "company": "快链科技",
+      "description": "开发区块链底层协议，优化共识算法性能",
+      "location": "杭州市西湖区",
+      "salary": "30k-60k",
+      "title": "区块链核心开发工程师"
+    },
+    {
+      "company": "钢铁雄心重工",
+      "description": "主导智能产线PLC控制系统升级改造项目",
+      "id": 14,
+      "location": "长沙市岳麓区",
+      "requirements": [
+        "自动化/机电一体化背景",
+        "熟悉西门子TIA平台",
+        "有工业机器人集成经验",
+        "能适应工厂环境"
+      ],
+      "salary": "18k-32k",
+      "title": "工业自动化专家"
+    },
+    {
+      "company": "蔚蓝海洋工程",
+      "description": "负责深海钻井平台结构强度计算与疲劳分析",
+      "location": "青岛市黄岛区",
+      "salary": "28k-45k",
+      "title": "海洋结构工程师"
+    },
+    {
+      "company": "味觉奇迹食品",
+      "description": "研发植物基肉制品配方，优化生产工艺流程",
+      "id": 16,
+      "location": "南京市江宁区",
+      "requirements": [
+        "食品科学博士学位",
+        "3年以上替代蛋白经验",
+        "熟悉挤压工艺",
+        "有专利申请经验"
+      ],
+      "salary": "25k-40k",
+      "title": "食品创新研发总监"
+    },
+    {
+      "company": "时空考古研究所",
+      "description": "使用LiDAR技术进行遗址三维重建，参与田野考古发掘",
+      "location": "西安市碑林区",
+      "salary": "12k-20k",
+      "title": "数字考古技术员"
+    },
+    {
+      "company": "天眼遥感科技",
+      "description": "处理多光谱卫星影像数据，开发地物分类算法",
+      "id": 18,
+      "location": "武汉市洪山区",
+      "requirements": [
+        "遥感/地理信息系统专业",
+        "熟练使用ENVI/ArcGIS",
+        "Python编程能力",
+        "参与过国土调查项目"
+      ],
+      "salary": "15k-30k",
+      "title": "遥感算法工程师"
+    },
+    {
+      "company": "声波电子",
+      "description": "设计消费级TWS耳机声学系统，优化降噪算法",
+      "location": "东莞市松山湖",
+      "salary": "22k-38k",
+      "title": "声学工程师"
+    },
+    {
+      "company": "量子前沿研究院",
+      "description": "参与超导量子比特芯片设计，搭建低温测量系统",
+      "id": 20,
+      "location": "合肥市高新区",
+      "requirements": [
+        "凝聚态物理博士",
+        "熟悉量子比特操控",
+        "微波电路设计经验",
+        "Nature/Science论文作者优先"
+      ],
+      "salary": "40k-80k",
+      "title": "量子硬件研究员"
+    },
+    {
+      "company": "极速物流科技",
+      "description": "优化无人仓AGV调度算法，提升分拣效率30%以上",
+      "location": "天津市滨海新区",
+      "salary": "25k-42k",
+      "title": "智慧物流算法专家"
+    },
+    {
+      "company": "未来建筑设计",
+      "description": "主持绿色建筑BIM全流程设计，申请LEED认证",
+      "id": 22,
+      "location": "重庆市渝中区",
+      "requirements": [
+        "建筑学硕士学历",
+        "8年以上甲级院经验",
+        "Revit高级认证",
+        "有海外项目经验"
+      ],
+      "salary": "35k-55k",
+      "title": "BIM总建筑师"
+    },
+    {
+      "company": "星际文旅集团",
+      "description": "策划沉浸式太空主题乐园项目，整合XR技术方案",
+      "location": "珠海市横琴新区",
+      "salary": "18k-30k",
+      "title": "文旅创意总监"
+    },
+    {
+      "company": "清洁能源动力",
+      "description": "研发氢燃料电池电堆，提升能量密度与耐久性",
+      "id": 24,
+      "location": "佛山市南海区",
+      "requirements": [
+        "材料/电化学专业博士",
+        "3年燃料电池研发经验",
+        "掌握MEA制备工艺",
+        "有车企合作项目经历"
+      ],
+      "salary": "32k-50k",
+      "title": "燃料电池高级研究员"
+    },
+    {
+      "company": "基因解码生命",
+      "description": "分析全基因组测序数据，构建疾病风险预测模型",
+      "location": "苏州市工业园区",
+      "salary": "28k-45k",
+      "title": "生物信息学专家"
+    },
+    {
+      "company": "钢铁侠外骨骼科技",
+      "description": "设计医疗康复外骨骼驱动系统，优化人机交互界面",
+      "id": 26,
+      "location": "沈阳市铁西区",
+      "requirements": [
+        "机械电子工程专业",
+        "精通SolidWorks仿真",
+        "熟悉肌电信号处理",
+        "有医疗器械注册经验"
+      ],
+      "salary": "25k-40k",
+      "title": "康复机器人工程师"
+    },
+    {
+      "company": "深蓝矿业装备",
+      "description": "开发井下无人采矿装备远程控制系统",
+      "location": "徐州市经济开发区",
+      "salary": "20k-35k",
+      "title": "智能采矿系统工程师"
+    },
+    {
+      "company": "星空天文台",
+      "description": "维护射电望远镜阵列，处理脉冲星观测数据",
+      "id": 28,
+      "location": "昆明市官渡区",
+      "requirements": [
+        "天体物理专业背景",
+        "熟练使用CASA软件",
+        "Python数据处理能力",
+        "能适应高原台站工作"
+      ],
+      "salary": "15k-25k",
+      "title": "射电天文研究员"
+    },
+    {
+      "company": "冰雪奇迹体育",
+      "description": "研发竞技级速滑冰刀材料与空气动力学设计",
+      "location": "哈尔滨市松北区",
+      "salary": "22k-36k",
+      "title": "体育装备研发工程师"
+    }
+  ]
+}

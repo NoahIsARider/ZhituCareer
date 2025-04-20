@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智途职业生涯规划 - 登录</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --vivid-orange: #FF6600;
+            --sunset-orange: #FF4500;
+            --orange-light: rgba(255,102,0,0.08);
+            --orange-border: rgba(255,102,0,0.15);
+        }
+
+        body {
+            background-color: var(--orange-light);
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 20px;
+            background: linear-gradient(
+                145deg, 
+                rgba(255,255,255,0.95) 30%,
+                rgba(255,102,0,0.05) 100%
+            );
+            border: 1px solid var(--orange-border);
+            border-radius: 10px;
+            box-shadow: 0 4px 20px var(--orange-border);
+            transition: all 0.3s ease;
+        }
+
+        .login-container:hover {
+            transform: translateY(-3px);
+        }
+
+        .login-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--vivid-orange);
+        }
+
+        .btn-primary {
+            background: var(--vivid-orange) !important;
+            border: none !important;
+        }
+
+        .btn-primary:hover {
+            background: var(--sunset-orange) !important;
+        }
+
+        .error-message {
+            color: #dc3545;
+            text-align: center;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="login-container">
+            <h2 class="login-title">智途职业生涯规划</h2>
+            <form id="loginForm" method="post" action="/login">
+                <div class="mb-3">
+                    <label for="phone" class="form-label">手机号码</label>
+                    <input type="tel" class="form-control" id="phone" name="phone" required pattern="[0-9]{11}">
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">密码</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">登录</button>
+                </div>
+                <div id="errorMessage" class="error-message"></div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        phone: formData.get('phone'),
+                        password: formData.get('password')
+                    })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    window.location.href = data.redirect;
+                } else {
+                    const errorMessage = document.getElementById('errorMessage');
+                    errorMessage.textContent = data.message || '登录失败，请检查手机号码和密码';
+                    errorMessage.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                const errorMessage = document.getElementById('errorMessage');
+                errorMessage.textContent = '服务器错误，请稍后重试';
+                errorMessage.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

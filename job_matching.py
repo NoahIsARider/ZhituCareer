@@ -14,7 +14,7 @@ class JobMatcher:
 
     def load_jobs(self):
         try:
-            with open('jobs.json', 'r', encoding='utf-8') as f:
+            with open('data/jobs.json', 'r', encoding='utf-8') as f:
                 data = json.load(f)
                 return data.get('jobs', [])
         except Exception as e:
@@ -33,7 +33,8 @@ class JobMatcher:
             if not matched_job:
                 raise ValueError("Failed to match jobs")
 
-            return matched_job
+            # Wrap the matched job in an array to match frontend expectations
+            return [json.loads(matched_job)]
         except Exception as e:
             print(f'Error in job matching: {str(e)}')
             raise ValueError(f"Job matching failed: {str(e)}")

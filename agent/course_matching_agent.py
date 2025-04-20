@@ -10,7 +10,7 @@ class CourseMatchingAgent:
         
         # Load courses from JSON file
         try:
-            with open('course.json', 'r', encoding='utf-8') as f:
+            with open('data/course.json', 'r', encoding='utf-8') as f:
                 courses_data = json.load(f)
                 courses = courses_data.get('courses', [])
         except Exception as e:

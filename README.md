@@ -128,6 +128,7 @@ This integration allows for dynamic data collection and processing, ensuring use
 <img src="https://github.com/NoahIsARider/ZhituCareer/blob/main/agent/agent_structure.png" width="350px">
 
 </div>
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.

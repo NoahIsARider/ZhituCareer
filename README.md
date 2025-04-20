@@ -123,9 +123,11 @@ This integration allows for dynamic data collection and processing, ensuring use
 - **Job Matching Agent**: Processes job recommendations
 - **Market Analysis Agent**: Analyzes market trends
 - **Course Matching Agent**: Suggests relevant courses
+<div align=center>
+   
+<img src="https://github.com/NoahIsARider/ZhituCareer/blob/main/agent/agent_structure.png" width="350px">
 
-<img src="https://github.com/NoahIsARider/ZhituCareer/blob/main/agent/agent_structure.png" width="300px">
-
+</div>
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.

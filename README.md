@@ -85,8 +85,11 @@ Users should store their identity information in the users.json file located in 
 
 ZhiTuCareer+ employs a modular architecture where agents are integrated with Playwright for enhanced market analysis and job recommendations.
 
-- **Market Analysis Agent**: Utilizes Playwright to scrape and analyze market trends, providing real-time insights.
-- **Job Recommendation Agent**: Leverages AI to match user profiles with suitable job opportunities.
+- **User Profile Agent**: Handles user information processing, ensuring that user profiles are accurately maintained and updated.
+- **Job Matching Agent**: Processes job recommendations by analyzing user profiles and matching them with suitable job opportunities.
+- **Market Analysis Agent**: Utilizes Playwright to scrape and analyze market trends, providing real-time insights that inform job recommendations and career advice.
+- **Course Matching Agent**: Suggests relevant courses and educational resources aligned with user career goals, enhancing skill development.
+- **Job Recommendation Agent**: Leverages AI to match user profiles with suitable job opportunities, ensuring personalized job suggestions.
 
 This integration allows for dynamic data collection and processing, ensuring users receive the most relevant and up-to-date information.
 ## Usage

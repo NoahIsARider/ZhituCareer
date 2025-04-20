@@ -245,15 +245,15 @@
     <script>
         let courseData = [];
         let jobData = [];
-        let courseModal;
-        let jobModal;
+        const courseModal = new bootstrap.Modal(document.getElementById('courseModal'));
+        const jobModal = new bootstrap.Modal(document.getElementById('jobModal'));
 
         // Load and render course data
         function loadCourseData() {
             fetch('/api/courses')
                 .then(response => response.json())
                 .then(data => {
-                    courseData = data.courses || [];
+                    courseData = Array.isArray(data) ? data : [];
                     renderCourseTable();
                 })
                 .catch(error => console.error('Error loading course data:', error));
@@ -327,15 +327,18 @@
             document.getElementById('courseProvider').value = course.provider;
             document.getElementById('courseDuration').value = course.duration;
             document.getElementById('coursePrice').value = course.price;
-            document.getElementById('courseSkills').value = course.skills.join(', ');
-            document.getElementById('careerPaths').value = course.career_paths.join(', ');
+                const method = index === '' ? 'POST' : 'PUT';
+                const url = index === '' ? '/api/courses' : `/api/courses/${courseData[parseInt(index)].id}`;
+                
+                const response = await fetch(url, {
+                    method: method,
             courseModal.show();
-        }
+        },
 
         function saveCourse() {
             const index = document.getElementById('courseIndex').value;
             const course = {
-                id: index === '' ? String(Date.now()) : courseData[parseInt(index)].id,
+                id: index === '' ? String(courseData.length + 1) : courseData[parseInt(index)].id,
                 title: document.getElementById('courseName').value,
                 description: document.getElementById('courseDescription').value,
                 level: document.getElementById('courseType').value,
@@ -367,7 +370,7 @@
                 }
             })
             .catch(error => alert('保存失败，请检查网络连接'));
-        }
+        },
 
         function deleteCourse(index) {
             if (confirm('确定要删除这个课程吗？')) {
@@ -387,7 +390,7 @@
                 })
                 .catch(error => alert('删除失败，请检查网络连接'));
             }
-        }
+        },
 
         // Job operations
         function showAddJobModal() {
@@ -395,7 +398,7 @@
             document.getElementById('jobForm').reset();
             document.getElementById('jobIndex').value = '';
             jobModal.show();
-        }
+        },
 
         function editJob(index) {
             const job = jobData[index];
@@ -407,7 +410,7 @@
             document.getElementById('jobSalary').value = job.salary;
             document.getElementById('jobDescription').value = job.description;
             jobModal.show();
-        }
+        },
 
         function saveJob() {
             const index = document.getElementById('jobIndex').value;
@@ -440,7 +443,7 @@
                 }
             })
             .catch(error => alert('保存失败，请检查网络连接'));
-        }
+        },
 
         function deleteJob(index) {
             if (confirm('确定要删除这个职位吗？')) {
@@ -460,15 +463,10 @@
                 })
                 .catch(error => alert('删除失败，请检查网络连接'));
             }
-        }
+        },
 
-        // Initialize data and modals when page loads
+        // Initialize data when page loads
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize Bootstrap modals
-            courseModal = new bootstrap.Modal(document.getElementById('courseModal'));
-            jobModal = new bootstrap.Modal(document.getElementById('jobModal'));
-            
-            // Load data
             loadCourseData();
             loadJobData();
         });

@@ -60,7 +60,7 @@ Ensure you have the following installed:
      ```
 
 ## UI Guide for Administrators and Users
-
+Put your users in the data/users.json file. Log in with phone number and password.
 ### Administrator Usage
 
 Administrators can manage courses and jobs through the admin interface. This includes adding, updating, and removing entries. To access the admin interface, navigate to the admin.html page and log in with your administrator credentials.

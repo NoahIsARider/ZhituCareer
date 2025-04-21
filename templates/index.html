@@ -89,10 +89,10 @@
         <div class="container">
             <a class="navbar-brand" href="#">智途Career+</a>
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="/logout"><i class="bi bi-box-arrow-right"></i> 退出登录</a>
-                </li>
-            </ul>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="/logout"><i class="bi bi-box-arrow-right"></i> 退出登录</a>
+            </li>
+        </ul>
         </div>
     </nav>
 
@@ -247,7 +247,7 @@
         document.getElementById('careerForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            // 显示加载动画
+            // Show loading spinner
             const loadingSpinner = document.getElementById('loadingSpinner');
             const analysisResult = document.getElementById('analysisResult');
             
@@ -256,6 +256,7 @@
             
             try {
                 const formData = new FormData(this);
+                
                 const response = await fetch('/analyze_profile', {
                     method: 'POST',
                     body: formData
@@ -265,29 +266,31 @@
                 
                 if (data.success) {
                     try {
-                        const analysis = JSON.parse(data.analysis);
-                        window.careerAnalysis = data.analysis; // Store the analysis for course search
+                        const analysis = typeof data.analysis === 'string' ? JSON.parse(data.analysis) : data.analysis;
+                        window.careerAnalysis = data.analysis; // Store the analysis for later use
                         
-                        // 更新各个部分的内容
+                        // Update analysis sections
                         document.getElementById('careerPath').textContent = analysis.career_path;
                         document.getElementById('jobAdvice').textContent = analysis.job_advice;
                         document.getElementById('skillsToImprove').textContent = analysis.skills_to_improve;
+                        document.getElementById('recommendedPositions').innerHTML = '<p>请使用职位搜索功能获取推荐职位</p>';
                         
-                        // 更新推荐职位列表
-                        const positionsList = analysis.recommended_positions.map(pos => `<li>${pos}</li>`).join('');
-                        document.getElementById('recommendedPositions').innerHTML = `<ul class="mb-0">${positionsList}</ul>`;
+                        // Show success message
+                        document.getElementById('analysisContent').innerHTML = 
+                            '<div class="alert alert-success">职业分析完成！请使用下方的职位搜索和课程推荐功能获取更多建议。</div>';
                         
                     } catch (parseError) {
                         console.error('Error parsing JSON:', parseError);
-                        // 如果不是JSON格式，直接显示原始内容
-                        document.getElementById('careerPath').textContent = data.analysis;
+                        document.getElementById('analysisContent').innerHTML = 
+                            '<div class="alert alert-danger">解析分析结果时出错</div>';
                     }
                 } else {
                     throw new Error(data.error || '分析过程中出现错误');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                document.getElementById('careerPath').textContent = `错误: ${error.message}`;
+                document.getElementById('analysisContent').innerHTML = 
+                    `<div class="alert alert-danger">错误: ${error.message}</div>`;
             } finally {
                 loadingSpinner.classList.add('d-none');
             }
@@ -361,16 +364,20 @@
             jobList.innerHTML = '';
             
             try {
-
-
-                try {
-                const jobsArray = typeof jobs === 'string' ? JSON.parse(jobs) : jobs;
-                jobsArray.forEach(job => {
-                    const jobElement = document.createElement('div');
-                    jobElement.className = 'col-md-6';
-                    jobElement.innerHTML = `
+                // Ensure jobs is an array
+                const jobsArray = Array.isArray(jobs) ? jobs : [jobs];
+                
+                // Parse if string
+                const parsedJobs = jobsArray.map(job => {
+                    return typeof job === 'string' ? JSON.parse(job) : job;
+                });
+                
+                parsedJobs.forEach(job => {
+                const jobCard = `
+                    <div class="col-md-6">
                         <div class="card job-card">
                             <div class="card-body">
+
                                 <h5 class="card-title">${job.title}</h5>
                                 <h6 class="card-subtitle mb-2 text-muted">${job.company}</h6>
                                 <p class="card-text">
@@ -386,17 +393,14 @@
                                 <button class="btn btn-outline-primary">申请职位</button>
                             </div>
                         </div>
-                    `;
-                    jobList.appendChild(jobElement);
-                });
-            } catch (error) {
-                console.error('Error displaying job:', error);
-                jobList.innerHTML = '<div class="alert alert-danger">无法显示职位信息</div>';
-            }
-            } catch (error) {
-                console.error('Error displaying job:', error);
-                jobList.innerHTML = '<div class="alert alert-danger">无法显示职位信息</div>';
-            }
+                    </div>
+                `;
+                jobList.innerHTML += jobCard;
+            });
+        } catch (error) {
+            console.error('Error displaying job:', error);
+            jobList.innerHTML = '<div class="alert alert-danger">无法显示职位信息</div>';
+        }
         }
     </script>
 </body>

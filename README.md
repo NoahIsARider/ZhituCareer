@@ -40,12 +40,13 @@ Ensure you have the following installed:
    ```
 
 4. **Configure Environment Variables**
+
    Create a `.env` file in the project root directory and add your [ModelScope](https://www.modelscope.cn/) API key(silicon should be working just fine as well):
    ```env
    OPENAI_API_KEY=your_api_key_here
    ```
 
-5. **Run the Application**
+6. **Run the Application**
  
    Ensure your conda environment is activated:
      ```bash

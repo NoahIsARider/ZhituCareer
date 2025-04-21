@@ -24,7 +24,7 @@ Ensure you have the following installed:
 
 1. **Create and Activate Conda Environment**
    ```bash
-   conda create -n zhitu_career python=3.12
+   conda create -n zhitu_career python=3.9
    conda activate zhitu_career
    ```
 
@@ -46,15 +46,15 @@ Ensure you have the following installed:
    ```
 
 5. **Run the Application**
-   - Ensure your conda environment is activated:
+   Ensure your conda environment is activated:
      ```bash
      conda activate zhitu_career
      ```
-   - Start the Flask application:
+   Start the Flask application:
      ```bash
      python app.py
      ```
-   - Access the application at:
+   Access the application at:
      ```
      http://localhost:5000
      ```

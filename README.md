@@ -45,7 +45,7 @@ Ensure you have the following installed:
    ```env
    OPENAI_API_KEY=your_api_key_here
    ```
-
+   Change your model name for each module python file in the root directory
 6. **Run the Application**
  
    Ensure your conda environment is activated:

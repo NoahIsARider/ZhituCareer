@@ -21,7 +21,7 @@ class JobMatcher:
             print(f'Error loading jobs: {str(e)}')
             return []
 
-    def job_matching(self, user_data):
+    def job_matching(self, user_input,user_data):
         try:
             # Load available jobs
             jobs = self.load_jobs()
@@ -29,7 +29,7 @@ class JobMatcher:
                 raise ValueError("No jobs available for matching")
 
             # Use job matching agent to find the best match
-            matched_job = self.job_matching_agent.match_job(user_data, jobs)
+            matched_job = self.job_matching_agent.match_job(user_input, user_data,jobs)
             if not matched_job:
                 raise ValueError("Failed to match jobs")
 

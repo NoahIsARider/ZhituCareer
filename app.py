@@ -12,7 +12,7 @@ app.config['SESSION_PERMANENT'] = False
 
 # 简化的表单字段
 FORM_FIELDS = ['education', 'major', 'skills', 'experience', 'career_goals']
-
+user_data={}
 # 创建实例
 career_analyzer = CareerAnalyzer()
 job_matcher = JobMatcher()
@@ -69,6 +69,7 @@ def logout():
     # Clear the entire session
     session.clear()
     return redirect(url_for('login'))
+    user_data={} # Clear user_data when logging out
 
 @app.route('/admin')
 def admin():
@@ -124,7 +125,6 @@ def manage_jobs():
 def analyze_profile():
     try:
         # 获取表单数据
-        user_data = {}
         for field in FORM_FIELDS:
             user_data[field] = request.form.get(field, '')
         
@@ -160,10 +160,14 @@ def search_jobs():
         'location': location,
         'career_analysis': career_analysis
     }
-    print('\n用户输入信息:')
+    print('\n用户工作需求输入信息:')
     print(f"keyword: {keyword}, location: {location}")
     print(f"career analysis: {career_analysis}")
-    recommended_job = job_matcher.job_matching(user_input)
+    print('\n用户个人信息:')
+    for field, value in user_data.items():
+        print(f'{field}: {value}')
+    print('-' * 50)
+    recommended_job = job_matcher.job_matching(user_input,user_data)
     print(recommended_job)
     return jsonify(recommended_job)
 
@@ -197,3 +201,5 @@ def check_session():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+    

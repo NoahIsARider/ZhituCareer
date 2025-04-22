@@ -5,20 +5,20 @@ class JobMatchingAgent:
     def __init__(self, client):
         self.client = client
 
-    def match_job(self, user_input, jobs):
+    def match_job(self, user_input, user_data,jobs):
         # Format user preferences and job list for the prompt
         keyword = user_input.get('keyword', '')
         location = user_input.get('location', '')
         career_analysis = user_input.get('career_analysis', '')
-        
         jobs_str = json.dumps(jobs, ensure_ascii=False, indent=2)
         
-        prompt = f"""请根据用户的职业分析结果和搜索偏好，从工作列表中找出最适合的工作。
+        prompt = f"""请根据用户个人能力和搜索偏好，从工作列表中找出最适合的工作。
 
 用户搜索偏好：
 - 关键词：{keyword}
 - 期望工作地点：{location}
-
+**用户个人能力**：
+{user_data}
 职业分析结果：
 {career_analysis}
 

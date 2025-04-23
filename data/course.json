@@ -1,13 +1,12 @@
 {
   "courses": [
     {
-      "id": "4",
       "title": "UI/UX Design Essentials",
       "description": "Learn modern UI/UX design principles and tools",
       "level": "Beginner",
       "provider": "Design School",
       "duration": "10 weeks",
-      "price": "$599",
+      "price": "$580",
       "skills": [
         "UI Design",
         "UX Design",
@@ -18,7 +17,8 @@
         "UI Designer",
         "UX Designer",
         "Product Designer"
-      ]
+      ],
+      "id": "4"
     },
     {
       "career_paths": [

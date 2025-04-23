@@ -25,12 +25,18 @@ Ensure you have the following installed:
 1. **Create and Activate Conda Environment**
    ```bash
    conda create -n zhitu_career python=3.9
+   ```
+
+   ```bash
    conda activate zhitu_career
    ```
 
 2. **Clone the Repository**
    ```bash
    git clone https://github.com/NoahIsARider/ZhituCareer.git
+   ```
+
+   ```bash
    cd ZhituCareer
    ```
 

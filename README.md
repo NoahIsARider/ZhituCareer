@@ -93,7 +93,7 @@ ZhiTuCareer+ employs a modular architecture where agents are integrated with Pla
 ![image](https://github.com/user-attachments/assets/94c7ebcd-d338-4c6e-b2d3-2a2194fb3436)
 
 This integration allows for dynamic data collection and processing, ensuring users receive the most relevant and up-to-date information.
-## Usage
+## Detailed Usage For Users
 
 1. Fill in your profile information in the web interface:
    - Education background

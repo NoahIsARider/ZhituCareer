@@ -132,9 +132,16 @@ This integration allows for dynamic data collection and processing, ensuring use
 
 </div>
 
+## Contributors
+
+<!-- readme: collaborators,contributors -start -->
+<!-- readme: collaborators,contributors -end -->
+
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
 
 ## License
 

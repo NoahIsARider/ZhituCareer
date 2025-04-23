@@ -273,7 +273,13 @@
                         document.getElementById('careerPath').textContent = analysis.career_path;
                         document.getElementById('jobAdvice').textContent = analysis.job_advice;
                         document.getElementById('skillsToImprove').textContent = analysis.skills_to_improve;
-                        document.getElementById('recommendedPositions').textContent = analysis.recommended_positions;
+                        
+                        // 更新推荐职位列表 - 将数组转换为列表项
+                        const positionsList = analysis.recommended_positions.map(pos => `<li>${pos}</li>`).join('');
+                        document.getElementById('recommendedPositions').innerHTML = `<ul class="mb-0">${positionsList}</ul>`;
+                        
+                        // 显示分析结果区域 - 移除d-none类
+                        document.getElementById('analysisResult').classList.remove('d-none');
                         
                         // Show success message
                         document.getElementById('analysisContent').innerHTML = 

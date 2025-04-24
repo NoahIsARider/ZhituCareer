@@ -80,7 +80,7 @@ Users should store their identity information in the users.json file located in 
 
 ### Administrator Usage
 
-Administrators can manage courses and jobs through the admin interface. This includes adding, updating, and removing entries. To access the admin interface, navigate to the admin.html page and log in with your administrator credentials. Drop your data in the data/jobs.json or data/course.json file or through the UI. Maybe incorporate the project with your database, which should be easy, I guess.
+Administrators can manage courses and jobs through the admin interface. This includes adding, updating, and removing entries. To access the admin interface, navigate to the admin.html page and log in with your administrator credentials. Drop your data in the data/jobs.json or data/course.json file or through the UI. Maybe incorporate the project with your database, which should be easy, I guess(check out the [data_base branch](https://github.com/NoahIsARider/ZhituCareer/tree/data_base)).
 
 <img width="1280" alt="image" src="https://github.com/user-attachments/assets/2118c453-ac3c-4d99-ab1a-e52755b06a24" />
 

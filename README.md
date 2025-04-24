@@ -68,39 +68,19 @@ Ensure you have the following installed:
      ```
 
 ## UI Guide for Administrators and Users
-Put your users in the data/users.json file. Log in with phone number and password.
-### Administrator Usage
-
-Administrators can manage courses and jobs through the admin interface. This includes adding, updating, and removing entries. To access the admin interface, navigate to the admin.html page and log in with your administrator credentials. Drop your data in the data/jobs.json or data/course.json file or through the UI. Maybe incorporate the project with your database, which should be easy, I guess.
-
-<img width="1280" alt="image" src="https://github.com/user-attachments/assets/2118c453-ac3c-4d99-ab1a-e52755b06a24" />
 
 ### User Identity Information
 
 Users should store their identity information in the users.json file located in the data directory. This includes details such as name, email, and role. Proper role assignment is crucial for access control within the system.
 - **Monitoring User Activity**: Track user interactions and gather insights to improve the platform.
 
+### Administrator Usage
+
+Administrators can manage courses and jobs through the admin interface. This includes adding, updating, and removing entries. To access the admin interface, navigate to the admin.html page and log in with your administrator credentials. Drop your data in the data/jobs.json or data/course.json file or through the UI. Maybe incorporate the project with your database, which should be easy, I guess.
+
+<img width="1280" alt="image" src="https://github.com/user-attachments/assets/2118c453-ac3c-4d99-ab1a-e52755b06a24" />
+
 ### User Guide
-- **Profile Setup**: Users should fill in their educational background, skills, work experience, and career goals.
-- **Career Analysis**: Click "获取职业分析" to receive personalized career analysis and job recommendations.
-- **Job Search**: Utilize the search function to find jobs based on keywords and location.
-- **Course Recommendations**: Explore suggested courses and learning paths aligned with career objectives.
-
-## Core Concept: Integrating Agents with Playwright
-
-ZhiTuCareer+ employs a modular architecture where agents are integrated with Playwright for enhanced market analysis and job recommendations.
-
-- **User Profile Agent**: Handles user information processing, ensuring that user profiles are accurately maintained and updated.
-- **Job Matching Agent**: Processes job recommendations by analyzing user profiles and matching them with suitable job opportunities.
-- **Market Analysis Agent**: Utilizes Playwright to scrape and analyze market trends, providing real-time insights that inform job recommendations and career advice.
-- **Course Matching Agent**: Suggests relevant courses and educational resources aligned with user career goals, enhancing skill development.
-- **Job Recommendation Agent**: Leverages AI to match user profiles with suitable job opportunities, ensuring personalized job suggestions.
-
-![image](https://github.com/user-attachments/assets/94c7ebcd-d338-4c6e-b2d3-2a2194fb3436)
-
-This integration allows for dynamic data collection and processing, ensuring users receive the most relevant and up-to-date information.
-## Detailed Usage For Users
-
 1. Fill in your profile information in the web interface:
    - Education background
    - Major/Field of study
@@ -119,6 +99,22 @@ This integration allows for dynamic data collection and processing, ensuring use
 4. Review recommended courses and learning paths aligned with your career goals
 
 ![image](https://github.com/user-attachments/assets/4f7ea2c5-87d8-43b3-97c5-a55bd302448b)
+## Core Concept: Integrating Agents with Playwright
+
+ZhiTuCareer+ employs a modular architecture where agents are integrated with Playwright for enhanced market analysis and job recommendations.
+
+- **User Profile Agent**: Handles user information processing, ensuring that user profiles are accurately maintained and updated.
+- **Job Matching Agent**: Processes job recommendations by analyzing user profiles and matching them with suitable job opportunities.
+- **Market Analysis Agent**: Utilizes Playwright to scrape and analyze market trends, providing real-time insights that inform job recommendations and career advice.
+- **Course Matching Agent**: Suggests relevant courses and educational resources aligned with user career goals, enhancing skill development.
+- **Job Recommendation Agent**: Leverages AI to match user profiles with suitable job opportunities, ensuring personalized job suggestions.
+
+![image](https://github.com/user-attachments/assets/94c7ebcd-d338-4c6e-b2d3-2a2194fb3436)
+
+This integration allows for dynamic data collection and processing, ensuring users receive the most relevant and up-to-date information.
+
+
+
 
 ## System Architecture
 

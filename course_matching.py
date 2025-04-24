@@ -14,7 +14,7 @@ class CourseMatcher:
     def course_matching(self, user_data, career_analysis):
         try:
             # Use course matching agent to find suitable courses
-            matched_courses = self.course_matching_agent.match_courses(user_data, career_analysis)
+            matched_courses = self.course_matching_agent.match_courses(user_data, career_analysis, self.load_courses())
             if not matched_courses:
                 raise ValueError("Failed to match courses")
 
@@ -22,3 +22,12 @@ class CourseMatcher:
         except Exception as e:
             print(f'Error in course matching: {str(e)}')
             raise ValueError(f"Course matching failed: {str(e)}")
+
+    def load_courses(self):
+        try:
+            with open('data/course.json', 'r', encoding='utf-8') as f:
+                courses_data = json.load(f)
+                return courses_data.get('courses', [])
+        except Exception as e:
+            print(f'Error loading courses: {str(e)}')
+            return []

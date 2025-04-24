@@ -4,18 +4,12 @@ class CourseMatchingAgent:
     def __init__(self, client):
         self.client = client
 
-    def match_courses(self, user_input, career_analysis):
+    def match_courses(self, user_input, career_analysis, courses):
         # Format user preferences and course list for the prompt
         keyword = user_input.get('keyword', '')
         
         # Load courses from JSON file
-        try:
-            with open('data/course.json', 'r', encoding='utf-8') as f:
-                courses_data = json.load(f)
-                courses = courses_data.get('courses', [])
-        except Exception as e:
-            print(f'Error loading courses: {str(e)}')
-            return []
+
         
         courses_str = json.dumps(courses, ensure_ascii=False, indent=2)
         

@@ -1,24 +1,24 @@
 {
   "courses": [
     {
-      "title": "UI/UX Design Essentials",
+      "career_paths": [
+        "UI Designer",
+        "UX Designer",
+        "Product Designer"
+      ],
       "description": "Learn modern UI/UX design principles and tools",
-      "level": "Beginner",
-      "provider": "Design School",
       "duration": "10 weeks",
+      "id": "4",
+      "level": "Beginner",
       "price": "$580",
+      "provider": "Design School",
       "skills": [
         "UI Design",
         "UX Design",
         "Figma",
         "Adobe XD"
       ],
-      "career_paths": [
-        "UI Designer",
-        "UX Designer",
-        "Product Designer"
-      ],
-      "id": "4"
+      "title": "UI/UX Design Essentials"
     },
     {
       "career_paths": [

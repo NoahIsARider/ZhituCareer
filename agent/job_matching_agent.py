@@ -36,7 +36,7 @@ class JobMatchingAgent:
     "match_reason": "为什么这个职位最适合用户的详细解释"
 }}
 
-**注意：返回一个至三个最匹配的工作，必须是JSON格式，必须包裹在数组里面，不要包含其他任何内容。**"""
+**注意：返回一个至两个最匹配的工作，必须是JSON格式，必须包裹在数组里面，不要包含其他任何内容。**"""
         try:
             response = self.client.chat.completions.create(
                 model='LLM-Research/Meta-Llama-3.1-8B-Instruct',

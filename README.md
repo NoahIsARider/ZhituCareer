@@ -65,6 +65,8 @@ Ensure you have the following installed:
      ```
      http://localhost:5000
      ```
+![image](https://github.com/user-attachments/assets/8db2bbd8-1cec-4345-af3a-7efe65da5429)
+
 
 ## UI Guide for Administrators and Users
 
@@ -116,7 +118,7 @@ ZhiTuCareer+ employs a modular architecture where agents are integrated with [Pl
 - **Course Matching Agent**: Suggests relevant courses and educational resources aligned with user career goals, enhancing skill development.
 - **Job Recommendation Agent**: Leverages AI to match user profiles with suitable job opportunities, ensuring personalized job suggestions.
 
-![image](https://github.com/user-attachments/assets/94c7ebcd-d338-4c6e-b2d3-2a2194fb3436)
+
 
 This integration allows for dynamic data collection and processing, ensuring users receive the most relevant and up-to-date information.
 

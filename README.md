@@ -128,7 +128,7 @@ This integration allows for dynamic data collection and processing, ensuring use
 - **Course Matching Agent**: Suggests relevant courses
 <div align=center>
    
-<img src="https://github.com/NoahIsARider/ZhituCareer/blob/main/agent/agent_structure.jpg" width="350px">
+<img src="https://github.com/NoahIsARider/ZhituCareer/blob/main/agent/agent_structure.jpeg" width="350px">
 
 </div>
 

@@ -3,7 +3,7 @@
     {
       "company": "闪电电商科技",
       "description": "构建分布式电商交易系统，优化高并发场景下的订单处理性能",
-      "id": 30,
+      "id": 1001,
       "location": "杭州市滨江区",
       "requirements": [
         "精通Java/Go",
@@ -17,6 +17,7 @@
     {
       "company": "音浪社交",
       "description": "开发短视频推荐算法，优化内容分发CTR指标",
+      "id": 1002,
       "location": "北京市朝阳区",
       "salary": "35k-60k",
       "title": "推荐算法工程师（短视频方向）",
@@ -30,7 +31,7 @@
     {
       "company": "云端未来",
       "description": "设计Serverless计算平台资源调度策略，提升函数冷启动性能",
-      "id": 32,
+      "id": 1003,
       "location": "深圳市南山区",
       "requirements": [
         "5年云计算研发经验",
@@ -44,6 +45,7 @@
     {
       "company": "数盾安全",
       "description": "研究APT攻击检测技术，开发威胁情报分析平台",
+      "id": 1004,
       "location": "成都市高新区",
       "salary": "25k-45k",
       "title": "高级安全研究员",
@@ -57,7 +59,7 @@
     {
       "company": "智能车联",
       "description": "开发车机系统OTA升级模块，保障车载Linux系统稳定性",
-      "id": 34,
+      "id": 1005,
       "location": "上海市嘉定区",
       "requirements": [
         "嵌入式Linux开发经验",
@@ -71,20 +73,21 @@
     {
       "company": "元宇宙工场",
       "description": "开发Web3.0数字身份协议，设计DID分布式验证机制",
+      "id": 1006,
       "location": "杭州市余杭区",
-      "salary": "32k-55k",
-      "title": "区块链协议工程师",
       "requirements": [
         "精通Rust/Solidity",
         "熟悉零知识证明",
         "有公链开发经验",
         "理解ERC-3525标准"
-      ]
+      ],
+      "salary": "32k-55k",
+      "title": "区块链协议工程师"
     },
     {
       "company": "AI绘画工坊",
       "description": "优化Stable Diffusion模型推理速度，开发LoRA微调工具链",
-      "id": 36,
+      "id": 1007,
       "location": "广州市天河区",
       "requirements": [
         "熟悉Diffusion模型原理",
@@ -98,6 +101,7 @@
     {
       "company": "跨境支付通",
       "description": "构建多币种清算系统，解决跨境支付合规性问题",
+      "id": 1008,
       "location": "北京市海淀区",
       "salary": "35k-65k",
       "title": "支付系统开发总监",
@@ -111,7 +115,7 @@
     {
       "company": "智慧医疗云",
       "description": "开发医疗影像标注平台，集成DICOM标准与AI辅助诊断",
-      "id": 38,
+      "id": 1009,
       "location": "武汉市光谷",
       "requirements": [
         "医学影像处理背景",
@@ -125,6 +129,7 @@
     {
       "company": "物联网OS",
       "description": "研发轻量级RTOS内核，优化LoRaWAN协议栈能耗表现",
+      "id": 1010,
       "location": "南京市建邺区",
       "salary": "25k-42k",
       "title": "物联网操作系统开发",
@@ -138,7 +143,7 @@
     {
       "company": "深海生物制药",
       "description": "负责抗癌新药的分子结构设计与优化，领导实验室团队进行临床试验",
-      "id": 5,
+      "id": 1011,
       "location": "上海市浦东新区",
       "requirements": [
         "博士学历（生物化学/药学相关）",
@@ -152,6 +157,7 @@
     {
       "company": "极光新能源汽车",
       "description": "负责电池管理系统(BMS)的硬件电路设计及热仿真分析",
+      "id": 1012,
       "location": "深圳市龙岗区",
       "salary": "30k-45k",
       "title": "电池系统高级工程师"
@@ -159,7 +165,7 @@
     {
       "company": "星链航天科技",
       "description": "参与商业卫星载荷设计，完成轨道动力学仿真与优化",
-      "id": 7,
+      "id": 1013,
       "location": "北京市海淀区",
       "requirements": [
         "航空航天工程硕士学历",
@@ -173,7 +179,7 @@
     {
       "company": "云端教育科技",
       "description": "开发AI驱动的个性化学习系统，整合计算机视觉与NLP技术",
-      "id": 8,
+      "id": 1014,
       "location": "杭州市余杭区",
       "requirements": [
         "3年以上机器学习经验",
@@ -187,6 +193,7 @@
     {
       "company": "绿洲生态农业",
       "description": "负责智慧大棚物联网系统部署与数据分析",
+      "id": 1015,
       "location": "成都市温江区",
       "salary": "15k-28k",
       "title": "农业物联网工程师"
@@ -194,7 +201,7 @@
     {
       "company": "金色麦田证券",
       "description": "构建量化交易策略，开发高频交易系统核心模块",
-      "id": 10,
+      "id": 1016,
       "location": "广州市天河区",
       "requirements": [
         "数学/物理/计算机背景",
@@ -208,6 +215,7 @@
     {
       "company": "幻影数字娱乐",
       "description": "负责3A级游戏角色建模与材质制作，参与动作捕捉技术研发",
+      "id": 1017,
       "location": "上海市徐汇区",
       "salary": "20k-35k",
       "title": "高级3D美术设计师"
@@ -215,7 +223,7 @@
     {
       "company": "平安守护保险",
       "description": "开发基于大数据的精算模型，优化保险产品定价策略",
-      "id": 12,
+      "id": 1018,
       "location": "深圳市福田区",
       "requirements": [
         "精算/统计专业硕士",
@@ -229,6 +237,7 @@
     {
       "company": "快链科技",
       "description": "开发区块链底层协议，优化共识算法性能",
+      "id": 1019,
       "location": "杭州市西湖区",
       "salary": "30k-60k",
       "title": "区块链核心开发工程师"
@@ -236,7 +245,7 @@
     {
       "company": "钢铁雄心重工",
       "description": "主导智能产线PLC控制系统升级改造项目",
-      "id": 14,
+      "id": 1020,
       "location": "长沙市岳麓区",
       "requirements": [
         "自动化/机电一体化背景",
@@ -250,6 +259,7 @@
     {
       "company": "蔚蓝海洋工程",
       "description": "负责深海钻井平台结构强度计算与疲劳分析",
+      "id": 1021,
       "location": "青岛市黄岛区",
       "salary": "28k-45k",
       "title": "海洋结构工程师"
@@ -257,7 +267,7 @@
     {
       "company": "味觉奇迹食品",
       "description": "研发植物基肉制品配方，优化生产工艺流程",
-      "id": 16,
+      "id": 1022,
       "location": "南京市江宁区",
       "requirements": [
         "食品科学博士学位",
@@ -271,6 +281,7 @@
     {
       "company": "时空考古研究所",
       "description": "使用LiDAR技术进行遗址三维重建，参与田野考古发掘",
+      "id": 1023,
       "location": "西安市碑林区",
       "salary": "12k-20k",
       "title": "数字考古技术员"
@@ -278,7 +289,7 @@
     {
       "company": "天眼遥感科技",
       "description": "处理多光谱卫星影像数据，开发地物分类算法",
-      "id": 18,
+      "id": 1024,
       "location": "武汉市洪山区",
       "requirements": [
         "遥感/地理信息系统专业",
@@ -292,6 +303,7 @@
     {
       "company": "声波电子",
       "description": "设计消费级TWS耳机声学系统，优化降噪算法",
+      "id": 1025,
       "location": "东莞市松山湖",
       "salary": "22k-38k",
       "title": "声学工程师"
@@ -299,7 +311,7 @@
     {
       "company": "量子前沿研究院",
       "description": "参与超导量子比特芯片设计，搭建低温测量系统",
-      "id": 20,
+      "id": 1026,
       "location": "合肥市高新区",
       "requirements": [
         "凝聚态物理博士",
@@ -313,6 +325,7 @@
     {
       "company": "极速物流科技",
       "description": "优化无人仓AGV调度算法，提升分拣效率30%以上",
+      "id": 1027,
       "location": "天津市滨海新区",
       "salary": "25k-42k",
       "title": "智慧物流算法专家"
@@ -320,7 +333,7 @@
     {
       "company": "未来建筑设计",
       "description": "主持绿色建筑BIM全流程设计，申请LEED认证",
-      "id": 22,
+      "id": 1028,
       "location": "重庆市渝中区",
       "requirements": [
         "建筑学硕士学历",
@@ -334,6 +347,7 @@
     {
       "company": "星际文旅集团",
       "description": "策划沉浸式太空主题乐园项目，整合XR技术方案",
+      "id": 1029,
       "location": "珠海市横琴新区",
       "salary": "18k-30k",
       "title": "文旅创意总监"
@@ -341,7 +355,7 @@
     {
       "company": "清洁能源动力",
       "description": "研发氢燃料电池电堆，提升能量密度与耐久性",
-      "id": 24,
+      "id": 1030,
       "location": "佛山市南海区",
       "requirements": [
         "材料/电化学专业博士",
@@ -355,6 +369,7 @@
     {
       "company": "基因解码生命",
       "description": "分析全基因组测序数据，构建疾病风险预测模型",
+      "id": 1031,
       "location": "苏州市工业园区",
       "salary": "28k-45k",
       "title": "生物信息学专家"
@@ -362,7 +377,7 @@
     {
       "company": "钢铁侠外骨骼科技",
       "description": "设计医疗康复外骨骼驱动系统，优化人机交互界面",
-      "id": 26,
+      "id": 1032,
       "location": "沈阳市铁西区",
       "requirements": [
         "机械电子工程专业",
@@ -376,6 +391,7 @@
     {
       "company": "深蓝矿业装备",
       "description": "开发井下无人采矿装备远程控制系统",
+      "id": 1033,
       "location": "徐州市经济开发区",
       "salary": "20k-35k",
       "title": "智能采矿系统工程师"
@@ -383,7 +399,7 @@
     {
       "company": "星空天文台",
       "description": "维护射电望远镜阵列，处理脉冲星观测数据",
-      "id": 28,
+      "id": 1034,
       "location": "昆明市官渡区",
       "requirements": [
         "天体物理专业背景",
@@ -397,6 +413,7 @@
     {
       "company": "冰雪奇迹体育",
       "description": "研发竞技级速滑冰刀材料与空气动力学设计",
+      "id": 1035,
       "location": "哈尔滨市松北区",
       "salary": "22k-36k",
       "title": "体育装备研发工程师"

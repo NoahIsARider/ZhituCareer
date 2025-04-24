@@ -46,11 +46,64 @@ Ensure you have the following installed:
 
 4. **Configure Environment Variables**
 
-   Create a `.env` file in the project root directory and add your [ModelScope](https://www.modelscope.cn/) API key(silicon should be working just fine as well):
+   Create a `.env` file in the project root directory and add your configuration:
+
    ```env
+   # ModelScope API配置 (使用OpenAI客户端)
    OPENAI_API_KEY=your_api_key_here
+
+   # Database Configuration
+   DB_HOST=localhost
+   DB_USER=your_database_user
+   DB_PASSWORD=your_database_password
    ```
-   Change your model name for each module python file in the root directory
+
+5. **Database Setup**
+
+   1. **Install MySQL Server**
+      - Download and install MySQL Server from the official website
+      - During installation, note down the root password as it will be used to configure the database
+
+   2. **Create Database and User**
+      - Open MySQL Workbench or use the command line to connect to MySQL
+      - Run the following SQL commands:
+
+      ```sql
+      -- Create database
+      CREATE DATABASE zhitu_career;
+
+      -- Create user (replace 'your_username' and 'your_password' with your desired credentials)
+      CREATE USER 'your_username'@'localhost' IDENTIFIED BY 'your_password';
+
+      -- Grant privileges
+      GRANT ALL PRIVILEGES ON zhitu_career.* TO 'your_username'@'localhost';
+      FLUSH PRIVILEGES;
+      ```
+
+   3. **Initialize Database Structure**
+      - Run the database initialization script:
+      ```bash
+      python db_init.py
+      ```
+      This script will create all necessary tables in your database:
+      - `jobs`: Stores job information
+      - `job_requirements`: Stores job requirements
+      - `courses`: Stores course information
+      - `course_skills`: Stores course skills
+      - `course_career_paths`: Stores course career paths
+      - `users`: Stores user information
+
+   4. **Import Data**
+      - Run the data import script:
+      ```bash
+      python import_data.py
+      ```
+      This script will import data from `data/jobs.json` and `data/course.json` into your database.
+
+   5. **Verify Database Connection**
+      - The application will automatically connect to the database using the credentials specified in your `.env` file.
+      - You can verify the connection by checking the application logs for any database-related errors.
+
 6. **Run the Application**
  
    Ensure your conda environment is activated:

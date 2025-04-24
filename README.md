@@ -108,7 +108,7 @@ The index_colorblind provides a simple neat UI simply for regular users. Try it!
 
 ## Core Concept: Integrating Agents with Playwright
 
-ZhiTuCareer+ employs a modular architecture where agents are integrated with Playwright for enhanced market analysis and job recommendations.
+ZhiTuCareer+ employs a modular architecture where agents are integrated with [Playwright](https://playwright.dev/docs/intro) for enhanced market analysis and job recommendations.
 
 - **User Profile Agent**: Handles user information processing, ensuring that user profiles are accurately maintained and updated.
 - **Job Matching Agent**: Processes job recommendations by analyzing user profiles and matching them with suitable job opportunities.

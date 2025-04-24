@@ -101,6 +101,11 @@ Administrators can manage courses and jobs through the admin interface. This inc
 4. Review recommended courses and learning paths aligned with your career goals
 
 ![image](https://github.com/user-attachments/assets/4f7ea2c5-87d8-43b3-97c5-a55bd302448b)
+
+### Substitution
+
+The index_colorblind provides a simple neat UI simply for regular users. Try it!
+
 ## Core Concept: Integrating Agents with Playwright
 
 ZhiTuCareer+ employs a modular architecture where agents are integrated with Playwright for enhanced market analysis and job recommendations.

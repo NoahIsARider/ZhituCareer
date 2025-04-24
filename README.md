@@ -10,10 +10,6 @@ ZhiTuCareer+ is a comprehensive web-based platform designed to assist users in a
 - **Job Search Functionality**: Advanced search tools to find relevant positions
 - **Course Recommendations**: Educational resources aligned with career goals
 
-## Video Presentation
-
-<video src="https://github.com/NoahIsARider/ZhituCareer/blob/main/presentation.mp4" controls="controls" width="500" height="300">您的浏览器不支持播放该视频！</video>
-
 
 ## Deployment Instructions
 

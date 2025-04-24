@@ -34,7 +34,7 @@ class JobMatcher:
                 raise ValueError("Failed to match jobs")
 
             # Wrap the matched job in an array to match frontend expectations
-            return [json.loads(matched_job)]
+            return json.loads(matched_job)
         except Exception as e:
             print(f'Error in job matching: {str(e)}')
             raise ValueError(f"Job matching failed: {str(e)}")

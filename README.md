@@ -123,8 +123,9 @@ This integration allows for dynamic data collection and processing, ensuring use
 ## System Architecture
 
 - **User Profile Agent**: Handles user information processing
-- **Job Matching Agent**: Processes job recommendations
 - **Market Analysis Agent**: Analyzes market trends
+- **Career Advice Agent**: Provide comprehensive career advices
+- **Job Matching Agent**: Processes job recommendations
 - **Course Matching Agent**: Suggests relevant courses
 <div align=center>
    

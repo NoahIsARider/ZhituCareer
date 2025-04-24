@@ -72,6 +72,8 @@ Ensure you have the following installed:
 
 Users should store their identity information in the users.json file located in the data directory. This includes details such as name, email, and role. Proper role assignment is crucial for access control within the system.
 - **Monitoring User Activity**: Track user interactions and gather insights to improve the platform.
+- 
+![image](https://github.com/user-attachments/assets/519428aa-d525-4bdb-9103-bb160d5e8bc2)
 
 ### Administrator Usage
 

@@ -61,7 +61,7 @@ Ensure you have the following installed:
 5. **Database Setup**
 
    1. **Install MySQL Server**
-      - Download and install MySQL Server from the official website
+      - Download and install MySQL Server from the [official website](https://www.mysql.com/downloads/)
       - During installation, note down the root password as it will be used to configure the database
 
    2. **Create Database and User**

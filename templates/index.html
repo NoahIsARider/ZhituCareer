@@ -3,410 +3,566 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>智途Career+</title>
+    <title>智途 Career+ · 职业分析</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         :root {
-            --vivid-orange: #FF6600;
-            --sunset-orange: #FF4500;
-            --orange-light: rgba(255,102,0,0.08);
-            --orange-border: rgba(255,102,0,0.15);
+            --brand-500: #f97316;
+            --brand-600: #ea580c;
+            --brand-700: #c2410c;
+            --accent-2: #f43f5e;
+            --dark: #0f172a;
+            --muted: #64748b;
+            --bg-soft: #f8fafc;
+            --border: #e2e8f0;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", system-ui, -apple-system, sans-serif;
+            background: var(--bg-soft);
+            color: var(--dark);
+            min-height: 100vh;
         }
 
-        /* 全局卡片样式 */
-        .card {
-            background: linear-gradient(
-                145deg, 
-                rgba(255,255,255,0.95) 30%,
-                rgba(255,102,0,0.05) 100%
-            );
-            border: 1px solid var(--orange-border);
-            box-shadow: 0 4px 20px var(--orange-border);
-            transition: all 0.3s ease;
-        }
-
-        /* 卡片悬停效果 */
-        .card:hover {
-            background: linear-gradient(
-                145deg, 
-                rgba(255,255,255,0.98) 20%,
-                rgba(255,102,0,0.08) 100%
-            );
-            transform: translateY(-3px);
-        }
-
-        /* 导航栏与按钮 */
+        /* Navbar */
         .navbar {
-            background: linear-gradient(
-                90deg,
-                var(--vivid-orange),
-                var(--sunset-orange)
-            ) !important;
+            background: rgba(15, 23, 42, .92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,.06);
+            padding: 12px 0;
+        }
+        .navbar-brand {
+            font-weight: 800;
+            color: #fff !important;
+            font-size: 17px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .nav-logo {
+            width: 34px; height: 34px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--brand-500), var(--accent-2));
+            display: flex; align-items: center; justify-content: center;
+        }
+        .nav-logo i { color: #fff; font-size: 17px; }
+        .navbar .nav-link { color: rgba(255,255,255,.72) !important; font-size: 14px; }
+        .navbar .nav-link:hover { color: #fff !important; }
+        .avatar {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--brand-500), var(--accent-2));
+            color: #fff;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: 700;
+        }
+
+        /* Hero */
+        .hero {
+            position: relative;
+            overflow: hidden;
+            padding: 44px 0 52px;
+            color: #fff;
+            background: linear-gradient(160deg, #1e1b4b 0%, #0f172a 55%, #431407 100%);
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            width: 480px; height: 480px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(249,115,22,.28), transparent 65%);
+            top: -160px; right: -80px;
+            filter: blur(40px);
+        }
+        .hero h2 { font-weight: 800; font-size: 26px; }
+        .hero p { color: rgba(255,255,255,.65); font-size: 14px; }
+        .hero-chip {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 5px 12px;
+            border-radius: 999px;
+            background: rgba(249,115,22,.16);
+            border: 1px solid rgba(249,115,22,.35);
+            color: #fdba74;
+            font-size: 12px; font-weight: 600;
+        }
+        .hero-stats { display: flex; gap: 28px; margin-top: 22px; }
+        .hero-stat b { font-size: 22px; font-weight: 800; display: block; }
+        .hero-stat span { font-size: 12px; color: rgba(255,255,255,.55); }
+
+        /* Cards */
+        .card {
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: #fff;
+            box-shadow: 0 4px 16px rgba(15,23,42,.05);
+            transition: transform .2s, box-shadow .2s;
+        }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(15,23,42,.09); }
+        .card-header-custom {
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 18px;
+        }
+        .card-header-custom .icon {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 17px;
+            color: var(--brand-600);
+            background: rgba(249,115,22,.12);
+        }
+        .card-header-custom h5 { margin: 0; font-size: 16px; font-weight: 700; }
+
+        /* Forms */
+        .form-label { font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 6px; }
+        .form-control, .form-select {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 13px;
+            font-size: 14px;
+            transition: all .2s;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--brand-500);
+            box-shadow: 0 0 0 4px rgba(249,115,22,.14);
         }
 
         .btn-primary {
-            background: var(--vivid-orange) !important;
-            border: none !important;
+            background: linear-gradient(135deg, var(--brand-500), var(--brand-600));
+            border: none;
+            border-radius: 10px;
+            padding: 11px 20px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all .2s;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--brand-600), var(--brand-700));
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(249,115,22,.3);
+        }
+        .btn-outline-primary {
+            color: var(--brand-600);
+            border-color: var(--brand-500);
+            border-radius: 10px;
+            font-size: 14px;
+        }
+        .btn-outline-primary:hover { background: var(--brand-500); border-color: var(--brand-500); color: #fff; }
+
+        .section-title {
+            font-size: 18px; font-weight: 800;
+            display: flex; align-items: center; gap: 10px;
+            margin: 26px 0 16px;
+        }
+        .section-title .bar {
+            width: 4px; height: 20px;
+            border-radius: 4px;
+            background: linear-gradient(var(--brand-500), var(--accent-2));
         }
 
-        /* 表单聚焦状态 */
-        .form-control:focus {
-            border-color: var(--vivid-orange);
-            box-shadow: 0 0 0 3px rgba(255,102,0,0.15);
+        /* Analysis result cards */
+        .analysis-content {
+            font-size: 13.5px;
+            color: #334155;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+        .result-card .tag {
+            display: inline-block;
+            padding: 3px 10px;
+            margin: 3px 4px 3px 0;
+            border-radius: 999px;
+            background: rgba(249,115,22,.1);
+            color: var(--brand-700);
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge { font-weight: 600; padding: 6px 12px; border-radius: 8px; }
+        .bg-gradient-brand { background: linear-gradient(135deg, var(--brand-500), var(--accent-2)); }
+
+        /* Job card */
+        .job-card .company { color: var(--muted); font-size: 13px; }
+        .salary-badge {
+            background: rgba(16,185,129,.12);
+            color: #059669;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 4px 12px;
+            border-radius: 8px;
+        }
+        .req-tag {
+            display: inline-block;
+            padding: 3px 10px;
+            margin: 3px 5px 3px 0;
+            border-radius: 6px;
+            background: #f1f5f9;
+            color: #475569;
+            font-size: 12px;
+        }
+        .match-reason {
+            margin-top: 10px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            background: rgba(249,115,22,.07);
+            border-left: 3px solid var(--brand-500);
+            font-size: 13px;
+            color: #334155;
         }
 
-        /* 特殊元素样式 */
-        .match-score {
-            background: linear-gradient(
-                45deg,
-                var(--vivid-orange),
-                var(--sunset-orange)
-            );
-            color: white;
-        }
+        /* Course card */
+        .course-card .level { font-size: 12px; font-weight: 600; }
 
-        /* 动态效果 */
-        @keyframes cardEntrance {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
+        /* Spinner / loading */
+        .loading-mask { padding: 30px; text-align: center; color: var(--muted); }
+        .spinner-border { color: var(--brand-500) !important; }
 
-        .card {
-            animation: cardEntrance 0.6s ease-out;
+        /* Toast */
+        .toast-container { z-index: 1080; }
+        .toast {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(15,23,42,.15);
         }
+        .toast i { font-size: 18px; }
+        .toast-success { background: #ecfdf5; color: #065f46; }
+        .toast-error { background: #fef2f2; color: #991b1b; }
 
-        /* 响应式调整 */
+        .empty-state {
+            padding: 34px 20px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 13.5px;
+        }
+        .empty-state i { font-size: 36px; display: block; margin-bottom: 10px; opacity: .5; }
+
         @media (max-width: 768px) {
-            .card {
-                border-radius: 12px;
-                margin-bottom: 15px;
-            }
+            .hero { padding: 30px 0 34px; }
+            .hero-stats { gap: 18px; }
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="#">智途Career+</a>
-            <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-                <a class="nav-link text-white" href="/logout"><i class="bi bi-box-arrow-right"></i> 退出登录</a>
-            </li>
-        </ul>
+            <a class="navbar-brand" href="/">
+                <span class="nav-logo"><i class="bi bi-compass"></i></span>
+                智途 Career+
+            </a>
+            <div class="d-flex align-items-center gap-3">
+                <span class="d-none d-md-inline-flex align-items-center gap-2 text-white-50" style="font-size:13px;">
+                    <span class="avatar" id="navAvatar">U</span>
+                    <span id="navUserName">用户</span>
+                </span>
+                <a class="nav-link" href="/logout"><i class="bi bi-box-arrow-right me-1"></i>退出登录</a>
+            </div>
         </div>
     </nav>
 
-    <div class="container mt-4">
-        <div class="row">
-            <div class="col-md-12 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title mb-4">个人信息分析</h4>
-                        <form id="careerForm" class="career-form">
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="education" class="form-label">教育背景</label>
-                                        <select name="education" id="education" class="form-select" required>
-                                            <option value="高中">高中</option>
-                                            <option value="专科">专科</option>
-                                            <option value="本科">本科</option>
-                                            <option value="硕士">硕士</option>
-                                            <option value="博士">博士</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="major" class="form-label">专业</label>
-                                        <input type="text" name="major" id="major" class="form-control" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="skills" class="form-label">技能特长</label>
-                                        <textarea name="skills" id="skills" class="form-control" rows="3" placeholder="请列出您的主要技能和特长" required></textarea>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="experience" class="form-label">工作经验</label>
-                                        <textarea name="experience" id="experience" class="form-control" rows="3" placeholder="请描述您的工作经验" required></textarea>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="career_goals" class="form-label">职业目标</label>
-                                        <textarea name="career_goals" id="career_goals" class="form-control" rows="3" placeholder="请描述您的职业目标" required></textarea>
-                                    </div>
-                                </div>
-                                <div class="col-12 mt-3">
-                                    <button type="submit" class="btn btn-primary">获取职业分析</button>
-                                </div>
-                            </div>
-                        </form>
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container position-relative">
+            <span class="hero-chip"><i class="bi bi-stars"></i> AI 驱动 · 多 Agent 协作</span>
+            <h2 class="mt-3">你好，欢迎使用智途 Career+</h2>
+            <p>填写你的专业信息，AI 将为你生成专属的职业规划、求职建议与学习路径</p>
+            <div class="hero-stats">
+                <div class="hero-stat"><b>4</b><span>智能 Agent</span></div>
+                <div class="hero-stat"><b>3</b><span>核心服务</span></div>
+                <div class="hero-stat"><b>∞</b><span>职业可能</span></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container pb-5">
+        <!-- 个人信息分析 -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card p-4">
+                    <div class="card-header-custom">
+                        <span class="icon"><i class="bi bi-person-vcard"></i></span>
+                        <h5>个人信息分析</h5>
                     </div>
-                    <div id="analysisResult" class="card-body d-none">
-                        <h5 class="card-title mb-4">分析结果</h5>
-                        <div class="row">
-                            <div class="col-md-6 mb-4">
-                                <div class="card h-100">
-                                    <div class="card-body">
-                                        <h6 class="card-subtitle mb-3">职业发展方向</h6>
-                                        <div id="careerPath" class="analysis-content"></div>
-                                    </div>
-                                </div>
+                    <form id="careerForm">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label" for="education">教育背景</label>
+                                <select id="education" name="education" class="form-select" required>
+                                    <option value="高中">高中</option>
+                                    <option value="专科">专科</option>
+                                    <option value="本科" selected>本科</option>
+                                    <option value="硕士">硕士</option>
+                                    <option value="博士">博士</option>
+                                </select>
                             </div>
-                            <div class="col-md-6 mb-4">
-                                <div class="card h-100">
-                                    <div class="card-body">
-                                        <h6 class="card-subtitle mb-3">求职建议</h6>
-                                        <div id="jobAdvice" class="analysis-content"></div>
-                                    </div>
-                                </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="major">专业</label>
+                                <input type="text" id="major" name="major" class="form-control"
+                                       placeholder="例如：计算机科学与技术" required>
                             </div>
-                            <div class="col-md-6 mb-4">
-                                <div class="card h-100">
-                                    <div class="card-body">
-                                        <h6 class="card-subtitle mb-3">需要提升的能力</h6>
-                                        <div id="skillsToImprove" class="analysis-content"></div>
-                                    </div>
-                                </div>
+                            <div class="col-md-12">
+                                <label class="form-label" for="skills">技能特长</label>
+                                <textarea id="skills" name="skills" class="form-control" rows="2"
+                                          placeholder="例如：Python, 数据分析, 机器学习, 团队协作" required></textarea>
                             </div>
-                            <div class="col-md-6 mb-4">
-                                <div class="card h-100">
-                                    <div class="card-body">
-                                        <h6 class="card-subtitle mb-3">推荐职位</h6>
-                                        <div id="recommendedPositions" class="analysis-content"></div>
-                                    </div>
-                                </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="experience">工作经验</label>
+                                <textarea id="experience" name="experience" class="form-control" rows="2"
+                                          placeholder="请描述你的工作经验" required></textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="career_goals">职业目标</label>
+                                <textarea id="career_goals" name="career_goals" class="form-control" rows="2"
+                                          placeholder="例如：成为一名资深 AI 工程师" required></textarea>
+                            </div>
+                            <div class="col-12 mt-4">
+                                <button type="submit" class="btn btn-primary px-5" id="analyzeBtn">
+                                    <i class="bi bi-magic me-2"></i>获取职业分析
+                                </button>
                             </div>
                         </div>
-                        <div id="loadingSpinner" class="text-center d-none">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                            <p class="mt-2">正在分析中，请稍候...</p>
-                        </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
 
-        <!-- <div id="analysisSection" class="analysis-section">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h4 class="card-title">职业分析结果</h4>
-                    <div id="analysisContent"></div>
+        <!-- 分析结果 -->
+        <div id="analysisResult" class="d-none">
+            <div class="section-title"><span class="bar"></span>分析结果</div>
+            <div class="row g-3" id="analysisGrid"></div>
+        </div>
+
+        <!-- 职位搜索 -->
+        <div class="section-title"><span class="bar"></span>职位搜索</div>
+        <div class="card p-4">
+            <form id="searchForm" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label" for="keyword">职位关键词</label>
+                    <input type="text" id="keyword" class="form-control" placeholder="例如：AI 工程师">
                 </div>
-            </div>
-        </div> -->
-
-        <div class="search-section card mb-4">
-            <div class="card-body">
-                <h4 class="card-title mb-4">职位搜索</h4>
-                <form id="searchForm" class="row g-3">
-                    <div class="col-md-5">
-                        <input type="text" class="form-control" id="keyword" placeholder="职位关键词">
-                    </div>
-                    <div class="col-md-5">
-                        <input type="text" class="form-control" id="location" placeholder="城市">
-                    </div>
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary w-100">搜索</button>
-                    </div>
-                </form>
-            </div>
+                <div class="col-md-4">
+                    <label class="form-label" for="location">期望城市</label>
+                    <input type="text" id="location" class="form-control" placeholder="例如：杭州">
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search me-2"></i>搜索职位</button>
+                </div>
+            </form>
         </div>
+        <div id="jobList" class="row g-3 mt-1"></div>
 
-        <div id="jobList" class="row mb-4">
-            <!-- 职位列表将通过JavaScript动态添加 -->
+        <!-- 课程推荐 -->
+        <div class="section-title"><span class="bar"></span>课程推荐</div>
+        <div class="card p-4">
+            <form id="courseSearchForm" class="row g-3 align-items-end">
+                <div class="col-md-8">
+                    <label class="form-label" for="courseKeyword">课程关键词</label>
+                    <input type="text" id="courseKeyword" class="form-control" placeholder="例如：机器学习 / Python">
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-book me-2"></i>推荐课程</button>
+                </div>
+            </form>
         </div>
+        <div id="courseList" class="row g-3 mt-1"></div>
+    </div>
 
-        <div class="search-section card mb-4">
-            <div class="card-body">
-                <h4 class="card-title mb-4">课程推荐</h4>
-                <form id="courseSearchForm" class="row g-3">
-                    <div class="col-md-10">
-                        <input type="text" class="form-control" id="courseKeyword" placeholder="课程关键词">
-                    </div>
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary w-100">搜索</button>
-                    </div>
-                </form>
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div id="toast" class="toast align-items-center border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body d-flex align-items-center gap-2" id="toastBody"></div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
             </div>
-        </div>
-
-        <div id="courseList" class="row">
-            <!-- 课程列表将通过JavaScript动态添加 -->
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.getElementById('careerForm').addEventListener('submit', async function(e) {
+        const toastEl = document.getElementById('toast');
+        const toast = new bootstrap.Toast(toastEl, { delay: 3500 });
+
+        function notify(message, ok = true) {
+            toastEl.className = 'toast align-items-center border-0 ' + (ok ? 'toast-success' : 'toast-error');
+            document.getElementById('toastBody').innerHTML =
+                `<i class="bi ${ok ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill'}"></i>${message}`;
+            toast.show();
+        }
+
+        function escapeHtml(str) {
+            return String(str ?? '').replace(/[&<>"']/g, c => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[c]));
+        }
+
+        // 加载用户信息
+        fetch('/api/me').then(r => r.json()).then(data => {
+            if (data.success) {
+                const name = data.user.name || '用户';
+                document.getElementById('navUserName').textContent = name;
+                document.getElementById('navAvatar').textContent = name.charAt(0);
+            }
+        }).catch(() => {});
+
+        // 职位分析
+        document.getElementById('careerForm').addEventListener('submit', async function (e) {
             e.preventDefault();
-            
-            // Show loading spinner
-            const loadingSpinner = document.getElementById('loadingSpinner');
-            const analysisResult = document.getElementById('analysisResult');
-            
-            loadingSpinner.classList.remove('d-none');
-            analysisResult.classList.remove('d-none');
-            
+            const btn = document.getElementById('analyzeBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>分析中…';
+
             try {
-                const formData = new FormData(this);
-                
-                const response = await fetch('/analyze_profile', {
+                const res = await fetch('/analyze_profile', {
                     method: 'POST',
-                    body: formData
+                    body: new FormData(this)
                 });
-                
-                const data = await response.json();
-                
+                const data = await res.json();
                 if (data.success) {
-                    try {
-                        const analysis = typeof data.analysis === 'string' ? JSON.parse(data.analysis) : data.analysis;
-                        window.careerAnalysis = data.analysis; // Store the analysis for later use
-                        
-                        // Update analysis sections
-                        document.getElementById('careerPath').textContent = analysis.career_path;
-                        document.getElementById('jobAdvice').textContent = analysis.job_advice;
-                        document.getElementById('skillsToImprove').textContent = analysis.skills_to_improve;
-                        
-                        // 更新推荐职位列表 - 将数组转换为列表项
-                        const positionsList = analysis.recommended_positions.map(pos => `<li>${pos}</li>`).join('');
-                        document.getElementById('recommendedPositions').innerHTML = `<ul class="mb-0">${positionsList}</ul>`;
-                        
-                        // 显示分析结果区域 - 移除d-none类
-                        document.getElementById('analysisResult').classList.remove('d-none');
-                        
-                        // Show success message
-                        document.getElementById('analysisContent').innerHTML = 
-                            '<div class="alert alert-success">职业分析完成！请使用下方的职位搜索和课程推荐功能获取更多建议。</div>';
-                        
-                    } catch (parseError) {
-                        console.error('Error parsing JSON:', parseError);
-                        document.getElementById('analysisContent').innerHTML = 
-                            '<div class="alert alert-danger">解析分析结果时出错</div>';
-                    }
+                    let analysis = data.analysis;
+                    try { analysis = typeof analysis === 'string' ? JSON.parse(analysis) : analysis; }
+                    catch (err) {}
+                    window.careerAnalysis = data.analysis;
+                    renderAnalysis(analysis);
+                    document.getElementById('analysisResult').classList.remove('d-none');
+                    document.getElementById('analysisResult').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    notify('职业分析完成！');
                 } else {
                     throw new Error(data.error || '分析过程中出现错误');
                 }
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('analysisContent').innerHTML = 
-                    `<div class="alert alert-danger">错误: ${error.message}</div>`;
+            } catch (err) {
+                console.error(err);
+                notify('分析失败：' + (err.message || '未知错误'), false);
             } finally {
-                loadingSpinner.classList.add('d-none');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-magic me-2"></i>获取职业分析';
             }
         });
 
-        document.getElementById('searchForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const keyword = document.getElementById('keyword').value;
-            const location = document.getElementById('location').value;
-
-            const careerAnalysis = window.careerAnalysis || '';
-            fetch('/search_jobs', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `keyword=${encodeURIComponent(keyword)}&location=${encodeURIComponent(location)}&career_analysis=${encodeURIComponent(careerAnalysis)}`
-            })
-            .then(response => response.json())
-            .then(jobs => updateJobList(jobs))
-            .catch(error => console.error('Error:', error));
-        });
-
-        document.getElementById('courseSearchForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const keyword = document.getElementById('courseKeyword').value;
-            const careerAnalysis = window.careerAnalysis || '';
-
-            fetch('/search_course', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `keyword=${encodeURIComponent(keyword)}&career_analysis=${encodeURIComponent(careerAnalysis)}`
-            })
-            .then(response => response.json())
-            .then(courses => updateCourseList(courses))
-            .catch(error => console.error('Error:', error));
-        });
-
-        function updateCourseList(courses) {
-            const courseList = document.getElementById('courseList');
-            courseList.innerHTML = '';
-            
-            try {
-                const courseData = typeof courses === 'string' ? JSON.parse(courses) : courses;
-                courseData.forEach(course => {
-                    const courseElement = document.createElement('div');
-                    courseElement.className = 'card mb-3';
-                    courseElement.innerHTML = `
-                        <div class="card-body">
-                            <h5 class="card-title">${course.title}</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">${course.provider} - ${course.level}</h6>
-                            <p class="card-text">${course.description}</p>
-                            <p class="card-text"><small class="text-muted">Duration: ${course.duration} | Price: ${course.price}</small></p>
-                            <p class="card-text"><strong>Skills:</strong> ${course.skills.join(', ')}</p>
-                            <p class="card-text"><strong>Career Paths:</strong> ${course.career_paths.join(', ')}</p>
-                            <p class="card-text"><strong>Match Reason:</strong> ${course.match_reason}</p>
-                        </div>
-                    `;
-                    courseList.appendChild(courseElement);
-                });
-            } catch (error) {
-                console.error('Error updating course list:', error);
-                courseList.innerHTML = '<div class="alert alert-danger">Error loading course recommendations</div>';
+        function renderAnalysis(analysis) {
+            const grid = document.getElementById('analysisGrid');
+            if (!analysis || typeof analysis !== 'object') {
+                grid.innerHTML = '<div class="col-12"><div class="card p-4"><pre class="mb-0">' + escapeHtml(String(analysis)) + '</pre></div></div>';
+                return;
             }
-        }
-
-        function updateJobList(jobs) {
-            const jobList = document.getElementById('jobList');
-            jobList.innerHTML = '';
-            
-            try {
-                // Ensure jobs is an array
-                const jobsArray = Array.isArray(jobs) ? jobs : [jobs];
-                
-                // Parse if string
-                const parsedJobs = jobsArray.map(job => {
-                    return typeof job === 'string' ? JSON.parse(job) : job;
-                });
-                
-                parsedJobs.forEach(job => {
-                const jobCard = `
+            const blocks = [
+                { icon: 'bi-signpost-split', title: '职业发展方向', key: 'career_path' },
+                { icon: 'bi-lightbulb', title: '求职建议', key: 'job_advice' },
+                { icon: 'bi-arrow-up-circle', title: '需要提升的能力', key: 'skills_to_improve' },
+                { icon: 'bi-briefcase', title: '推荐职位', key: 'recommended_positions', list: true }
+            ];
+            grid.innerHTML = blocks.map((b, i) => {
+                let content = '';
+                if (b.list) {
+                    const items = analysis[b.key] || [];
+                    content = items.map(p => `<span class="tag"><i class="bi bi-briefcase-fill me-1"></i>${escapeHtml(p)}</span>`).join('');
+                } else {
+                    content = `<div class="analysis-content">${escapeHtml(analysis[b.key] || '暂无内容')}</div>`;
+                }
+                return `
                     <div class="col-md-6">
-                        <div class="card job-card">
-                            <div class="card-body">
-
-                                <h5 class="card-title">${job.title}</h5>
-                                <h6 class="card-subtitle mb-2 text-muted">${job.company}</h6>
-                                <p class="card-text">
-                                    <strong>地点：</strong>${job.location}<br>
-                                    <strong>薪资：</strong>${job.salary}<br>
-                                    <strong>描述：</strong>${job.description}<br>
-                                    <strong>要求：</strong>
-                                    <ul>
-                                        ${job.requirements.map(req => `<li>${req}</li>`).join('')}
-                                    </ul>
-                                    <strong>匹配原因：</strong>${job.match_reason}
-                                </p>
-                                <button class="btn btn-outline-primary">申请职位</button>
+                        <div class="card p-4 h-100 result-card">
+                            <div class="card-header-custom">
+                                <span class="icon" style="background:${i === 0 ? 'rgba(99,102,241,.12);color:#4f46e5' : 'rgba(249,115,22,.12);color:#ea580c'}"><i class="bi ${b.icon}"></i></span>
+                                <h5>${b.title}</h5>
                             </div>
+                            ${content}
                         </div>
-                    </div>
-                `;
-                jobList.innerHTML += jobCard;
-            });
-        } catch (error) {
-            console.error('Error displaying job:', error);
-            jobList.innerHTML = '<div class="alert alert-danger">无法显示职位信息</div>';
+                    </div>`;
+            }).join('');
         }
+
+        // 职位搜索
+        document.getElementById('searchForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const list = document.getElementById('jobList');
+            list.innerHTML = '<div class="col-12"><div class="card p-4 loading-mask"><span class="spinner-border"></span><p class="mt-3 mb-0">正在为你匹配最合适的职位…</p></div></div>';
+            try {
+                const body = new URLSearchParams({
+                    keyword: document.getElementById('keyword').value,
+                    location: document.getElementById('location').value,
+                    career_analysis: window.careerAnalysis || ''
+                });
+                const res = await fetch('/search_jobs', { method: 'POST', body });
+                const data = await res.json();
+                if (data && data.error) throw new Error(data.error);
+                renderJobs(data);
+            } catch (err) {
+                list.innerHTML = '<div class="col-12"><div class="card p-4 empty-state"><i class="bi bi-cloud-slash"></i>职位搜索失败：' + escapeHtml(err.message) + '</div></div>';
+            }
+        });
+
+        function renderJobs(jobs) {
+            const list = document.getElementById('jobList');
+            let arr = Array.isArray(jobs) ? jobs : [jobs];
+            arr = arr.filter(j => j && !j.error);
+            if (!arr.length) {
+                list.innerHTML = '<div class="col-12"><div class="card p-4 empty-state"><i class="bi bi-inbox"></i>未找到匹配职位，换个关键词试试</div></div>';
+                return;
+            }
+            list.innerHTML = arr.map(job => `
+                <div class="col-lg-6">
+                    <div class="card p-4 h-100">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h5 class="mb-1">${escapeHtml(job.title)}</h5>
+                                <div class="company"><i class="bi bi-building me-1"></i>${escapeHtml(job.company)}</div>
+                            </div>
+                            <span class="salary-badge">${escapeHtml(job.salary || '面议')}</span>
+                        </div>
+                        <p class="mt-3 mb-2" style="font-size:13.5px;color:#475569;">
+                            <i class="bi bi-geo-alt me-1" style="color:var(--brand-500)"></i>${escapeHtml(job.location)}
+                        </p>
+                        <p class="mb-2" style="font-size:13.5px;color:#475569;">${escapeHtml(job.description)}</p>
+                        <div class="mb-2">
+                            ${(job.requirements || []).map(r => `<span class="req-tag">${escapeHtml(r)}</span>`).join('')}
+                        </div>
+                        ${job.match_reason ? `<div class="match-reason"><i class="bi bi-hand-thumbs-up me-1"></i>${escapeHtml(job.match_reason)}</div>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 课程推荐
+        document.getElementById('courseSearchForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const list = document.getElementById('courseList');
+            list.innerHTML = '<div class="col-12"><div class="card p-4 loading-mask"><span class="spinner-border"></span><p class="mt-3 mb-0">正在匹配学习路径…</p></div></div>';
+            try {
+                const body = new URLSearchParams({
+                    keyword: document.getElementById('courseKeyword').value,
+                    career_analysis: window.careerAnalysis || ''
+                });
+                const res = await fetch('/search_course', { method: 'POST', body });
+                const data = await res.json();
+                if (data && data.error) throw new Error(data.error);
+                renderCourses(data);
+            } catch (err) {
+                list.innerHTML = '<div class="col-12"><div class="card p-4 empty-state"><i class="bi bi-cloud-slash"></i>课程推荐失败：' + escapeHtml(err.message) + '</div></div>';
+            }
+        });
+
+        function renderCourses(courses) {
+            const list = document.getElementById('courseList');
+            const arr = Array.isArray(courses) ? courses : [];
+            if (!arr.length) {
+                list.innerHTML = '<div class="col-12"><div class="card p-4 empty-state"><i class="bi bi-inbox"></i>未找到匹配课程</div></div>';
+                return;
+            }
+            list.innerHTML = arr.map(course => `
+                <div class="col-lg-4 col-md-6">
+                    <div class="card p-4 h-100 course-card">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="mb-0 fw-bold">${escapeHtml(course.title)}</h6>
+                            <span class="badge bg-gradient-brand level">${escapeHtml(course.level)}</span>
+                        </div>
+                        <div class="company mb-2"><i class="bi bi-mortarboard me-1"></i>${escapeHtml(course.provider)}</div>
+                        <p class="mb-3" style="font-size:13px;color:#475569;">${escapeHtml(course.description)}</p>
+                        <div class="d-flex gap-2 mb-3" style="font-size:12.5px;color:var(--muted);">
+                            <span><i class="bi bi-clock me-1"></i>${escapeHtml(course.duration)}</span>
+                            <span><i class="bi bi-tag me-1"></i>${escapeHtml(course.price)}</span>
+                        </div>
+                        <div class="mb-2">
+                            ${(course.skills || []).map(s => `<span class="req-tag">${escapeHtml(s)}</span>`).join('')}
+                        </div>
+                        ${course.match_reason ? `<div class="match-reason"><i class="bi bi-hand-thumbs-up me-1"></i>${escapeHtml(course.match_reason)}</div>` : ''}
+                    </div>
+                </div>
+            `).join('');
         }
     </script>
 </body>

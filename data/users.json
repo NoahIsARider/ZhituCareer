@@ -2,13 +2,13 @@
   "users": [
     {
       "phone": "13800000000",
-      "password": "admin123",
+      "password": "scrypt:32768:8:1$rBPc3gl9LzOlapGu$14359ad01e7b5b2d4feed9215be3796dabbacc56555afd07fb2eeeb8feac0c2fbd03fd274ed55ff09a20fb911118ea9f54033f8aa9ace126524a4bf388dc9c75",
       "role": "admin",
       "name": "Admin User"
     },
     {
       "phone": "13900000000",
-      "password": "user123",
+      "password": "scrypt:32768:8:1$KItUPJVqojaF9nFH$84bfed4e41f11bf808629d928bd775abf72a6acbde6c0bec72d9d9f33021458babd9e0d1919875422070b5ce824b01590d18f6ca93ccdc2c2766b8fc7a33fc15",
       "role": "user",
       "name": "Regular User"
     }

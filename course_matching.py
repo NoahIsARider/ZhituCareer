@@ -1,33 +1,28 @@
-from openai import OpenAI
-import os
-from agent.course_matching_agent import CourseMatchingAgent
 import json
+import os
+from agent.llm_client import create_llm_client, LLMClient
+from agent.course_matching_agent import CourseMatchingAgent
+
 
 class CourseMatcher:
     def __init__(self):
-        self.client = OpenAI(
-            base_url='https://api-inference.modelscope.cn/v1/',
-            api_key=os.getenv('OPENAI_API_KEY')  # Load from environment variable
-        )
+        self.client = create_llm_client()
         self.course_matching_agent = CourseMatchingAgent(self.client)
-
-    def course_matching(self, user_data, career_analysis):
-        try:
-            # Use course matching agent to find suitable courses
-            matched_courses = self.course_matching_agent.match_courses(user_data, career_analysis, self.load_courses())
-            if not matched_courses:
-                raise ValueError("Failed to match courses")
-
-            return matched_courses
-        except Exception as e:
-            print(f'Error in course matching: {str(e)}')
-            raise ValueError(f"Course matching failed: {str(e)}")
+        self.llm = LLMClient(self.client)
 
     def load_courses(self):
         try:
-            with open('data/course.json', 'r', encoding='utf-8') as f:
-                courses_data = json.load(f)
-                return courses_data.get('courses', [])
+            path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'course.json')
+            with open(path, 'r', encoding='utf-8') as f:
+                return json.load(f).get('courses', [])
         except Exception as e:
-            print(f'Error loading courses: {str(e)}')
+            print(f'Error loading courses: {e}')
             return []
+
+    def course_matching(self, user_data, career_analysis):
+        courses = self.load_courses()
+        matched_courses = self.course_matching_agent.match_courses(
+            user_data, career_analysis, courses)
+        if not matched_courses:
+            raise ValueError("Failed to match courses")
+        return self.llm.parse_json(matched_courses)

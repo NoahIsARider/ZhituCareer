@@ -12,6 +12,9 @@ A one-stop career analysis platform built on **Flask + multi-agent collaboration
 ![Playwright](https://img.shields.io/badge/Playwright-Automation-2EAD33?style=flat-square&logo=playwright&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)
 ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)
+![CI](https://github.com/NoahIsARider/ZhituCareer/actions/workflows/ci.yml/badge.svg)
+![Tests](https://img.shields.io/badge/tests-128%20passed-brightgreen?style=flat-square)
+![Docker](https://img.shields.io/badge/Docker-ready-2496ED?style=flat-square&logo=docker&logoColor=white)
 
 <br>
 
@@ -31,9 +34,12 @@ A one-stop career analysis platform built on **Flask + multi-agent collaboration
 | 📚 **Course Recommendations** | Recommends courses and learning paths aligned with your career goals |
 | 🚀 **Scalable Hybrid Retrieval** | TF-IDF + inverted-index retrieval pre-filters thousands of records before the LLM re-ranks, so matching stays fast and bounded as data grows |
 | 🛟 **Offline Fallback Engine** | If the LLM is unavailable (no key / quota / network), rule-based analysis and matching keep every feature working with the same response format |
+| 📊 **Data Insights Dashboard** | Interactive ECharts widgets (salary distribution, hot cities, top skills) driven by a live stats API |
+| 🕘 **Analysis History** | Every career analysis is saved; reload or delete past results anytime |
 | 🛒 **Self-service Registration** | Users can register their own accounts with phone + password (rate-limited) |
 | 🔍 **Searchable Admin Panel** | Admin panel with keyword search and pagination; add / edit / delete items by id |
 | 🔐 **Role-based Access Control** | User / admin dual roles with a dedicated admin panel |
+| 🐳 **One-command Docker** | Ship the whole platform with `docker compose up` |
 | 🚀 **Out of the Box** | Built-in demo accounts and sample data; deployable within minutes |
 
 ---
@@ -54,6 +60,18 @@ A one-stop career analysis platform built on **Flask + multi-agent collaboration
 
 ---
 
+## ⭐ Why does this project deserve a star?
+
+ZhituCareer+ is built the way a real product would be — not a toy demo:
+
+- **Production-grade architecture**: multi-agent LLM pipeline with a **hybrid retrieval engine** (inverted index + TF-IDF) that pre-filters thousands of records before the LLM re-ranks a bounded candidate set. Matching stays fast even with 5,000+ jobs.
+- **It never breaks**: if the LLM is unavailable, a deterministic **rule-based fallback engine** keeps career analysis, job matching, and course recommendations fully working offline.
+- **Serious engineering**: atomic JSON storage with file locks (writes can never corrupt data), TTL caches, rate-limited auth, robust LLM JSON parsing, **128 automated tests** including 5,000-record scale benchmarks — all green on CI.
+- **Looks like a product**: interactive ECharts market insights, analysis history, a searchable admin panel, and a polished Bootstrap dashboard.
+- **Zero-friction demo**: built-in demo accounts + `docker compose up` → ready in seconds.
+
+---
+
 ## 🧠 Core Concept: Multi-Agent Collaboration Architecture
 
 ZhituCareer+ uses a modular **agent collaboration architecture** in which multiple agents each do their part and work in sequence:
@@ -66,15 +84,19 @@ ZhituCareer+ uses a modular **agent collaboration architecture** in which multip
 - **Hybrid Retrieval Engine**: TF-IDF + inverted-index search with Chinese bigram tokenization and English↔Chinese alias expansion pre-filters thousands of records down to a bounded candidate set (≤ 20) before any LLM call
 - **Fallback Engine**: deterministic rule-based analysis / matching that guarantees the app stays fully usable when the LLM is unreachable
 
-```
-User Profile Agent ──► Market Analysis Agent ──► Job Recommendation Agent ──► Recommendation Results
-                          │                            │
-                          ▼                            ▼
-                 Playwright live scraping      Job Matching Agent / Course Matching Agent
-                          │                            │
-                          ▼                            ▼
-                          ▼                     Hybrid Retrieval (bounded candidates)
-                          ▼                     LLM re-rank  ──►  Rule-based Fallback
+```mermaid
+flowchart LR
+    U[User submits profile] --> PA[User Profile Agent]
+    PA --> MA[Market Analysis Agent]
+    PA --> JRA[Job Recommendation Agent]
+    MA --> JR[Job Matching Agent]
+    MA --> CR[Course Matching Agent]
+    JRA --> OUT[Recommendation Results]
+    JR --> HR[Hybrid Retrieval]
+    CR --> HR
+    HR --> LLM[LLM Re-rank]
+    LLM --> FB[Rule-based Fallback]
+    FB --> OUT
 ```
 
 <div align="center">
@@ -141,16 +163,29 @@ Visit **http://localhost:5000** and log in with a demo account:
 | 👑 Admin | `13800000000` | `admin123` |
 | 👤 Regular user | `13900000000` | `user123` |
 
+### 🐳 Docker (recommended)
+
+```bash
+# One command, everything included
+docker compose up --build
+
+# Or run without API key to try the offline fallback engine right away
+OPENAI_API_KEY= docker compose up
+```
+
+Visit **http://localhost:5000**. Your data lives in `./data` and persists across restarts.
+
 ---
 
 ## 📖 Usage Guide
 
 ### Regular Users
 
-1. After logging in, fill in your **education / major / skills / experience / career goals** on the dashboard
-2. Click "Get Career Analysis" and the AI will generate **career direction, job-hunting advice, a skill improvement checklist, and recommended positions**
-3. Use "Job Search" to match positions by keyword and city
-4. Use "Course Recommendations" to get a learning path aligned with your career goals
+1. After logging in, the dashboard immediately shows **live market insights** (salary distribution, hot cities, top skills) from the built-in data
+2. Fill in your **education / major / skills / experience / career goals** on the dashboard
+3. Click "Get Career Analysis" and the AI will generate **career direction, job-hunting advice, a skill improvement checklist, and recommended positions** — every result is saved to your analysis history for later review
+4. Use "Job Search" to match positions by keyword and city
+5. Use "Course Recommendations" to get a learning path aligned with your career goals
 
 ### Admins
 
@@ -173,6 +208,7 @@ ZhituCareer/
 ├── fallback_matcher.py     # Rule-based fallback analysis & matching (offline mode)
 ├── data_store.py           # Atomic JSON persistence, file locks, schema validation
 ├── cache.py                # Thread-safe TTL cache
+├── stats.py                # Dashboard stats (salary / city / skills aggregates)
 ├── agent/                  # Multi-agent collaboration layer
 │   ├── llm_client.py       # LLM client, robust JSON parsing, and retry
 │   ├── user_profile_agent.py
@@ -186,11 +222,29 @@ ZhituCareer/
 │   └── course.json         # Course data
 ├── templates/              # Frontend pages (Bootstrap 5)
 │   ├── login.html          # Login / register page
-│   ├── index.html          # User dashboard
+│   ├── index.html          # User dashboard (ECharts insights + history)
 │   └── admin.html          # Admin panel
-├── tests/                  # 120 pytest cases incl. 5,000-record scale tests
+├── tests/                  # 128 pytest cases incl. 5,000-record scale tests
+├── .github/workflows/ci.yml   # GitHub Actions: lint + tests + coverage
+├── Dockerfile              # One-command container build
+├── docker-compose.yml      # `docker compose up` → running platform
 └── requirements.txt
 ```
+
+---
+
+## 🗺️ Roadmap
+
+- [x] Hybrid retrieval for large catalogs (retrieve → LLM → fallback)
+- [x] Offline rule-based fallback engine
+- [x] Dashboard data insights (ECharts)
+- [x] Career analysis history
+- [x] Docker one-command deployment
+- [x] CI with 128 automated tests
+- [ ] SQLite migration for concurrent multi-worker writes
+- [ ] Resume (PDF/Word) parsing
+- [ ] Job application tracking (favorites / status)
+- [ ] LLM streaming output (SSE)
 
 ---
 
@@ -204,7 +258,7 @@ ZhituCareer/
 | Retrieval | Inverted index + TF-IDF hybrid search (Chinese bigram tokenization, English↔Chinese aliases) |
 | Frontend | Bootstrap 5 · Bootstrap Icons · vanilla ES6 |
 | Data Storage | Atomic JSON files (seamlessly migratable to SQLite / MySQL, see the [data_base branch](https://github.com/NoahIsARider/ZhituCareer/tree/data_base)) |
-| Testing | pytest · 120 cases · 5,000-record scale benchmarks (see [docs/TEST_REPORT.md](docs/TEST_REPORT.md)) |
+| Testing | pytest · 128 cases · 5,000-record scale benchmarks (see [docs/TEST_REPORT.md](docs/TEST_REPORT.md)) |
 
 ---
 

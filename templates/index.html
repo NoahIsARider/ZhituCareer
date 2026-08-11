@@ -6,6 +6,7 @@
     <title>智途 Career+ · 职业分析</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
     <style>
         :root {
             --brand-500: #f97316;
@@ -233,6 +234,42 @@
         }
         .empty-state i { font-size: 36px; display: block; margin-bottom: 10px; opacity: .5; }
 
+        /* Data insight widgets */
+        .chart-box { width: 100%; height: 280px; }
+        .stat-mini { text-align: center; padding: 18px 10px; }
+        .stat-mini b { display: block; font-size: 26px; font-weight: 800; }
+        .stat-mini span { font-size: 12px; color: var(--muted); }
+        .market-trends {
+            font-size: 13.5px;
+            color: #334155;
+            line-height: 1.9;
+            white-space: pre-wrap;
+            max-height: 280px;
+            overflow-y: auto;
+        }
+
+        /* Analysis history */
+        .history-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all .2s;
+        }
+        .history-item:hover { border-color: var(--brand-500); background: rgba(249,115,22,.05); }
+        .history-item .h-meta { font-size: 12px; color: var(--muted); }
+        .history-item .h-title { font-size: 13.5px; font-weight: 600; }
+        .history-item .btn-icon {
+            border: none; background: transparent; color: var(--muted);
+            padding: 4px 8px; border-radius: 8px; font-size: 14px;
+        }
+        .history-item .btn-icon:hover { color: var(--accent-2); background: #fef2f2; }
+
         @media (max-width: 768px) {
             .hero { padding: 30px 0 34px; }
             .hero-stats { gap: 18px; }
@@ -320,6 +357,54 @@
                     </form>
                 </div>
             </div>
+        </div>
+
+        <!-- 就业市场数据洞察 -->
+        <div class="section-title"><span class="bar"></span>就业市场数据洞察</div>
+        <div class="row g-3 mb-2" id="statMiniCards"></div>
+        <div class="row g-3">
+            <div class="col-lg-4 col-md-6">
+                <div class="card p-3">
+                    <div class="card-header-custom mb-2">
+                        <span class="icon"><i class="bi bi-currency-yen"></i></span>
+                        <h5>职位薪资分布</h5>
+                    </div>
+                    <div id="salaryChart" class="chart-box"></div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="card p-3">
+                    <div class="card-header-custom mb-2">
+                        <span class="icon"><i class="bi bi-geo-alt"></i></span>
+                        <h5>热门职位城市</h5>
+                    </div>
+                    <div id="cityChart" class="chart-box"></div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="card p-3">
+                    <div class="card-header-custom mb-2">
+                        <span class="icon"><i class="bi bi-bar-chart"></i></span>
+                        <h5>热门技能需求</h5>
+                    </div>
+                    <div id="skillChart" class="chart-box"></div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="card p-4">
+                    <div class="card-header-custom mb-2">
+                        <span class="icon"><i class="bi bi-graph-up-arrow"></i></span>
+                        <h5>行业趋势研判</h5>
+                    </div>
+                    <div id="marketTrends" class="market-trends text-muted">加载中…</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 历史分析记录 -->
+        <div class="section-title"><span class="bar"></span>历史分析记录</div>
+        <div class="card p-4" id="historyCard">
+            <div class="empty-state"><i class="bi bi-journal-text"></i>暂无历史记录，完成一次职业分析后会自动保存</div>
         </div>
 
         <!-- 分析结果 -->
@@ -421,6 +506,7 @@
                     document.getElementById('analysisResult').classList.remove('d-none');
                     document.getElementById('analysisResult').scrollIntoView({ behavior: 'smooth', block: 'start' });
                     notify('职业分析完成！');
+                    loadHistory();
                 } else {
                     throw new Error(data.error || '分析过程中出现错误');
                 }
@@ -569,6 +655,154 @@
                 </div>
             `).join('');
         }
+
+        // ==================== 就业市场数据洞察 ====================
+        function renderStatCards(stats) {
+            const cities = new Set(stats.jobs.by_location.map(([c]) => c));
+            const maxBucket = stats.jobs.salary_distribution.filter(([, n]) => n > 0).pop();
+            const cards = [
+                { icon: 'bi-briefcase', value: stats.jobs.total, label: '在招职位' },
+                { icon: 'bi-mortarboard', value: stats.courses.total, label: '推荐课程' },
+                { icon: 'bi-geo-alt', value: cities.size, label: '覆盖城市' },
+                { icon: 'bi-currency-yen', value: maxBucket ? maxBucket[0] : '—', label: '高薪档位' }
+            ];
+            document.getElementById('statMiniCards').innerHTML = cards.map(c => `
+                <div class="col-6 col-md-3">
+                    <div class="card stat-mini">
+                        <i class="bi ${c.icon} mb-1" style="color:var(--brand-500);font-size:20px;"></i>
+                        <b>${escapeHtml(c.value)}</b><span>${c.label}</span>
+                    </div>
+                </div>`).join('');
+        }
+
+        function echartsUnavailable(el) {
+            if (window.echarts) return false;
+            el.innerHTML = '<div class="empty-state"><i class="bi bi-bar-chart"></i>图表库加载失败，请检查网络</div>';
+            return true;
+        }
+
+        function renderCharts(stats) {
+            const salaryEl = document.getElementById('salaryChart');
+            const cityEl = document.getElementById('cityChart');
+            const skillEl = document.getElementById('skillChart');
+            if (echartsUnavailable(salaryEl)) return;
+
+            const brandGradient = { type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+                colorStops: [{ offset: 0, color: '#f97316' }, { offset: 1, color: '#ea580c' }] };
+
+            const salary = stats.jobs.salary_distribution || [];
+            echarts.init(salaryEl).setOption({
+                grid: { left: 8, right: 8, top: 20, bottom: 8, containLabel: true },
+                tooltip: { trigger: 'axis' },
+                xAxis: { type: 'category', data: salary.map(s => s[0]), axisLabel: { fontSize: 11 } },
+                yAxis: { type: 'value', splitLine: { lineStyle: { color: '#f1f5f9' } } },
+                series: [{ type: 'bar', data: salary.map(s => s[1]), barWidth: '50%',
+                    itemStyle: { borderRadius: [6, 6, 0, 0], color: brandGradient } }]
+            });
+
+            const cities = stats.jobs.by_location || [];
+            echarts.init(cityEl).setOption({
+                tooltip: { trigger: 'item' },
+                legend: { bottom: 0, textStyle: { fontSize: 11 } },
+                color: ['#f97316', '#f43f5e', '#6366f1', '#10b981', '#0ea5e9', '#f59e0b', '#8b5cf6', '#14b8a6'],
+                series: [{ type: 'pie', radius: ['45%', '70%'], center: ['50%', '45%'],
+                    data: cities.map(([name, value]) => ({ name, value })), label: { fontSize: 11 } }]
+            });
+
+            const skills = [...(stats.jobs.top_skills || [])].reverse();
+            echarts.init(skillEl).setOption({
+                grid: { left: 8, right: 8, top: 8, bottom: 8, containLabel: true },
+                tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+                xAxis: { type: 'value', splitLine: { lineStyle: { color: '#f1f5f9' } } },
+                yAxis: { type: 'category', data: skills.map(s => s[0]), axisLabel: { fontSize: 11 } },
+                series: [{ type: 'bar', data: skills.map(s => s[1]), barWidth: '55%',
+                    itemStyle: { borderRadius: [0, 6, 6, 0], color: '#6366f1' } }]
+            });
+        }
+
+        function loadStats() {
+            fetch('/api/stats/overview').then(r => r.json()).then(stats => {
+                if (stats.error) return;
+                renderStatCards(stats);
+                renderCharts(stats);
+                document.getElementById('marketTrends').textContent =
+                    (stats.market && stats.market.industry_trends) || '暂无行业数据';
+            }).catch(() => {});
+        }
+
+        // ==================== 历史分析记录 ====================
+        function fmtTime(ts) {
+            const d = new Date(ts * 1000);
+            const pad = n => String(n).padStart(2, '0');
+            return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+        }
+
+        function renderHistory(items) {
+            const card = document.getElementById('historyCard');
+            if (!items.length) {
+                card.innerHTML = '<div class="empty-state"><i class="bi bi-journal-text"></i>暂无历史记录，完成一次职业分析后会自动保存</div>';
+                return;
+            }
+            card.innerHTML = items.map(item => {
+                const a = item.analysis || {};
+                const title = a.career_path ? String(a.career_path).slice(0, 42) : '职业分析';
+                const p = item.profile || {};
+                return `
+                    <div class="history-item" data-id="${escapeHtml(item.id)}">
+                        <div class="flex-grow-1">
+                            <div class="h-title">${escapeHtml(title)}</div>
+                            <div class="h-meta mt-1">${fmtTime(item.ts)} · ${escapeHtml(p.education || '')} · ${escapeHtml(p.major || '')}</div>
+                        </div>
+                        <div class="d-flex align-items-center gap-1">
+                            <button class="btn btn-sm btn-outline-primary view-history">查看</button>
+                            <button class="btn-icon delete-history" title="删除"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </div>`;
+            }).join('');
+
+            card.querySelectorAll('.view-history').forEach(btn => {
+                btn.addEventListener('click', (ev) => {
+                    ev.stopPropagation();
+                    const id = btn.closest('.history-item').dataset.id;
+                    const item = items.find(i => String(i.id) === id);
+                    if (!item) return;
+                    const form = document.getElementById('careerForm');
+                    const p = item.profile || {};
+                    form.education.value = p.education || '';
+                    form.major.value = p.major || '';
+                    form.skills.value = p.skills || '';
+                    form.experience.value = p.experience || '';
+                    form.career_goals.value = p.career_goals || '';
+                    window.careerAnalysis = item.analysis;
+                    renderAnalysis(item.analysis);
+                    document.getElementById('analysisResult').classList.remove('d-none');
+                    document.getElementById('analysisResult').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+            });
+
+            card.querySelectorAll('.delete-history').forEach(btn => {
+                btn.addEventListener('click', async (ev) => {
+                    ev.stopPropagation();
+                    const id = btn.closest('.history-item').dataset.id;
+                    if (!confirm('确定删除这条分析记录？')) return;
+                    try {
+                        await fetch('/api/history/' + encodeURIComponent(id), { method: 'DELETE' });
+                        loadHistory();
+                    } catch (e) { notify('删除失败', false); }
+                });
+            });
+        }
+
+        async function loadHistory() {
+            try {
+                const res = await fetch('/api/history');
+                const data = await res.json();
+                if (data.success) renderHistory(data.items || []);
+            } catch (e) { /* ignore */ }
+        }
+
+        loadStats();
+        loadHistory();
     </script>
 </body>
 </html>

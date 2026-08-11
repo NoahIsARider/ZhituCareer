@@ -11,6 +11,7 @@ from career_model import CareerAnalyzer
 from course_matching import CourseMatcher
 from job_matching import JobMatcher
 from data_store import JsonStore
+from stats import compute_overview
 
 load_dotenv()
 
@@ -27,6 +28,7 @@ DATA_DIR = os.path.join(BASE_DIR, 'data')
 USERS_FILE = os.path.join(DATA_DIR, 'users.json')
 COURSES_FILE = os.path.join(DATA_DIR, 'course.json')
 JOBS_FILE = os.path.join(DATA_DIR, 'jobs.json')
+ANALYSES_FILE = os.path.join(DATA_DIR, 'analyses.json')
 
 FORM_FIELDS = ['education', 'major', 'skills', 'experience', 'career_goals']
 
@@ -46,6 +48,9 @@ course_matcher = CourseMatcher()
 _course_store = JsonStore(COURSES_FILE)
 _jobs_store = JsonStore(JOBS_FILE)
 _users_store = JsonStore(USERS_FILE)
+_analyses_store = JsonStore(ANALYSES_FILE)
+
+HISTORY_LIMIT = 20
 
 
 class RateLimiter:
@@ -88,6 +93,14 @@ def save_users(users):
 
 def current_user_data():
     return session.setdefault('user_data', {})
+
+
+def load_analyses():
+    return _analyses_store.load({}) or {}
+
+
+def save_analyses(analyses):
+    _analyses_store.save(analyses)
 
 
 def is_admin():
@@ -354,6 +367,19 @@ def analyze_profile():
             return jsonify({'success': False, 'error': '请完整填写所有个人信息字段'}), 400
 
         analysis = career_analyzer.analyze_career(profile)
+
+        analyses = load_analyses()
+        phone = session['user']['phone']
+        history = analyses.get(phone, [])
+        history.append({
+            'id': f'h{int(time.time() * 1000)}',
+            'ts': int(time.time()),
+            'profile': profile,
+            'analysis': analysis,
+        })
+        analyses[phone] = history[-HISTORY_LIMIT:]
+        save_analyses(analyses)
+
         return jsonify({'success': True, 'analysis': analysis})
     except Exception as e:
         print(f'[error] career analysis: {e}')
@@ -399,6 +425,37 @@ def search_course():
     except Exception as e:
         print(f'[error] course search: {e}')
         return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/stats/overview', methods=['GET'])
+def stats_overview():
+    if 'user' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    courses = (_course_store.load({}) or {}).get('courses', [])
+    jobs = (_jobs_store.load({}) or {}).get('jobs', [])
+    return jsonify(compute_overview(courses, jobs))
+
+
+@app.route('/api/history', methods=['GET'])
+def list_history():
+    if 'user' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    analyses = load_analyses()
+    history = analyses.get(session['user']['phone'], [])
+    return jsonify({'success': True, 'items': list(reversed(history))})
+
+
+@app.route('/api/history/<item_id>', methods=['DELETE'])
+def delete_history(item_id):
+    if 'user' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    analyses = load_analyses()
+    phone = session['user']['phone']
+    history = [h for h in analyses.get(phone, [])
+               if str(h.get('id')) != str(item_id)]
+    analyses[phone] = history
+    save_analyses(analyses)
+    return jsonify({'success': True})
 
 
 @app.route('/health', methods=['GET'])

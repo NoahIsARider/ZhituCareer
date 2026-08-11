@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.git/
+.gitignore
+.env
+venv/
+.venv/
+tests/
+docs/screenshots/
+*.md
+data/analyses.json
+data/*.lock
+data/*.tmp

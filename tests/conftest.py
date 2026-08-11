@@ -101,6 +101,7 @@ def app_client(tmp_path, monkeypatch):
     appmod._users_store = JsonStore(str(users_path))
     appmod._course_store = JsonStore(str(courses_path))
     appmod._jobs_store = JsonStore(str(jobs_path))
+    appmod._analyses_store = JsonStore(str(data_dir / 'analyses.json'))
     appmod.job_matcher.jobs_path = str(jobs_path)
     appmod.course_matcher.courses_path = str(courses_path)
     appmod.job_matcher._retriever = None

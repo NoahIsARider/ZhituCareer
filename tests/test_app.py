@@ -300,3 +300,65 @@ class TestJsonBodySafety:
     def test_form_body_on_json_endpoint(self, admin_client):
         r = admin_client.post('/api/courses', data={'courses': '[]'})
         assert r.status_code == 400
+
+
+class TestStatsOverview:
+    def test_stats_require_auth(self, app_client):
+        assert app_client.get('/api/stats/overview').status_code == 401
+
+    def test_stats_overview_shape(self, user_client):
+        data = user_client.get('/api/stats/overview').get_json()
+        assert data['jobs']['total'] > 0
+        assert data['courses']['total'] > 0
+        assert len(data['jobs']['salary_distribution']) == 5
+        assert sum(n for _, n in data['jobs']['salary_distribution']) > 0
+        assert data['jobs']['by_location']
+        assert data['courses']['by_level']
+        assert data['market']['industry_trends']
+
+    def test_stats_salary_bucketing(self):
+        from stats import _parse_salary_k, salary_bucket
+        assert _parse_salary_k('40k-70k') == 40
+        assert _parse_salary_k('15-25K·13薪') == 15
+        assert _parse_salary_k('面议') is None
+        assert salary_bucket(15) == '10-20k'
+        assert salary_bucket(55) == '50k 以上'
+
+
+class TestAnalysisHistory:
+    def test_analyze_saves_history(self, user_client, llm_failure):
+        user_client.post('/analyze_profile', data=PROFILE_FORM)
+        items = user_client.get('/api/history').get_json()['items']
+        assert len(items) == 1
+        assert items[0]['analysis']['source'] == 'local'
+        assert items[0]['profile']['major'] == '计算机科学与技术'
+
+    def test_history_reversed_order(self, user_client, llm_failure):
+        for _ in range(2):
+            user_client.post('/analyze_profile', data=PROFILE_FORM)
+        items = user_client.get('/api/history').get_json()['items']
+        assert len(items) == 2
+        assert items[0]['ts'] >= items[1]['ts']
+
+    def test_history_delete(self, user_client, llm_failure):
+        user_client.post('/analyze_profile', data=PROFILE_FORM)
+        item_id = user_client.get('/api/history').get_json()['items'][0]['id']
+        r = user_client.delete(f'/api/history/{item_id}')
+        assert r.status_code == 200
+        assert user_client.get('/api/history').get_json()['items'] == []
+
+    def test_history_capped(self, user_client, llm_failure):
+        import app as appmod
+        original = appmod.HISTORY_LIMIT
+        appmod.HISTORY_LIMIT = 3
+        try:
+            for _ in range(5):
+                user_client.post('/analyze_profile', data=PROFILE_FORM)
+            items = user_client.get('/api/history').get_json()['items']
+            assert len(items) == 3
+        finally:
+            appmod.HISTORY_LIMIT = original
+
+    def test_history_requires_auth(self, app_client):
+        assert app_client.get('/api/history').status_code == 401
+        assert app_client.delete('/api/history/x').status_code == 401

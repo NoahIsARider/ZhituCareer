@@ -58,20 +58,6 @@ A one-stop career analysis platform built on **Flask + multi-agent collaboration
 
 ![Admin panel](docs/screenshots/admin.png)
 
----
-
-## ⭐ Why does this project deserve a star?
-
-ZhituCareer+ is built the way a real product would be — not a toy demo:
-
-- **Production-grade architecture**: multi-agent LLM pipeline with a **hybrid retrieval engine** (inverted index + TF-IDF) that pre-filters thousands of records before the LLM re-ranks a bounded candidate set. Matching stays fast even with 5,000+ jobs.
-- **It never breaks**: if the LLM is unavailable, a deterministic **rule-based fallback engine** keeps career analysis, job matching, and course recommendations fully working offline.
-- **Serious engineering**: atomic JSON storage with file locks (writes can never corrupt data), TTL caches, rate-limited auth, robust LLM JSON parsing, **128 automated tests** including 5,000-record scale benchmarks — all green on CI.
-- **Looks like a product**: interactive ECharts market insights, analysis history, a searchable admin panel, and a polished Bootstrap dashboard.
-- **Zero-friction demo**: built-in demo accounts + `docker compose up` → ready in seconds.
-
----
-
 ## 🧠 Core Concept: Multi-Agent Collaboration Architecture
 
 ZhituCareer+ uses a modular **agent collaboration architecture** in which multiple agents each do their part and work in sequence:
@@ -84,20 +70,6 @@ ZhituCareer+ uses a modular **agent collaboration architecture** in which multip
 - **Hybrid Retrieval Engine**: TF-IDF + inverted-index search with Chinese bigram tokenization and English↔Chinese alias expansion pre-filters thousands of records down to a bounded candidate set (≤ 20) before any LLM call
 - **Fallback Engine**: deterministic rule-based analysis / matching that guarantees the app stays fully usable when the LLM is unreachable
 
-```mermaid
-flowchart LR
-    U[User submits profile] --> PA[User Profile Agent]
-    PA --> MA[Market Analysis Agent]
-    PA --> JRA[Job Recommendation Agent]
-    MA --> JR[Job Matching Agent]
-    MA --> CR[Course Matching Agent]
-    JRA --> OUT[Recommendation Results]
-    JR --> HR[Hybrid Retrieval]
-    CR --> HR
-    HR --> LLM[LLM Re-rank]
-    LLM --> FB[Rule-based Fallback]
-    FB --> OUT
-```
 
 <div align="center">
   <img src="agent/agent_structure.jpeg" width="360px">

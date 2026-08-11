@@ -1,18 +1,26 @@
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+import os
+import re
+import threading
+import time
+
+from flask import Flask, jsonify, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
+from dotenv import load_dotenv
+
 from career_model import CareerAnalyzer
 from course_matching import CourseMatcher
 from job_matching import JobMatcher
-from dotenv import load_dotenv
-import json
-import os
+from data_store import JsonStore
 
 load_dotenv()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret-key-change-me')
+if app.config['SECRET_KEY'] == 'dev-secret-key-change-me':
+    print('[warn] SECRET_KEY 未设置，正在使用开发占位密钥。生产环境请务必通过环境变量配置。')
 app.config['SESSION_PERMANENT'] = False
 app.config['JSON_AS_ASCII'] = False
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, 'data')
@@ -22,32 +30,60 @@ JOBS_FILE = os.path.join(DATA_DIR, 'jobs.json')
 
 FORM_FIELDS = ['education', 'major', 'skills', 'experience', 'career_goals']
 
+# User-facing endpoints that return JSON and therefore must answer 401 as JSON.
+JSON_API_ENDPOINTS = {'analyze_profile', 'search_jobs', 'search_course'}
+
+PHONE_RE = re.compile(r'^\d{11}$')
+
+# ---------------------------------------------------------------------------
+# Shared services
+# ---------------------------------------------------------------------------
+
 career_analyzer = CareerAnalyzer()
 job_matcher = JobMatcher()
 course_matcher = CourseMatcher()
 
-
-def _read_json(path, default=None):
-    try:
-        with open(path, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    except Exception as e:
-        print(f'[error] loading {path}: {e}')
-        return default
+_course_store = JsonStore(COURSES_FILE)
+_jobs_store = JsonStore(JOBS_FILE)
+_users_store = JsonStore(USERS_FILE)
 
 
-def _write_json(path, data):
-    with open(path, 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+class RateLimiter:
+    """Simple sliding-window rate limiter keyed by string."""
 
+    def __init__(self, limit=10, window=300):
+        self.limit = limit
+        self.window = window
+        self._hits = {}
+        self._lock = threading.Lock()
+
+    def hit(self, key):
+        now = time.time()
+        with self._lock:
+            recent = [t for t in self._hits.get(key, []) if now - t < self.window]
+            if len(recent) >= self.limit:
+                self._hits[key] = recent
+                return False
+            recent.append(now)
+            self._hits[key] = recent
+            return True
+
+
+login_limiter = RateLimiter(limit=10, window=300)
+register_limiter = RateLimiter(limit=5, window=3600)
+
+
+# ---------------------------------------------------------------------------
+# Storage helpers
+# ---------------------------------------------------------------------------
 
 def load_users():
-    data = _read_json(USERS_FILE, {}) or {}
+    data = _users_store.load({}) or {}
     return data.get('users', [])
 
 
 def save_users(users):
-    _write_json(USERS_FILE, {'users': users})
+    _users_store.save({'users': users})
 
 
 def current_user_data():
@@ -57,6 +93,10 @@ def current_user_data():
 def is_admin():
     return session.get('user', {}).get('role') == 'admin'
 
+
+# ---------------------------------------------------------------------------
+# Pages
+# ---------------------------------------------------------------------------
 
 @app.route('/')
 def index():
@@ -76,6 +116,10 @@ def login():
     phone = str(data.get('phone', '')).strip()
     password = str(data.get('password', ''))
 
+    if not login_limiter.hit(f'login:{request.remote_addr}:{phone}'):
+        return jsonify({'success': False,
+                        'message': '尝试次数过多，请 5 分钟后再试'}), 429
+
     users = load_users()
     user = next((u for u in users if str(u.get('phone', '')) == phone), None)
 
@@ -93,6 +137,41 @@ def login():
     }), 401
 
 
+@app.route('/register', methods=['POST'])
+def register():
+    if not register_limiter.hit(f'register:{request.remote_addr}'):
+        return jsonify({'success': False,
+                        'message': '注册过于频繁，请稍后再试'}), 429
+
+    data = request.get_json(silent=True) or {}
+    phone = str(data.get('phone', '')).strip()
+    password = str(data.get('password', ''))
+    name = str(data.get('name', '')).strip()
+
+    if not PHONE_RE.match(phone):
+        return jsonify({'success': False, 'message': '手机号需为 11 位数字'}), 400
+    if len(password) < 6:
+        return jsonify({'success': False, 'message': '密码至少需要 6 位'}), 400
+    if not name:
+        return jsonify({'success': False, 'message': '请填写姓名'}), 400
+
+    users = load_users()
+    if any(str(u.get('phone', '')) == phone for u in users):
+        return jsonify({'success': False, 'message': '该手机号已注册'}), 409
+
+    users.append({
+        'phone': phone,
+        'password': generate_password_hash(password),
+        'role': 'user',
+        'name': name,
+    })
+    save_users(users)
+
+    session.clear()
+    session['user'] = {'phone': phone, 'role': 'user', 'name': name}
+    return jsonify({'success': True, 'redirect': '/'})
+
+
 @app.route('/logout')
 def logout():
     session.clear()
@@ -108,45 +187,148 @@ def admin():
     return render_template('admin.html')
 
 
+# ---------------------------------------------------------------------------
+# Admin data APIs
+# ---------------------------------------------------------------------------
+
 def _require_admin():
     if 'user' not in session or not is_admin():
         return jsonify({'error': 'Unauthorized'}), 401
     return None
 
 
-@app.route('/api/courses', methods=['GET', 'POST'])
-def manage_courses():
+def _paginate(items, search_fields=()):
+    """Filter by ?search= and slice by ?page= / ?page_size=."""
+    search = request.args.get('search', '').strip().lower()
+    try:
+        page = max(1, int(request.args.get('page', '1')))
+    except ValueError:
+        page = 1
+    try:
+        page_size = max(1, int(request.args.get('page_size', '50')))
+    except ValueError:
+        page_size = 50
+    page_size = min(page_size, 200)
+
+    if search:
+        searchable = {}
+        for idx, item in enumerate(items):
+            text = ' '.join(str(item.get(f, '')) for f in search_fields).lower()
+            if search in text:
+                searchable[idx] = item
+        items = list(searchable.values())
+
+    total = len(items)
+    start = (page - 1) * page_size
+    return {
+        'items': items[start:start + page_size],
+        'total': total,
+        'page': page,
+        'page_size': page_size,
+    }
+
+
+def _handle_manage_request(store, key, schema_name, search_fields):
     guard = _require_admin()
     if guard:
         return guard
 
     if request.method == 'GET':
-        data = _read_json(COURSES_FILE, {}) or {}
-        return jsonify(data)
+        data = store.load({}) or {}
+        records = data.get(key, [])
+        return jsonify(_paginate(records, search_fields=search_fields))
 
-    data = request.get_json(silent=True) or {}
-    if not isinstance(data, dict) or 'courses' not in data:
-        return jsonify({'error': '请求体必须包含 courses 字段'}), 400
-    _write_json(COURSES_FILE, data)
-    return jsonify({'success': True})
+    payload = request.get_json(silent=True) or {}
+    if not isinstance(payload, dict) or key not in payload:
+        return jsonify({'error': f'请求体必须包含 {key} 字段'}), 400
+    records = payload.get(key)
+    if not isinstance(records, list):
+        return jsonify({'error': f'{key} 必须是数组'}), 400
+
+    ok, err = JsonStore.validate_records(records, schema_name)
+    if not ok:
+        return jsonify({'error': err}), 400
+
+    normalized = JsonStore.normalize_records(records, schema_name)
+    store.save({key: normalized})
+    return jsonify({'success': True, 'total': len(normalized)})
+
+
+@app.route('/api/courses', methods=['GET', 'POST'])
+def manage_courses():
+    return _handle_manage_request(_course_store, 'courses', 'course',
+                                  ('title', 'provider', 'level', 'description',
+                                   'skills', 'career_paths'))
+
+
+@app.route('/api/courses/item', methods=['POST', 'DELETE'])
+def manage_course_item():
+    guard = _require_admin()
+    if guard:
+        return guard
+    return _handle_item_request(_course_store, 'courses', 'course')
 
 
 @app.route('/api/jobs', methods=['GET', 'POST'])
 def manage_jobs():
+    return _handle_manage_request(_jobs_store, 'jobs', 'job',
+                                  ('title', 'company', 'location', 'description',
+                                   'requirements', 'salary'))
+
+
+@app.route('/api/jobs/item', methods=['POST', 'DELETE'])
+def manage_job_item():
     guard = _require_admin()
     if guard:
         return guard
+    return _handle_item_request(_jobs_store, 'jobs', 'job')
 
-    if request.method == 'GET':
-        data = _read_json(JOBS_FILE, {}) or {}
-        return jsonify(data)
 
-    data = request.get_json(silent=True) or {}
-    if not isinstance(data, dict) or 'jobs' not in data:
-        return jsonify({'error': '请求体必须包含 jobs 字段'}), 400
-    _write_json(JOBS_FILE, data)
-    return jsonify({'success': True})
+def _handle_item_request(store, key, schema_name):
+    """Upsert / delete a single record by id — O(1) ops for large catalogs."""
+    data = store.load({}) or {}
+    records = data.get(key, [])
 
+    if request.method == 'DELETE':
+        item_id = request.args.get('id', '').strip()
+        if not item_id:
+            return jsonify({'error': '缺少 id 参数'}), 400
+        kept = [r for r in records if str(r.get('id', '')) != str(item_id)]
+        if len(kept) == len(records):
+            return jsonify({'error': '记录不存在'}), 404
+        store.save({key: kept})
+        return jsonify({'success': True})
+
+    payload = request.get_json(silent=True) or {}
+    item = payload.get(key[:-1])  # 'course' / 'job'
+    if not isinstance(item, dict):
+        return jsonify({'error': f'请求体必须包含 {key[:-1]} 对象'}), 400
+    ok, err = JsonStore.validate_records([item], schema_name)
+    if not ok:
+        return jsonify({'error': err}), 400
+    item = JsonStore.normalize_records([item], schema_name)[0]
+
+    item_id = item.get('id')
+    if not item_id:
+        item_id = f'{key[:-1][0]}{int(time.time() * 1000)}'
+        item['id'] = item_id
+
+    replaced = False
+    for i, rec in enumerate(records):
+        if str(rec.get('id', '')) == str(item_id):
+            records[i] = item
+            replaced = True
+            break
+    if not replaced:
+        records.append(item)
+
+    store.save({key: records})
+    return jsonify({'success': True, 'id': item_id})
+
+
+# ---------------------------------------------------------------------------
+# User-facing APIs
+# ---------------------------------------------------------------------------
 
 @app.route('/api/me', methods=['GET'])
 def me():
@@ -192,7 +374,10 @@ def search_jobs():
             'career_analysis': career_analysis
         }
         recommended_job = job_matcher.job_matching(user_input, current_user_data())
-        return jsonify(recommended_job)
+        return jsonify(recommended_job or [])
+    except ValueError as e:
+        print(f'[warn] job search: {e}')
+        return jsonify([])
     except Exception as e:
         print(f'[error] job search: {e}')
         return jsonify({'success': False, 'error': str(e)}), 500
@@ -207,7 +392,10 @@ def search_course():
         career_analysis = request.form.get('career_analysis', '')
         user_input = {'keyword': keyword}
         recommended_courses = course_matcher.course_matching(user_input, career_analysis)
-        return jsonify(recommended_courses)
+        return jsonify(recommended_courses or [])
+    except ValueError as e:
+        print(f'[warn] course search: {e}')
+        return jsonify([])
     except Exception as e:
         print(f'[error] course search: {e}')
         return jsonify({'success': False, 'error': str(e)}), 500
@@ -217,6 +405,10 @@ def search_course():
 def health():
     return jsonify({'status': 'ok', 'service': 'ZhituCareer+'})
 
+
+# ---------------------------------------------------------------------------
+# Error handlers & session guard
+# ---------------------------------------------------------------------------
 
 @app.errorhandler(404)
 def not_found(_):
@@ -233,14 +425,25 @@ def server_error(e):
     return render_template('index.html'), 500
 
 
+@app.errorhandler(413)
+def too_large(_):
+    return jsonify({'error': '请求体过大，请减小提交内容'}), 413
+
+
 @app.before_request
 def check_session():
-    public_endpoints = {'login', 'static', 'health'}
+    public_endpoints = {'login', 'register', 'static', 'health'}
     if request.endpoint not in public_endpoints and 'user' not in session:
-        if request.path.startswith('/api/'):
+        # JSON endpoints must answer with JSON, not a redirect the client
+        # cannot consume.
+        if request.path.startswith('/api/') or request.endpoint in JSON_API_ENDPOINTS:
             return jsonify({'error': 'Unauthorized'}), 401
         return redirect(url_for('login'))
 
+
+# ---------------------------------------------------------------------------
+# Seed
+# ---------------------------------------------------------------------------
 
 def seed_default_users():
     users = load_users()

@@ -3,3 +3,4 @@ requests==2.31.0
 python-dotenv==1.0.1
 openai>=1.30.0
 playwright>=1.45.0
+pytest>=8.0.0

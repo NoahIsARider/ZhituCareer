@@ -214,12 +214,25 @@
         <div class="card mb-4" id="courses-section">
             <div class="card-header-custom">
                 <h6><i class="bi bi-book me-2" style="color:var(--brand-500)"></i>课程管理</h6>
-                <button class="btn btn-primary" onclick="showCourseModal()">
-                    <i class="bi bi-plus-lg me-1"></i>添加课程
-                </button>
+                <div class="d-flex gap-2">
+                    <div class="input-group input-group-sm" style="width:260px;">
+                        <span class="input-group-text bg-transparent"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control" id="courseSearchInput"
+                               placeholder="搜索课程名称 / 提供方…">
+                        <button class="btn btn-outline-primary" type="button" onclick="doCourseSearch()">搜索</button>
+                    </div>
+                    <button class="btn btn-primary" onclick="showCourseModal()">
+                        <i class="bi bi-plus-lg me-1"></i>添加课程
+                    </button>
+                </div>
             </div>
             <div class="p-3">
                 <div class="row g-3" id="courseList"></div>
+                <div class="d-flex justify-content-center align-items-center gap-3 mt-3" id="coursePagination">
+                    <button class="btn btn-outline-primary btn-sm" id="coursePrev" onclick="coursePageMove(-1)"><i class="bi bi-chevron-left"></i>上一页</button>
+                    <span class="text-muted" id="coursePageInfo" style="font-size:13px;"></span>
+                    <button class="btn btn-outline-primary btn-sm" id="courseNext" onclick="coursePageMove(1)">下一页<i class="bi bi-chevron-right"></i></button>
+                </div>
             </div>
         </div>
 
@@ -227,12 +240,25 @@
         <div class="card" id="jobs-section">
             <div class="card-header-custom">
                 <h6><i class="bi bi-briefcase me-2" style="color:var(--brand-500)"></i>职位管理</h6>
-                <button class="btn btn-primary" onclick="showJobModal()">
-                    <i class="bi bi-plus-lg me-1"></i>添加职位
-                </button>
+                <div class="d-flex gap-2">
+                    <div class="input-group input-group-sm" style="width:260px;">
+                        <span class="input-group-text bg-transparent"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control" id="jobSearchInput"
+                               placeholder="搜索职位名称 / 公司 / 城市…">
+                        <button class="btn btn-outline-primary" type="button" onclick="doJobSearch()">搜索</button>
+                    </div>
+                    <button class="btn btn-primary" onclick="showJobModal()">
+                        <i class="bi bi-plus-lg me-1"></i>添加职位
+                    </button>
+                </div>
             </div>
             <div class="p-3">
                 <div class="row g-3" id="jobList"></div>
+                <div class="d-flex justify-content-center align-items-center gap-3 mt-3" id="jobPagination">
+                    <button class="btn btn-outline-primary btn-sm" id="jobPrev" onclick="jobPageMove(-1)"><i class="bi bi-chevron-left"></i>上一页</button>
+                    <span class="text-muted" id="jobPageInfo" style="font-size:13px;"></span>
+                    <button class="btn btn-outline-primary btn-sm" id="jobNext" onclick="jobPageMove(1)">下一页<i class="bi bi-chevron-right"></i></button>
+                </div>
             </div>
         </div>
     </div>
@@ -360,6 +386,9 @@
     <script>
         let courseData = [];
         let jobData = [];
+        let coursePage = 1, courseTotal = 0;
+        let jobPage = 1, jobTotal = 0;
+        const PAGE_SIZE = 50;
         let courseModal, jobModal;
 
         const toastEl = document.getElementById('toast');
@@ -377,36 +406,84 @@
             jobModal = new bootstrap.Modal(document.getElementById('jobModal'));
             document.getElementById('saveCourseBtn').addEventListener('click', saveCourse);
             document.getElementById('saveJobBtn').addEventListener('click', saveJob);
+            document.getElementById('courseSearchInput').addEventListener('keydown', e => { if (e.key === 'Enter') doCourseSearch(); });
+            document.getElementById('jobSearchInput').addEventListener('keydown', e => { if (e.key === 'Enter') doJobSearch(); });
             loadCourseData();
             loadJobData();
         });
 
+        function doCourseSearch() {
+            coursePage = 1;
+            loadCourseData();
+        }
+
+        function doJobSearch() {
+            jobPage = 1;
+            loadJobData();
+        }
+
+        function coursePageMove(delta) {
+            const next = coursePage + delta;
+            if (next < 1 || (next - 1) * PAGE_SIZE >= courseTotal) return;
+            coursePage = next;
+            loadCourseData();
+        }
+
+        function jobPageMove(delta) {
+            const next = jobPage + delta;
+            if (next < 1 || (next - 1) * PAGE_SIZE >= jobTotal) return;
+            jobPage = next;
+            loadJobData();
+        }
+
+        function updatePagination(kind) {
+            const page = kind === 'course' ? coursePage : jobPage;
+            const total = kind === 'course' ? courseTotal : jobTotal;
+            const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+            const info = `${page} / ${totalPages} 页（共 ${total} 条）`;
+            const prevBtn = document.getElementById(kind + 'Prev');
+            const nextBtn = document.getElementById(kind + 'Next');
+            document.getElementById(kind + 'PageInfo').textContent = info;
+            prevBtn.disabled = page <= 1;
+            nextBtn.disabled = page >= totalPages;
+        }
+
         function loadCourseData() {
-            fetch('/api/courses')
+            const search = document.getElementById('courseSearchInput').value.trim();
+            const params = new URLSearchParams({ page: coursePage, page_size: PAGE_SIZE });
+            if (search) params.set('search', search);
+            fetch('/api/courses?' + params.toString())
                 .then(r => r.json())
                 .then(data => {
-                    courseData = data.courses || [];
+                    courseData = data.items || [];
+                    courseTotal = data.total || 0;
                     renderCourseList();
                     updateStats();
+                    updatePagination('course');
                 })
                 .catch(err => console.error('加载课程失败:', err));
         }
 
         function loadJobData() {
-            fetch('/api/jobs')
+            const search = document.getElementById('jobSearchInput').value.trim();
+            const params = new URLSearchParams({ page: jobPage, page_size: PAGE_SIZE });
+            if (search) params.set('search', search);
+            fetch('/api/jobs?' + params.toString())
                 .then(r => r.json())
                 .then(data => {
-                    jobData = data.jobs || [];
+                    jobData = data.items || [];
+                    jobTotal = data.total || 0;
                     renderJobList();
                     updateStats();
+                    updatePagination('job');
                 })
                 .catch(err => console.error('加载职位失败:', err));
         }
 
         function updateStats() {
-            document.getElementById('statCourses').textContent = courseData.length;
-            document.getElementById('statJobs').textContent = jobData.length;
-            document.getElementById('statTotal').textContent = courseData.length + jobData.length;
+            document.getElementById('statCourses').textContent = courseTotal;
+            document.getElementById('statJobs').textContent = jobTotal;
+            document.getElementById('statTotal').textContent = courseTotal + jobTotal;
         }
 
         function renderCourseList() {
@@ -415,7 +492,7 @@
                 list.innerHTML = '<div class="col-12"><div class="empty-state"><i class="bi bi-journal-x"></i>暂无课程数据，点击右上角「添加课程」开始</div></div>';
                 return;
             }
-            list.innerHTML = courseData.map((course, index) => `
+            list.innerHTML = courseData.map(course => `
                 <div class="col-xl-4 col-md-6">
                     <div class="card item-card h-100">
                         <div class="p-4">
@@ -436,8 +513,8 @@
                             </div>
                         </div>
                         <div class="card-footer-custom">
-                            <button class="btn btn-outline-primary btn-sm" onclick="editCourse(${index})"><i class="bi bi-pencil me-1"></i>编辑</button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteCourse(${index})"><i class="bi bi-trash me-1"></i>删除</button>
+                            <button class="btn btn-outline-primary btn-sm" onclick="showCourseModal('${escapeHtml(String(course.id))}')"><i class="bi bi-pencil me-1"></i>编辑</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteCourse('${escapeHtml(String(course.id))}')"><i class="bi bi-trash me-1"></i>删除</button>
                         </div>
                     </div>
                 </div>
@@ -450,7 +527,7 @@
                 list.innerHTML = '<div class="col-12"><div class="empty-state"><i class="bi bi-briefcase-x"></i>暂无职位数据，点击右上角「添加职位」开始</div></div>';
                 return;
             }
-            list.innerHTML = jobData.map((job, index) => `
+            list.innerHTML = jobData.map(job => `
                 <div class="col-xl-4 col-md-6">
                     <div class="card item-card h-100">
                         <div class="p-4">
@@ -468,20 +545,20 @@
                             </div>
                         </div>
                         <div class="card-footer-custom">
-                            <button class="btn btn-outline-primary btn-sm" onclick="editJob(${index})"><i class="bi bi-pencil me-1"></i>编辑</button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteJob(${index})"><i class="bi bi-trash me-1"></i>删除</button>
+                            <button class="btn btn-outline-primary btn-sm" onclick="showJobModal('${escapeHtml(String(job.id))}')"><i class="bi bi-pencil me-1"></i>编辑</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteJob('${escapeHtml(String(job.id))}')"><i class="bi bi-trash me-1"></i>删除</button>
                         </div>
                     </div>
                 </div>
             `).join('');
         }
 
-        function showCourseModal(index = null) {
+        function showCourseModal(id = null) {
             document.getElementById('courseForm').reset();
-            document.getElementById('courseIndex').value = index === null ? '' : index;
-            document.getElementById('courseModalLabel').textContent = index === null ? '添加课程' : '编辑课程';
-            if (index !== null) {
-                const c = courseData[index];
+            document.getElementById('courseIndex').value = id || '';
+            document.getElementById('courseModalLabel').textContent = id ? '编辑课程' : '添加课程';
+            if (id) {
+                const c = courseData.find(x => String(x.id) === String(id)) || {};
                 document.getElementById('courseTitle').value = c.title || '';
                 document.getElementById('courseDescription').value = c.description || '';
                 document.getElementById('courseLevel').value = c.level || 'Beginner';
@@ -494,12 +571,12 @@
             courseModal.show();
         }
 
-        function showJobModal(index = null) {
+        function showJobModal(id = null) {
             document.getElementById('jobForm').reset();
-            document.getElementById('jobIndex').value = index === null ? '' : index;
-            document.getElementById('jobModalLabel').textContent = index === null ? '添加职位' : '编辑职位';
-            if (index !== null) {
-                const j = jobData[index];
+            document.getElementById('jobIndex').value = id || '';
+            document.getElementById('jobModalLabel').textContent = id ? '编辑职位' : '添加职位';
+            if (id) {
+                const j = jobData.find(x => String(x.id) === String(id)) || {};
                 document.getElementById('jobTitle').value = j.title || '';
                 document.getElementById('jobCompany').value = j.company || '';
                 document.getElementById('jobLocation').value = j.location || '';
@@ -511,7 +588,7 @@
         }
 
         function saveCourse() {
-            const index = document.getElementById('courseIndex').value;
+            const id = document.getElementById('courseIndex').value;
             const course = {
                 title: document.getElementById('courseTitle').value,
                 description: document.getElementById('courseDescription').value,
@@ -522,20 +599,14 @@
                 skills: document.getElementById('courseSkills').value.split(',').map(s => s.trim()).filter(Boolean),
                 career_paths: document.getElementById('coursePaths').value.split(',').map(s => s.trim()).filter(Boolean)
             };
-            if (index === '') {
-                course.id = Date.now().toString();
-                courseData.push(course);
-            } else {
-                course.id = courseData[index].id;
-                courseData[index] = course;
-            }
-            postJson('/api/courses', { courses: courseData }).then(ok => {
+            if (id) course.id = id;
+            postJson('/api/courses/item', { course }).then(ok => {
                 if (ok) { courseModal.hide(); loadCourseData(); notify('课程已保存'); }
             });
         }
 
         function saveJob() {
-            const index = document.getElementById('jobIndex').value;
+            const id = document.getElementById('jobIndex').value;
             const job = {
                 title: document.getElementById('jobTitle').value,
                 company: document.getElementById('jobCompany').value,
@@ -544,14 +615,8 @@
                 description: document.getElementById('jobDescription').value,
                 requirements: document.getElementById('jobRequirements').value.split('\n').map(s => s.trim()).filter(Boolean)
             };
-            if (index === '') {
-                job.id = Date.now().toString();
-                jobData.push(job);
-            } else {
-                job.id = jobData[index].id || Date.now().toString();
-                jobData[index] = job;
-            }
-            postJson('/api/jobs', { jobs: jobData }).then(ok => {
+            if (id) job.id = id;
+            postJson('/api/jobs/item', { job }).then(ok => {
                 if (ok) { jobModal.hide(); loadJobData(); notify('职位已保存'); }
             });
         }
@@ -573,21 +638,29 @@
             }
         }
 
-        function editCourse(index) { showCourseModal(index); }
-        function editJob(index) { showJobModal(index); }
+        async function deleteItem(url, id) {
+            try {
+                const res = await fetch(url + '?id=' + encodeURIComponent(id), { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) return true;
+                notify(data.error || '删除失败', false);
+                return false;
+            } catch (err) {
+                notify('删除失败：' + err.message, false);
+                return false;
+            }
+        }
 
-        function deleteCourse(index) {
+        function deleteCourse(id) {
             if (!confirm('确定要删除这个课程吗？')) return;
-            courseData.splice(index, 1);
-            postJson('/api/courses', { courses: courseData }).then(ok => {
+            deleteItem('/api/courses/item', id).then(ok => {
                 if (ok) { loadCourseData(); notify('课程已删除'); }
             });
         }
 
-        function deleteJob(index) {
+        function deleteJob(id) {
             if (!confirm('确定要删除这个职位吗？')) return;
-            jobData.splice(index, 1);
-            postJson('/api/jobs', { jobs: jobData }).then(ok => {
+            deleteItem('/api/jobs/item', id).then(ok => {
                 if (ok) { loadJobData(); notify('职位已删除'); }
             });
         }

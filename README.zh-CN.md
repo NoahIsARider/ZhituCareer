@@ -30,6 +30,10 @@
 | 💼 **职位智能匹配** | 结合技能与搜索偏好，从职位库中匹配最合适的工作 |
 | 📊 **市场趋势洞察** | Playwright 实时抓取就业市场动态，AI 汇总行业风向 |
 | 📚 **课程学习推荐** | 围绕职业目标推荐匹配的课程与学习路径 |
+| 🚀 **可扩展混合检索** | TF-IDF + 倒排索引在 LLM 精排前将数千条记录预筛为有界候选集，数据量增长匹配依旧快速稳定 |
+| 🛟 **离线兜底引擎** | LLM 不可用（无 Key / 配额 / 网络）时，规则引擎接管分析与匹配，全功能可用且响应格式一致 |
+| 🛒 **自助注册** | 用户可用手机号 + 密码自行注册账号（带限流） |
+| 🔍 **可搜索管理后台** | 管理后台支持关键词搜索与分页，按 id 单条增删改 |
 | 🔐 **角色权限控制** | 用户 / 管理员双角色，独立管理后台 |
 | 🚀 **开箱即用** | 内置演示账号与示例数据，分钟级完成部署 |
 
@@ -60,12 +64,18 @@ ZhiTuCareer+ 采用模块化的 **Agent 协作架构**，多个智能体各司�
 - **Job Recommendation Agent**：融合个人画像与市场分析，生成结构化求职建议
 - **Job Matching Agent**：从职位库中按匹配度筛选最适合用户的岗位
 - **Course Matching Agent**：结合职业目标推荐最匹配的学习课程
+- **混合检索引擎**：TF-IDF + 倒排索引，中文 bigram 分词与中英文别名扩展，在调用 LLM 前把数千条记录预筛为有界候选集（≤ 20）
+- **兜底引擎**：确定性规则分析 / 匹配，保证 LLM 不可达时应用全功能可用
 
 ```
 用户画像 Agent ──► 市场分析 Agent ──► 职位推荐 Agent ──► 推荐结果
                         │                    │
                         ▼                    ▼
                 Playwright 实时抓取     职位匹配 Agent / 课程匹配 Agent
+                        │                    │
+                        ▼                    ▼
+                        ▼             混合检索（有界候选集）
+                        ▼             LLM 精排 ──► 规则兜底
 ```
 
 <div align="center">
@@ -117,7 +127,7 @@ OPENAI_API_KEY=your_api_key_here
 ```
 
 > 💡 所有模型名、接口地址均可通过环境变量覆盖，无需修改任何代码。
-> 未配置 API Key 时应用仍可正常启动，AI 分析功能会在调用时给出清晰提示。
+> 未配置 API Key 时应用仍可正常启动：规则**兜底引擎**会接管，职业分析、职位匹配与课程推荐在完全离线模式下照常工作（结果带 `source` 标记）。
 
 ### 启动应用
 
@@ -146,8 +156,9 @@ python app.py
 ### 管理员
 
 1. 登录后在「管理后台」查看课程与职位的实时统计
-2. 通过卡片操作 **添加 / 编辑 / 删除** 课程与职位数据
-3. 数据保存至 `data/course.json` 与 `data/jobs.json`
+2. 使用**搜索框**按关键词筛选、**分页控件**浏览大规模数据
+3. 通过卡片操作按 id **添加 / 编辑 / 删除**单条课程与职位数据
+4. 数据保存至 `data/course.json` 与 `data/jobs.json`（原子写入，文件不会被写坏）
 
 ---
 
@@ -157,10 +168,14 @@ python app.py
 ZhituCareer/
 ├── app.py                  # Flask 主应用（路由、鉴权、会话管理）
 ├── career_model.py         # 职业分析编排（多 Agent 串联）
-├── job_matching.py         # 职位匹配服务
-├── course_matching.py      # 课程匹配服务
+├── job_matching.py         # 职位匹配服务（检索 → LLM → 兜底）
+├── course_matching.py      # 课程匹配服务（检索 → LLM → 兜底）
+├── retrieval.py            # 混合检索：倒排索引 + TF-IDF 预筛选
+├── fallback_matcher.py     # 规则兜底分析 / 匹配（离线模式）
+├── data_store.py           # 原子 JSON 持久化、文件锁、模式校验
+├── cache.py                # 线程安全 TTL 缓存
 ├── agent/                  # 多 Agent 协作层
-│   ├── llm_client.py       # LLM 客户端与统一响应处理
+│   ├── llm_client.py       # LLM 客户端、健壮 JSON 解析与重试
 │   ├── user_profile_agent.py
 │   ├── market_analysis_agent.py   # Playwright 市场抓取
 │   ├── job_recommendation_agent.py
@@ -171,9 +186,10 @@ ZhituCareer/
 │   ├── jobs.json           # 职位数据
 │   └── course.json         # 课程数据
 ├── templates/              # 前端页面（Bootstrap 5）
-│   ├── login.html          # 登录页
+│   ├── login.html          # 登录 / 注册页
 │   ├── index.html          # 用户仪表盘
 │   └── admin.html          # 管理后台
+├── tests/                  # 120 个 pytest 用例（含 5000 条规模测试）
 └── requirements.txt
 ```
 
@@ -184,10 +200,12 @@ ZhituCareer/
 | 层次 | 技术 |
 | --- | --- |
 | 后端 | Flask 3 · Python 3.9+ |
-| AI 引擎 | OpenAI 兼容接口（ModelScope / SiliconFlow）· Meta-Llama-3.1-8B-Instruct |
-| 数据采集 | Playwright（Chromium 无头浏览器） |
+| AI 引擎 | OpenAI 兼容接口（ModelScope / SiliconFlow）· Meta-Llama-3.1-8B-Instruct · 离线规则兜底 |
+| 数据采集 | Playwright（Chromium 无头浏览器，可选） |
+| 检索 | 倒排索引 + TF-IDF 混合检索（中文 bigram 分词、中英文别名扩展） |
 | 前端 | Bootstrap 5 · Bootstrap Icons · 原生 ES6 |
-| 数据存储 | JSON 文件（可无缝迁移至 SQLite / MySQL，见 [data_base 分支](https://github.com/NoahIsARider/ZhituCareer/tree/data_base)） |
+| 数据存储 | 原子 JSON 文件（可无缝迁移至 SQLite / MySQL，见 [data_base 分支](https://github.com/NoahIsARider/ZhituCareer/tree/data_base)） |
+| 测试 | pytest · 120 个用例 · 5000 条规模基准（见 [docs/TEST_REPORT.md](docs/TEST_REPORT.md)） |
 
 ---
 

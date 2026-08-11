@@ -5,3 +5,6 @@ __pycache__/
 venv/
 *.log
 .DS_Store
+.pytest_cache/
+*.lock
+data/*.tmp

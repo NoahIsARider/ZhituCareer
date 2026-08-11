@@ -1,8 +1,13 @@
 import json
 import os
+import re
+import time
 
 DEFAULT_BASE_URL = 'https://api-inference.modelscope.cn/v1/'
 DEFAULT_MODEL = 'LLM-Research/Meta-Llama-3.1-8B-Instruct'
+
+_MAX_RETRIES = int(os.getenv('LLM_MAX_RETRIES', '2'))
+_RETRY_BASE_DELAY = float(os.getenv('LLM_RETRY_BASE_DELAY', '0.5'))
 
 
 def create_llm_client():
@@ -26,13 +31,96 @@ def get_model():
     return os.getenv('LLM_MODEL', DEFAULT_MODEL)
 
 
+def strip_code_fence(text):
+    """去除模型输出中可能存在的 Markdown 代码块包裹。"""
+    text = (text or '').strip()
+    if '```json' in text:
+        start = text.find('```json') + 7
+        end = text.find('```', start)
+        if end != -1:
+            return text[start:end].strip()
+    elif '```' in text:
+        start = text.find('```') + 3
+        end = text.find('```', start)
+        if end != -1:
+            return text[start:end].strip()
+    return text
+
+
+def extract_json(text):
+    """Extract the first balanced JSON array / object from arbitrary text.
+
+    LLMs frequently wrap JSON in prose or fenced code blocks; this finds the
+    leftmost structurally complete JSON container by bracket matching while
+    respecting string literals (the leftmost opener is the outermost one).
+    """
+    text = strip_code_fence(text)
+    if not text:
+        return None
+
+    obj_start = text.find('{')
+    arr_start = text.find('[')
+    if obj_start == -1 and arr_start == -1:
+        return None
+    if obj_start == -1:
+        start, open_ch, close_ch = arr_start, '[', ']'
+    elif arr_start == -1:
+        start, open_ch, close_ch = obj_start, '{', '}'
+    elif obj_start < arr_start:
+        start, open_ch, close_ch = obj_start, '{', '}'
+    else:
+        start, open_ch, close_ch = arr_start, '[', ']'
+
+    depth = 0
+    in_str = False
+    escaped = False
+    for i in range(start, len(text)):
+        ch = text[i]
+        if in_str:
+            if escaped:
+                escaped = False
+            elif ch == '\\':
+                escaped = True
+            elif ch == '"':
+                in_str = False
+            continue
+        if ch == '"':
+            in_str = True
+        elif ch == open_ch:
+            depth += 1
+        elif ch == close_ch:
+            depth -= 1
+            if depth == 0:
+                return text[start:i + 1]
+    return None
+
+
+def _fix_trailing_commas(text):
+    """Remove trailing commas before ']' / '}' — a common LLM JSON mistake."""
+    return re.sub(r',\s*([\]}])', r'\1', text)
+
+
 class LLMClient:
     """封装 OpenAI 兼容客户端与统一的流式响应处理。"""
 
-    def __init__(self, client):
+    def __init__(self, client, max_retries=_MAX_RETRIES):
         self.client = client
+        self.max_retries = max_retries
 
     def chat(self, model, system, user):
+        """Send a chat request with automatic retries on transient errors."""
+        last_error = None
+        for attempt in range(self.max_retries + 1):
+            try:
+                return self._chat_once(model, system, user)
+            except ValueError as e:
+                last_error = e
+                if attempt < self.max_retries:
+                    time.sleep(_RETRY_BASE_DELAY * (2 ** attempt))
+        raise ValueError(f'API request failed after {self.max_retries + 1} '
+                         f'attempts: {last_error}')
+
+    def _chat_once(self, model, system, user):
         try:
             response = self.client.chat.completions.create(
                 model=model,
@@ -62,26 +150,19 @@ class LLMClient:
             raise ValueError('Empty response from API')
         return full_response
 
-    @staticmethod
-    def strip_code_fence(text):
-        """去除模型输出中可能存在的 Markdown 代码块包裹。"""
-        text = text.strip()
-        if '```json' in text:
-            start = text.find('```json') + 7
-            end = text.find('```', start)
-            if end != -1:
-                return text[start:end].strip()
-        elif '```' in text:
-            start = text.find('```') + 3
-            end = text.find('```', start)
-            if end != -1:
-                return text[start:end].strip()
-        return text
-
     def parse_json(self, text):
-        """解析模型输出的 JSON，自动剥离代码块；失败时抛出 ValueError。"""
-        cleaned = self.strip_code_fence(text)
+        """Parse model output JSON, stripping fences and fixing common issues.
+
+        Returns the parsed object, or ``None`` when the text does not contain
+        valid JSON (instead of raising, so callers can fall back gracefully).
+        """
+        candidate = extract_json(text)
+        if candidate is None:
+            return None
         try:
-            return json.loads(cleaned)
+            return json.loads(candidate)
         except json.JSONDecodeError:
-            raise ValueError('Model returned invalid JSON')
+            try:
+                return json.loads(_fix_trailing_commas(candidate))
+            except json.JSONDecodeError:
+                return None

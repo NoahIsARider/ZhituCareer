@@ -324,7 +324,7 @@
 
         <!-- 分析结果 -->
         <div id="analysisResult" class="d-none">
-            <div class="section-title"><span class="bar"></span>分析结果</div>
+            <div class="section-title" id="analysisTitle"><span class="bar"></span>分析结果</div>
             <div class="row g-3" id="analysisGrid"></div>
         </div>
 
@@ -439,6 +439,11 @@
                 grid.innerHTML = '<div class="col-12"><div class="card p-4"><pre class="mb-0">' + escapeHtml(String(analysis)) + '</pre></div></div>';
                 return;
             }
+            const sourceBadge = analysis.source === 'local'
+                ? '<span class="badge bg-secondary ms-2" title="LLM 服务暂不可用，已使用本地引擎生成分析">离线模式</span>'
+                : '';
+            document.getElementById('analysisTitle').innerHTML =
+                '<span class="bar"></span>分析结果' + sourceBadge;
             const blocks = [
                 { icon: 'bi-signpost-split', title: '职业发展方向', key: 'career_path' },
                 { icon: 'bi-lightbulb', title: '求职建议', key: 'job_advice' },

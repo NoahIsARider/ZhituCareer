@@ -24,7 +24,7 @@ class JobMatchingAgent:
 职业分析结果：
 {career_analysis}
 
-可选工作列表：
+可选工作列表（已按相关性预筛选，最多 {len(jobs)} 个）：
 {jobs_str}
 
 请分析每个工作的要求和描述，结合用户的搜索偏好，选择最适合且能胜任的工作，其中每一个工作的格式如下：

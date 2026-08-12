@@ -12,7 +12,6 @@ A one-stop career analysis platform built on **Flask + multi-agent collaboration
 ![Playwright](https://img.shields.io/badge/Playwright-Automation-2EAD33?style=flat-square&logo=playwright&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)
 ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)
-![CI](https://github.com/NoahIsARider/ZhituCareer/actions/workflows/ci.yml/badge.svg)
 ![Tests](https://img.shields.io/badge/tests-128%20passed-brightgreen?style=flat-square)
 ![Docker](https://img.shields.io/badge/Docker-ready-2496ED?style=flat-square&logo=docker&logoColor=white)
 

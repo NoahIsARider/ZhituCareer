@@ -13,7 +13,7 @@
 ![Playwright](https://img.shields.io/badge/Playwright-Automation-2EAD33?style=flat-square&logo=playwright&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)
 ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)
-![Tests](https://img.shields.io/badge/tests-128%20passed-brightgreen?style=flat-square)
+![Tests](https://img.shields.io/badge/tests-164%20passed-brightgreen?style=flat-square)
 ![Docker](https://img.shields.io/badge/Docker-ready-2496ED?style=flat-square&logo=docker&logoColor=white)
 
 <br>
@@ -32,6 +32,8 @@
 | 💼 **职位智能匹配** | 结合技能与搜索偏好，从职位库中匹配最合适的工作 |
 | 📊 **市场趋势洞察** | Playwright 实时抓取就业市场动态，AI 汇总行业风向 |
 | 📚 **课程学习推荐** | 围绕职业目标推荐匹配的课程与学习路径 |
+| 🎤 **AI 模拟面试** | 根据个人信息与目标职位生成面试题，逐题评分反馈，结束输出整场面试总结 |
+| 🗺️ **长期职业生涯规划** | 生成 5 年三阶段路线图（筑基 → 深耕 → 跃迁），含目标、行动、里程碑与量化 KPI |
 | 🚀 **可扩展混合检索** | TF-IDF + 倒排索引在 LLM 精排前将数千条记录预筛为有界候选集，数据量增长匹配依旧快速稳定 |
 | 🛟 **离线兜底引擎** | LLM 不可用（无 Key / 配额 / 网络）时，规则引擎接管分析与匹配，全功能可用且响应格式一致 |
 | 📊 **数据洞察仪表盘** | 基于实时统计 API 的 ECharts 交互图表（薪资分布、热门城市、技能需求） |
@@ -65,8 +67,8 @@
 ZhiTuCareer+ 按真实产品的标准打造，而非玩具 demo：
 
 - **生产级架构**：多 Agent LLM 流水线 + **混合检索引擎**（倒排索引 + TF-IDF），在 LLM 精排前把数千条记录预筛为有界候选集，5000+ 职位依然快速
-- **永不崩溃**：LLM 不可用时，确定性**规则兜底引擎**接管，职业分析、职位匹配、课程推荐全部离线可用
-- **工程化硬实力**：带文件锁的原子 JSON 存储（写入永不损坏）、TTL 缓存、限流鉴权、健壮 LLM JSON 解析、**128 个自动化测试**（含 5000 条规模基准）全绿
+- **永不崩溃**：LLM 不可用时，确定性**规则兜底引擎**接管，职业分析、职位匹配、课程推荐、模拟面试、职业规划全部离线可用
+- **工程化硬实力**：带文件锁的原子 JSON 存储（写入永不损坏）、TTL 缓存、限流鉴权、健壮 LLM JSON 解析、**164 个自动化测试**（含 5000 条规模基准）全绿
 - **产品级观感**：ECharts 市场数据洞察、分析历史、可搜索管理后台、精致的 Bootstrap 仪表盘
 - **零门槛体验**：内置演示账号 + `docker compose up`，数秒内跑起来
 
@@ -81,6 +83,8 @@ ZhiTuCareer+ 采用模块化的 **Agent 协作架构**，多个智能体各司�
 - **Job Recommendation Agent**：融合个人画像与市场分析，生成结构化求职建议
 - **Job Matching Agent**：从职位库中按匹配度筛选最适合用户的岗位
 - **Course Matching Agent**：结合职业目标推荐最匹配的学习课程
+- **Interview Agent**：生成针对性面试题，并对求职者回答逐题评分反馈
+- **Career Planning Agent**：生成结构化 5 年三阶段长期职业路线图
 - **混合检索引擎**：TF-IDF + 倒排索引，中文 bigram 分词与中英文别名扩展，在调用 LLM 前把数千条记录预筛为有界候选集（≤ 20）
 - **兜底引擎**：确定性规则分析 / 匹配，保证 LLM 不可达时应用全功能可用
 
@@ -186,6 +190,8 @@ OPENAI_API_KEY= docker compose up
 3. 点击「获取职业分析」，AI 将生成 **职业方向、求职建议、能力提升清单与推荐职位**，每次结果自动存入**分析历史**可供回看
 4. 使用「职位搜索」按关键词与城市匹配岗位
 5. 使用「课程推荐」获取与职业目标匹配的学习路径
+6. 使用「**AI 模拟面试**」进行面试演练：填写目标职位后逐题作答，AI 逐题评分反馈，结束输出整场总结
+7. 使用「**长期职业生涯规划**」生成 5 年三阶段路线图（目标 / 行动 / 里程碑 / KPI），每次规划自动存入规划历史
 
 ### 管理员
 
@@ -202,6 +208,8 @@ OPENAI_API_KEY= docker compose up
 ZhituCareer/
 ├── app.py                  # Flask 主应用（路由、鉴权、会话管理）
 ├── career_model.py         # 职业分析编排（多 Agent 串联）
+├── career_plan.py          # 长期职业规划（LLM → 兜底）
+├── mock_interview.py       # AI 模拟面试引擎（LLM → 兜底）
 ├── job_matching.py         # 职位匹配服务（检索 → LLM → 兜底）
 ├── course_matching.py      # 课程匹配服务（检索 → LLM → 兜底）
 ├── retrieval.py            # 混合检索：倒排索引 + TF-IDF 预筛选
@@ -215,16 +223,20 @@ ZhituCareer/
 │   ├── market_analysis_agent.py   # Playwright 市场抓取
 │   ├── job_recommendation_agent.py
 │   ├── job_matching_agent.py
-│   └── course_matching_agent.py
+│   ├── course_matching_agent.py
+│   ├── interview_agent.py        # 模拟面试出题与回答评估
+│   └── career_planning_agent.py  # 5 年路线图生成
 ├── data/                   # 数据存储（JSON）
 │   ├── users.json          # 用户与角色
 │   ├── jobs.json           # 职位数据
-│   └── course.json         # 课程数据
+│   ├── course.json         # 课程数据
+│   ├── interviews.json     # 模拟面试会话
+│   └── plans.json          # 长期职业规划
 ├── templates/              # 前端页面（Bootstrap 5）
 │   ├── login.html          # 登录 / 注册页
 │   ├── index.html          # 用户仪表盘（ECharts 洞察 + 历史记录）
 │   └── admin.html          # 管理后台
-├── tests/                  # 128 个 pytest 用例（含 5000 条规模测试）
+├── tests/                  # 164 个 pytest 用例（含 5000 条规模测试）
 ├── Dockerfile              # 一条命令构建容器
 ├── docker-compose.yml      # `docker compose up` 一键启动
 └── requirements.txt
@@ -238,8 +250,10 @@ ZhituCareer/
 - [x] 离线规则兜底引擎
 - [x] 仪表盘数据洞察（ECharts）
 - [x] 职业分析历史记录
+- [x] AI 模拟面试（出题 + 逐题评分 + 总结）
+- [x] 长期职业生涯规划（5 年三阶段路线图）
 - [x] Docker 一键部署
-- [x] 128 个自动化测试
+- [x] 164 个自动化测试
 - [ ] 迁移 SQLite 以支持多 worker 并发写入
 - [ ] 简历（PDF / Word）解析
 - [ ] 求职进度追踪（收藏 / 状态管理）
@@ -257,7 +271,7 @@ ZhituCareer/
 | 检索 | 倒排索引 + TF-IDF 混合检索（中文 bigram 分词、中英文别名扩展） |
 | 前端 | Bootstrap 5 · Bootstrap Icons · 原生 ES6 |
 | 数据存储 | 原子 JSON 文件（可无缝迁移至 SQLite / MySQL，见 [data_base 分支](https://github.com/NoahIsARider/ZhituCareer/tree/data_base)） |
-| 测试 | pytest · 128 个用例 · 5000 条规模基准（见 [docs/TEST_REPORT.md](docs/TEST_REPORT.md)） |
+| 测试 | pytest · 164 个用例 · 5000 条规模基准（见 [docs/TEST_REPORT.md](docs/TEST_REPORT.md)） |
 
 ---
 

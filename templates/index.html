@@ -300,8 +300,8 @@
             <h2 class="mt-3">你好，欢迎使用智途 Career+</h2>
             <p>填写你的专业信息，AI 将为你生成专属的职业规划、求职建议与学习路径</p>
             <div class="hero-stats">
-                <div class="hero-stat"><b>4</b><span>智能 Agent</span></div>
-                <div class="hero-stat"><b>3</b><span>核心服务</span></div>
+                <div class="hero-stat"><b>6</b><span>智能 Agent</span></div>
+                <div class="hero-stat"><b>5</b><span>核心服务</span></div>
                 <div class="hero-stat"><b>∞</b><span>职业可能</span></div>
             </div>
         </div>
@@ -446,6 +446,63 @@
             </form>
         </div>
         <div id="courseList" class="row g-3 mt-1"></div>
+
+        <!-- AI 模拟面试 -->
+        <div class="section-title"><span class="bar"></span>AI 模拟面试</div>
+        <div class="card p-4">
+            <form id="interviewForm" class="row g-3 align-items-end">
+                <div class="col-md-6">
+                    <label class="form-label" for="targetPosition">目标职位</label>
+                    <input type="text" id="targetPosition" class="form-control" placeholder="例如：AI 算法工程师">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label" for="numQuestions">题目数量</label>
+                    <select id="numQuestions" class="form-select">
+                        <option value="3">3 题</option>
+                        <option value="5" selected>5 题</option>
+                        <option value="8">8 题</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-mic me-2"></i>开始面试</button>
+                </div>
+            </form>
+        </div>
+        <div id="interviewBox" class="mt-3 d-none">
+            <div class="card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="card-header-custom mb-0">
+                        <span class="icon"><i class="bi bi-mic"></i></span>
+                        <h5>模拟面试进行中</h5>
+                    </div>
+                    <span class="badge bg-gradient-brand" id="interviewProgress">第 1 / 5 题</span>
+                </div>
+                <div class="mb-3">
+                    <span class="req-tag" id="interviewFocus"></span>
+                </div>
+                <p class="fw-bold mb-2" style="font-size:15px;" id="interviewQuestion"></p>
+                <textarea id="interviewAnswer" class="form-control" rows="4" placeholder="在这里输入你的回答…"></textarea>
+                <div class="mt-3 d-flex gap-2">
+                    <button class="btn btn-primary" id="submitAnswerBtn"><i class="bi bi-send me-1"></i>提交回答</button>
+                </div>
+                <div id="interviewEvaluation" class="mt-3 d-none"></div>
+            </div>
+        </div>
+        <div id="interviewHistory" class="mt-3"></div>
+
+        <!-- 长期职业生涯规划 -->
+        <div class="section-title"><span class="bar"></span>长期职业生涯规划</div>
+        <div class="card p-4">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <div>
+                    <h6 class="fw-bold mb-1">5 年三阶段职业路线图</h6>
+                    <p class="mb-0 text-muted" style="font-size:13px;">基于你的个人信息与职业分析，生成「筑基 → 深耕 → 跃迁」的长期发展计划</p>
+                </div>
+                <button class="btn btn-primary" id="planBtn"><i class="bi bi-map me-2"></i>生成长期规划</button>
+            </div>
+        </div>
+        <div id="planResult" class="mt-3 d-none"></div>
+        <div id="planHistory" class="mt-3"></div>
     </div>
 
     <div class="toast-container position-fixed top-0 end-0 p-3">
@@ -803,6 +860,328 @@
 
         loadStats();
         loadHistory();
+        loadInterviewHistory();
+        loadPlanHistory();
+
+        // ==================== AI 模拟面试 ====================
+        const interviewState = { sessionId: null, questions: [], index: 0, evaluations: [] };
+
+        function setInterviewLoading(loading) {
+            const btn = document.getElementById('submitAnswerBtn');
+            if (loading) {
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>评估中…';
+            } else {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-send me-1"></i>提交回答';
+            }
+        }
+
+        function showInterviewQuestion() {
+            const q = interviewState.questions[interviewState.index];
+            document.getElementById('interviewQuestion').textContent = q.question;
+            document.getElementById('interviewFocus').textContent = '考察点：' + (q.focus || '综合能力');
+            document.getElementById('interviewProgress').textContent =
+                `第 ${interviewState.index + 1} / ${interviewState.questions.length} 题`;
+            document.getElementById('interviewAnswer').value = '';
+            document.getElementById('interviewEvaluation').classList.add('d-none');
+            setInterviewLoading(false);
+        }
+
+        function renderInterviewEvaluation(ev, completed, summary) {
+            const box = document.getElementById('interviewEvaluation');
+            const scoreColor = ev.score >= 85 ? '#059669' : ev.score >= 70 ? '#ea580c' : '#dc2626';
+            const tags = [...(ev.strengths || []).map(s => `<span class="req-tag" style="background:rgba(16,185,129,.12);color:#059669;">${escapeHtml(s)}</span>`),
+                          ...(ev.weaknesses || []).map(w => `<span class="req-tag" style="background:rgba(220,38,38,.08);color:#dc2626;">${escapeHtml(w)}</span>`)];
+            let html = `
+                <div class="card p-3" style="background:#f8fafc;">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="fw-bold">本题评分</span>
+                        <span style="font-size:26px;font-weight:800;color:${scoreColor};">${ev.score}<small style="font-size:14px;"> / 100</small></span>
+                    </div>
+                    <p class="mb-2" style="font-size:13.5px;"><i class="bi bi-chat-quote me-1" style="color:var(--brand-500)"></i>${escapeHtml(ev.feedback)}</p>
+                    <p class="mb-2" style="font-size:13.5px;color:#475569;"><i class="bi bi-lightbulb me-1" style="color:var(--brand-500)"></i>${escapeHtml(ev.suggestion)}</p>
+                    ${tags.length ? `<div class="mb-2">${tags.join('')}</div>` : ''}
+                </div>`;
+            if (completed && summary) {
+                const svgScore = summary.avg_score;
+                html += `
+                <div class="card p-3 mt-3" style="border:1px solid rgba(249,115,22,.4);">
+                    <div class="card-header-custom mb-2">
+                        <span class="icon"><i class="bi bi-trophy"></i></span>
+                        <h5>面试总结</h5>
+                    </div>
+                    <div class="d-flex align-items-center gap-4 mb-2">
+                        <span style="font-size:40px;font-weight:800;color:${svgScore >= 85 ? '#059669' : svgScore >= 70 ? '#ea580c' : '#dc2626'};">${svgScore}</span>
+                        <span class="text-muted" style="font-size:13px;">平均分 / 100</span>
+                    </div>
+                    <p class="mb-2" style="font-size:14px;">${escapeHtml(summary.verdict)}</p>
+                    <div class="mb-1">
+                        ${(summary.strengths || []).map(s => `<span class="req-tag" style="background:rgba(16,185,129,.12);color:#059669;">${escapeHtml(s)}</span>`).join('')}
+                    </div>
+                    <button class="btn btn-outline-primary mt-2" onclick="document.getElementById('interviewForm').scrollIntoView({behavior:'smooth'});">开始新的面试</button>
+                </div>`;
+            } else if (!completed) {
+                html += `<div class="mt-3"><button class="btn btn-primary" onclick="nextInterviewQuestion()"><i class="bi bi-arrow-right me-1"></i>下一题</button></div>`;
+            }
+            box.innerHTML = html;
+            box.classList.remove('d-none');
+        }
+
+        async function nextInterviewQuestion() {
+            interviewState.index += 1;
+            if (interviewState.index >= interviewState.questions.length) return;
+            showInterviewQuestion();
+        }
+
+        document.getElementById('interviewForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const target = document.getElementById('targetPosition').value.trim();
+            if (!target) { notify('请填写目标职位', false); return; }
+            const num = document.getElementById('numQuestions').value;
+            const btn = e.target.querySelector('button[type=submit]');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>生成题目…';
+            try {
+                const body = new URLSearchParams({ target_position: target, num_questions: num });
+                const res = await fetch('/mock_interview/start', { method: 'POST', body });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error || '启动面试失败');
+                interviewState.sessionId = data.session_id;
+                interviewState.questions = data.questions || [];
+                interviewState.index = 0;
+                interviewState.evaluations = [];
+                document.getElementById('interviewBox').classList.remove('d-none');
+                document.getElementById('interviewBox').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                showInterviewQuestion();
+                notify('面试开始，共 ' + interviewState.questions.length + ' 道题');
+            } catch (err) {
+                notify('启动面试失败：' + (err.message || ''), false);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-mic me-2"></i>开始面试';
+            }
+        });
+
+        document.getElementById('submitAnswerBtn').addEventListener('click', async function () {
+            const answer = document.getElementById('interviewAnswer').value.trim();
+            if (!answer) { notify('请先输入你的回答', false); return; }
+            const q = interviewState.questions[interviewState.index];
+            setInterviewLoading(true);
+            try {
+                const body = new URLSearchParams({
+                    session_id: interviewState.sessionId,
+                    question_index: q.id,
+                    answer: answer
+                });
+                const res = await fetch('/mock_interview/answer', { method: 'POST', body });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error || '提交失败');
+                interviewState.evaluations.push(data.evaluation);
+                renderInterviewEvaluation(data.evaluation, data.completed, data.summary);
+                if (data.completed) {
+                    loadInterviewHistory();
+                    notify('面试完成！');
+                }
+            } catch (err) {
+                setInterviewLoading(false);
+                notify('提交失败：' + (err.message || ''), false);
+            }
+        });
+
+        function fmtInterviewMeta(item) {
+            const n = (item.answers || []).length;
+            const total = (item.questions || []).length;
+            const summary = item.summary;
+            const score = summary ? ` · 得分 ${summary.avg_score}` : ` · 已答 ${n}/${total}`;
+            return `${fmtTime(item.ts)} · ${escapeHtml(item.target_position || '')}${score}`;
+        }
+
+        function renderInterviewHistory(items) {
+            const box = document.getElementById('interviewHistory');
+            if (!items.length) {
+                box.innerHTML = '';
+                return;
+            }
+            box.innerHTML = `<div class="section-title mt-4"><span class="bar"></span>面试记录</div>
+                <div class="card p-4">${items.map(item => `
+                    <div class="history-item" data-id="${escapeHtml(item.id)}">
+                        <div class="flex-grow-1">
+                            <div class="h-title">${escapeHtml(item.target_position || '模拟面试')} · ${item.status === 'completed' ? '已完成' : '进行中'}</div>
+                            <div class="h-meta mt-1">${fmtInterviewMeta(item)}</div>
+                        </div>
+                        <div class="d-flex align-items-center gap-1">
+                            <button class="btn btn-sm btn-outline-primary view-interview">查看</button>
+                            <button class="btn-icon delete-interview" title="删除"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </div>`).join('')}</div>`;
+            box.querySelectorAll('.view-interview').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = btn.closest('.history-item').dataset.id;
+                    const item = items.find(i => String(i.id) === id);
+                    if (!item) return;
+                    interviewState.sessionId = item.id;
+                    interviewState.questions = item.questions || [];
+                    interviewState.index = 0;
+                    document.getElementById('targetPosition').value = item.target_position || '';
+                    document.getElementById('interviewBox').classList.remove('d-none');
+                    if ((item.answers || []).length) {
+                        const last = item.answers[item.answers.length - 1];
+                        document.getElementById('interviewQuestion').textContent = last.question;
+                        document.getElementById('interviewFocus').textContent = '考察点：' + (last.focus || '综合能力');
+                        renderInterviewEvaluation(last.evaluation, !!item.summary, item.summary);
+                        document.getElementById('interviewProgress').textContent = `已答 ${item.answers.length} / ${item.questions.length} 题`;
+                    } else {
+                        showInterviewQuestion();
+                    }
+                    document.getElementById('interviewBox').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+            });
+            box.querySelectorAll('.delete-interview').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    if (!confirm('确定删除这条面试记录？')) return;
+                    const id = btn.closest('.history-item').dataset.id;
+                    try {
+                        await fetch('/api/interviews/' + encodeURIComponent(id), { method: 'DELETE' });
+                        loadInterviewHistory();
+                    } catch (e) { notify('删除失败', false); }
+                });
+            });
+        }
+
+        async function loadInterviewHistory() {
+            try {
+                const res = await fetch('/api/interviews');
+                const data = await res.json();
+                if (data.success) renderInterviewHistory(data.items || []);
+            } catch (e) { /* ignore */ }
+        }
+
+        // ==================== 长期职业生涯规划 ====================
+        function renderPlan(plan) {
+            const box = document.getElementById('planResult');
+            const sourceBadge = plan.source === 'local'
+                ? '<span class="badge bg-secondary ms-2" title="LLM 服务暂不可用，已使用本地引擎生成">离线模式</span>'
+                : '';
+            const phases = plan.phases || [];
+            const colors = ['#f97316', '#6366f1', '#10b981'];
+            const phaseHtml = phases.map((p, i) => `
+                <div class="position-relative ps-4 pb-4" style="border-left:2px solid ${colors[i % 3]}22;margin-left:12px;">
+                    <span style="position:absolute;left:-9px;top:2px;width:16px;height:16px;border-radius:50%;background:${colors[i % 3]};border:3px solid #fff;box-shadow:0 0 0 2px ${colors[i % 3]}55;"></span>
+                    <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+                        <span class="badge bg-gradient-brand">${escapeHtml(p.period)}</span>
+                        <span class="fw-bold" style="font-size:15px;">${escapeHtml(p.theme)}</span>
+                    </div>
+                    <div class="row g-2 mt-1">
+                        <div class="col-md-6">
+                            <div class="p-2 rounded" style="background:#f8fafc;font-size:13px;">
+                                <span class="fw-bold d-block mb-1" style="color:var(--brand-600);"><i class="bi bi-bullseye me-1"></i>核心目标</span>
+                                ${(p.goals || []).map(g => `<div>· ${escapeHtml(g)}</div>`).join('')}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-2 rounded" style="background:#f8fafc;font-size:13px;">
+                                <span class="fw-bold d-block mb-1" style="color:#4f46e5;"><i class="bi bi-list-check me-1"></i>关键行动</span>
+                                ${(p.actions || []).map(a => `<div>· ${escapeHtml(a)}</div>`).join('')}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-2 rounded" style="background:#f8fafc;font-size:13px;">
+                                <span class="fw-bold d-block mb-1" style="color:#059669;"><i class="bi bi-flag me-1"></i>里程碑</span>
+                                ${(p.milestones || []).map(m => `<div>· ${escapeHtml(m)}</div>`).join('')}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-2 rounded" style="background:#f8fafc;font-size:13px;">
+                                <span class="fw-bold d-block mb-1" style="color:#ea580c;"><i class="bi bi-speedometer2 me-1"></i>量化 KPI</span>
+                                ${(p.kpis || []).map(k => `<div>· ${escapeHtml(k)}</div>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>`).join('');
+            box.innerHTML = `
+                <div class="card p-4">
+                    <div class="card-header-custom">
+                        <span class="icon"><i class="bi bi-signpost-2"></i></span>
+                        <h5>5 年职业路线图${sourceBadge}</h5>
+                    </div>
+                    <p class="mb-3" style="font-size:14px;color:#475569;">${escapeHtml(plan.summary)}</p>
+                    ${phaseHtml}
+                    ${(plan.risks || []).length ? `<div class="mt-2 p-3 rounded" style="background:#fffbeb;border:1px solid #fde68a;">
+                        <span class="fw-bold d-block mb-2" style="color:#b45309;"><i class="bi bi-exclamation-triangle me-1"></i>风险与应对</span>
+                        ${plan.risks.map(r => `<div class="mb-1" style="font-size:13px;">⚠ ${escapeHtml(r.risk)}<span style="color:var(--muted);"> → ${escapeHtml(r.mitigation)}</span></div>`).join('')}
+                    </div>` : ''}
+                </div>`;
+            box.classList.remove('d-none');
+        }
+
+        document.getElementById('planBtn').addEventListener('click', async function () {
+            const btn = this;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>规划中…';
+            try {
+                const body = new URLSearchParams({ career_analysis: window.careerAnalysis || '' });
+                const res = await fetch('/career_plan/generate', { method: 'POST', body });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error || '生成失败');
+                renderPlan(data.plan);
+                document.getElementById('planResult').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                loadPlanHistory();
+                notify('长期规划已生成！');
+            } catch (err) {
+                notify('生成失败：' + (err.message || ''), false);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-map me-2"></i>生成长期规划';
+            }
+        });
+
+        function renderPlanHistory(items) {
+            const box = document.getElementById('planHistory');
+            if (!items.length) { box.innerHTML = ''; return; }
+            box.innerHTML = `<div class="section-title mt-4"><span class="bar"></span>规划记录</div>
+                <div class="card p-4">${items.map(item => {
+                    const p = item.plan || {};
+                    return `
+                    <div class="history-item" data-id="${escapeHtml(item.id)}">
+                        <div class="flex-grow-1">
+                            <div class="h-title">5 年职业路线图 · ${(p.phases && p.phases[0] ? escapeHtml(p.phases[0].theme) : '长期规划')}</div>
+                            <div class="h-meta mt-1">${fmtTime(item.ts)}${p.source === 'local' ? ' · 离线模式' : ''}</div>
+                        </div>
+                        <div class="d-flex align-items-center gap-1">
+                            <button class="btn btn-sm btn-outline-primary view-plan">查看</button>
+                            <button class="btn-icon delete-plan" title="删除"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </div>`;
+                }).join('')}</div>`;
+            box.querySelectorAll('.view-plan').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = btn.closest('.history-item').dataset.id;
+                    const item = items.find(i => String(i.id) === id);
+                    if (!item) return;
+                    renderPlan(item.plan);
+                    document.getElementById('planResult').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+            });
+            box.querySelectorAll('.delete-plan').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    if (!confirm('确定删除这条规划记录？')) return;
+                    const id = btn.closest('.history-item').dataset.id;
+                    try {
+                        await fetch('/api/plans/' + encodeURIComponent(id), { method: 'DELETE' });
+                        loadPlanHistory();
+                    } catch (e) { notify('删除失败', false); }
+                });
+            });
+        }
+
+        async function loadPlanHistory() {
+            try {
+                const res = await fetch('/api/plans');
+                const data = await res.json();
+                if (data.success) renderPlanHistory(data.items || []);
+            } catch (e) { /* ignore */ }
+        }
     </script>
 </body>
 </html>

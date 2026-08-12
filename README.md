@@ -12,7 +12,7 @@ A one-stop career analysis platform built on **Flask + multi-agent collaboration
 ![Playwright](https://img.shields.io/badge/Playwright-Automation-2EAD33?style=flat-square&logo=playwright&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)
 ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)
-![Tests](https://img.shields.io/badge/tests-128%20passed-brightgreen?style=flat-square)
+![Tests](https://img.shields.io/badge/tests-164%20passed-brightgreen?style=flat-square)
 ![Docker](https://img.shields.io/badge/Docker-ready-2496ED?style=flat-square&logo=docker&logoColor=white)
 
 <br>
@@ -31,6 +31,8 @@ A one-stop career analysis platform built on **Flask + multi-agent collaboration
 | 💼 **Smart Job Matching** | Matches the most suitable jobs from the job pool based on your skills and search preferences |
 | 📊 **Market Trend Insights** | Playwright scrapes job market dynamics in real time, and the AI summarizes industry trends |
 | 📚 **Course Recommendations** | Recommends courses and learning paths aligned with your career goals |
+| 🎤 **AI Mock Interview** | Generates interview questions from your profile and target position, scores each answer and gives a full-session summary |
+| 🗺️ **Long-term Career Planning** | Builds a 5-year, three-phase roadmap (foundation → deepening → leap) with goals, actions, milestones and quantified KPIs |
 | 🚀 **Scalable Hybrid Retrieval** | TF-IDF + inverted-index retrieval pre-filters thousands of records before the LLM re-ranks, so matching stays fast and bounded as data grows |
 | 🛟 **Offline Fallback Engine** | If the LLM is unavailable (no key / quota / network), rule-based analysis and matching keep every feature working with the same response format |
 | 📊 **Data Insights Dashboard** | Interactive ECharts widgets (salary distribution, hot cities, top skills) driven by a live stats API |
@@ -66,6 +68,8 @@ ZhituCareer+ uses a modular **agent collaboration architecture** in which multip
 - **Job Recommendation Agent**: combines the personal profile and market analysis to generate structured job-hunting advice
 - **Job Matching Agent**: filters the most suitable positions from the job pool by match score
 - **Course Matching Agent**: recommends the most relevant courses based on career goals
+- **Interview Agent**: generates targeted interview questions and evaluates candidate answers with scores and feedback
+- **Career Planning Agent**: produces a structured 5-year, three-phase long-term career roadmap
 - **Hybrid Retrieval Engine**: TF-IDF + inverted-index search with Chinese bigram tokenization and English↔Chinese alias expansion pre-filters thousands of records down to a bounded candidate set (≤ 20) before any LLM call
 - **Fallback Engine**: deterministic rule-based analysis / matching that guarantees the app stays fully usable when the LLM is unreachable
 
@@ -157,6 +161,8 @@ Visit **http://localhost:5000**. Your data lives in `./data` and persists across
 3. Click "Get Career Analysis" and the AI will generate **career direction, job-hunting advice, a skill improvement checklist, and recommended positions** — every result is saved to your analysis history for later review
 4. Use "Job Search" to match positions by keyword and city
 5. Use "Course Recommendations" to get a learning path aligned with your career goals
+6. Use **"AI Mock Interview"** to run a simulated interview: enter a target position, answer the generated questions one by one, and get per-answer scores plus a final session summary
+7. Use **"Long-term Career Planning"** to generate a 5-year, three-phase roadmap with goals, actions, milestones and KPIs; every plan is saved to your plan history
 
 ### Admins
 
@@ -173,6 +179,8 @@ Visit **http://localhost:5000**. Your data lives in `./data` and persists across
 ZhituCareer/
 ├── app.py                  # Flask main app (routing, auth, session management)
 ├── career_model.py         # Career analysis orchestration (multi-agent pipeline)
+├── career_plan.py          # Long-term career planning (LLM → fallback)
+├── mock_interview.py       # AI mock interview engine (LLM → fallback)
 ├── job_matching.py         # Job matching service (retrieve → LLM → fallback)
 ├── course_matching.py      # Course matching service (retrieve → LLM → fallback)
 ├── retrieval.py            # Hybrid retrieval: inverted index + TF-IDF pre-filtering
@@ -186,16 +194,20 @@ ZhituCareer/
 │   ├── market_analysis_agent.py   # Playwright market scraping
 │   ├── job_recommendation_agent.py
 │   ├── job_matching_agent.py
-│   └── course_matching_agent.py
+│   ├── course_matching_agent.py
+│   ├── interview_agent.py        # Mock-interview question generation & answer evaluation
+│   └── career_planning_agent.py  # 5-year roadmap generation
 ├── data/                   # Data storage (JSON)
 │   ├── users.json          # Users and roles
 │   ├── jobs.json           # Job data
-│   └── course.json         # Course data
+│   ├── course.json         # Course data
+│   ├── interviews.json     # Mock interview sessions
+│   └── plans.json          # Long-term career plans
 ├── templates/              # Frontend pages (Bootstrap 5)
 │   ├── login.html          # Login / register page
 │   ├── index.html          # User dashboard (ECharts insights + history)
 │   └── admin.html          # Admin panel
-├── tests/                  # 128 pytest cases incl. 5,000-record scale tests
+├── tests/                  # 164 pytest cases incl. 5,000-record scale tests
 ├── Dockerfile              # One-command container build
 ├── docker-compose.yml      # `docker compose up` → running platform
 └── requirements.txt
@@ -209,8 +221,10 @@ ZhituCareer/
 - [x] Offline rule-based fallback engine
 - [x] Dashboard data insights (ECharts)
 - [x] Career analysis history
+- [x] AI mock interview (question generation + answer scoring + session summary)
+- [x] Long-term career planning (5-year, three-phase roadmap)
 - [x] Docker one-command deployment
-- [x] 128 automated tests
+- [x] 164 automated tests
 - [ ] SQLite migration for concurrent multi-worker writes
 - [ ] Resume (PDF/Word) parsing
 - [ ] Job application tracking (favorites / status)
@@ -228,7 +242,7 @@ ZhituCareer/
 | Retrieval | Inverted index + TF-IDF hybrid search (Chinese bigram tokenization, English↔Chinese aliases) |
 | Frontend | Bootstrap 5 · Bootstrap Icons · vanilla ES6 |
 | Data Storage | Atomic JSON files (seamlessly migratable to SQLite / MySQL, see the [data_base branch](https://github.com/NoahIsARider/ZhituCareer/tree/data_base)) |
-| Testing | pytest · 128 cases · 5,000-record scale benchmarks (see [docs/TEST_REPORT.md](docs/TEST_REPORT.md)) |
+| Testing | pytest · 164 cases · 5,000-record scale benchmarks (see [docs/TEST_REPORT.md](docs/TEST_REPORT.md)) |
 
 ---
 

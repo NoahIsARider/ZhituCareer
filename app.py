@@ -8,8 +8,10 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from dotenv import load_dotenv
 
 from career_model import CareerAnalyzer
+from career_plan import CareerPlanner
 from course_matching import CourseMatcher
 from job_matching import JobMatcher
+from mock_interview import MockInterviewEngine
 from data_store import JsonStore
 from stats import compute_overview
 
@@ -29,11 +31,17 @@ USERS_FILE = os.path.join(DATA_DIR, 'users.json')
 COURSES_FILE = os.path.join(DATA_DIR, 'course.json')
 JOBS_FILE = os.path.join(DATA_DIR, 'jobs.json')
 ANALYSES_FILE = os.path.join(DATA_DIR, 'analyses.json')
+INTERVIEWS_FILE = os.path.join(DATA_DIR, 'interviews.json')
+PLANS_FILE = os.path.join(DATA_DIR, 'plans.json')
 
 FORM_FIELDS = ['education', 'major', 'skills', 'experience', 'career_goals']
 
 # User-facing endpoints that return JSON and therefore must answer 401 as JSON.
-JSON_API_ENDPOINTS = {'analyze_profile', 'search_jobs', 'search_course'}
+JSON_API_ENDPOINTS = {
+    'analyze_profile', 'search_jobs', 'search_course',
+    'start_mock_interview', 'submit_interview_answer', 'get_interview_session',
+    'generate_career_plan', 'get_latest_career_plan',
+}
 
 PHONE_RE = re.compile(r'^\d{11}$')
 
@@ -42,13 +50,17 @@ PHONE_RE = re.compile(r'^\d{11}$')
 # ---------------------------------------------------------------------------
 
 career_analyzer = CareerAnalyzer()
+career_planner = CareerPlanner()
 job_matcher = JobMatcher()
 course_matcher = CourseMatcher()
+mock_interview_engine = MockInterviewEngine()
 
 _course_store = JsonStore(COURSES_FILE)
 _jobs_store = JsonStore(JOBS_FILE)
 _users_store = JsonStore(USERS_FILE)
 _analyses_store = JsonStore(ANALYSES_FILE)
+_interviews_store = JsonStore(INTERVIEWS_FILE)
+_plans_store = JsonStore(PLANS_FILE)
 
 HISTORY_LIMIT = 20
 
@@ -101,6 +113,22 @@ def load_analyses():
 
 def save_analyses(analyses):
     _analyses_store.save(analyses)
+
+
+def load_interviews():
+    return _interviews_store.load({}) or {}
+
+
+def save_interviews(interviews):
+    _interviews_store.save(interviews)
+
+
+def load_plans():
+    return _plans_store.load({}) or {}
+
+
+def save_plans(plans):
+    _plans_store.save(plans)
 
 
 def is_admin():
@@ -455,6 +483,240 @@ def delete_history(item_id):
                if str(h.get('id')) != str(item_id)]
     analyses[phone] = history
     save_analyses(analyses)
+    return jsonify({'success': True})
+
+
+# ---------------------------------------------------------------------------
+# AI mock interview
+# ---------------------------------------------------------------------------
+
+def _interview_session(phone, session_id):
+    interviews = load_interviews()
+    for rec in interviews.get(phone, []):
+        if str(rec.get('id')) == str(session_id):
+            return rec
+    return None
+
+
+def _parse_question_count(raw):
+    try:
+        n = int(raw)
+    except (TypeError, ValueError):
+        n = 5
+    return max(3, min(8, n))
+
+
+@app.route('/mock_interview/start', methods=['POST'])
+def start_mock_interview():
+    if 'user' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    try:
+        target_position = request.form.get('target_position', '').strip()
+        if not target_position:
+            return jsonify({'success': False, 'error': '请填写目标职位'}), 400
+        num_questions = _parse_question_count(request.form.get('num_questions', '5'))
+        profile = current_user_data()
+
+        questions, source = mock_interview_engine.generate_questions(
+            profile, target_position, num_questions)
+
+        session_id = f'i{int(time.time() * 1000)}'
+        record = {
+            'id': session_id,
+            'ts': int(time.time()),
+            'profile': profile,
+            'target_position': target_position,
+            'source': source,
+            'questions': questions['questions'],
+            'answers': [],
+            'status': 'in_progress',
+            'summary': None,
+        }
+        interviews = load_interviews()
+        phone = session['user']['phone']
+        history = interviews.get(phone, [])
+        history.append(record)
+        interviews[phone] = history[-HISTORY_LIMIT:]
+        save_interviews(interviews)
+
+        return jsonify({
+            'success': True,
+            'session_id': session_id,
+            'source': source,
+            'questions': record['questions'],
+        })
+    except Exception as e:
+        print(f'[error] mock interview start: {e}')
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/mock_interview/answer', methods=['POST'])
+def submit_interview_answer():
+    if 'user' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    try:
+        session_id = request.form.get('session_id', '').strip()
+        try:
+            qid = int(request.form.get('question_index', ''))
+        except ValueError:
+            qid = -1
+        answer = request.form.get('answer', '').strip()
+
+        phone = session['user']['phone']
+        rec = _interview_session(phone, session_id)
+        if rec is None:
+            return jsonify({'success': False, 'error': '面试会话不存在'}), 404
+        if rec.get('status') == 'completed':
+            return jsonify({'success': False, 'error': '该面试已完成'}), 400
+        if not answer:
+            return jsonify({'success': False, 'error': '回答不能为空'}), 400
+
+        questions = rec.get('questions', [])
+        question = next((q for q in questions if int(q.get('id', -1)) == qid), None)
+        if question is None:
+            return jsonify({'success': False, 'error': '题目索引无效'}), 400
+
+        evaluation, source = mock_interview_engine.evaluate_answer(
+            question.get('question', ''), question.get('focus', ''), answer)
+
+        rec['answers'].append({
+            'question_id': qid,
+            'question': question.get('question', ''),
+            'focus': question.get('focus', ''),
+            'answer': answer,
+            'evaluation': evaluation,
+        })
+        completed = len(rec['answers']) >= len(questions)
+        summary = None
+        if completed:
+            rec['status'] = 'completed'
+            summary = MockInterviewEngine.build_summary(
+                [a['evaluation'] for a in rec['answers']])
+            rec['summary'] = summary
+
+        interviews = load_interviews()
+        history = interviews.get(phone, [])
+        for i, old in enumerate(history):
+            if str(old.get('id')) == str(session_id):
+                history[i] = rec
+                break
+        interviews[phone] = history[-HISTORY_LIMIT:]
+        save_interviews(interviews)
+
+        return jsonify({
+            'success': True,
+            'source': source,
+            'evaluation': evaluation,
+            'summary': summary,
+            'completed': completed,
+            'answered': len(rec['answers']),
+            'total': len(questions),
+        })
+    except Exception as e:
+        print(f'[error] mock interview answer: {e}')
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/mock_interview/session', methods=['GET'])
+def get_interview_session():
+    if 'user' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    session_id = request.args.get('session_id', '').strip()
+    rec = _interview_session(session['user']['phone'], session_id)
+    if rec is None:
+        return jsonify({'success': False, 'error': '面试会话不存在'}), 404
+    return jsonify({'success': True, 'session': rec})
+
+
+@app.route('/api/interviews', methods=['GET'])
+def list_interviews():
+    if 'user' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    interviews = load_interviews()
+    items = interviews.get(session['user']['phone'], [])
+    return jsonify({'success': True, 'items': list(reversed(items))})
+
+
+@app.route('/api/interviews/<item_id>', methods=['DELETE'])
+def delete_interview(item_id):
+    if 'user' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    interviews = load_interviews()
+    phone = session['user']['phone']
+    history = [h for h in interviews.get(phone, [])
+               if str(h.get('id')) != str(item_id)]
+    interviews[phone] = history
+    save_interviews(interviews)
+    return jsonify({'success': True})
+
+
+# ---------------------------------------------------------------------------
+# Long-term career planning
+# ---------------------------------------------------------------------------
+
+@app.route('/career_plan/generate', methods=['POST'])
+def generate_career_plan():
+    if 'user' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    try:
+        profile = current_user_data()
+        career_analysis = request.form.get('career_analysis', '').strip()
+        if not any(profile.get(f) for f in FORM_FIELDS):
+            return jsonify({'success': False, 'error': '请先填写并保存个人信息'}), 400
+
+        plan, source = career_planner.generate_plan(profile, career_analysis)
+
+        plan_id = f'p{int(time.time() * 1000)}'
+        record = {
+            'id': plan_id,
+            'ts': int(time.time()),
+            'profile': profile,
+            'career_analysis': career_analysis,
+            'plan': plan,
+        }
+        plans = load_plans()
+        phone = session['user']['phone']
+        history = plans.get(phone, [])
+        history.append(record)
+        plans[phone] = history[-HISTORY_LIMIT:]
+        save_plans(plans)
+
+        return jsonify({'success': True, 'plan_id': plan_id, 'plan': plan})
+    except Exception as e:
+        print(f'[error] career plan generate: {e}')
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/career_plan/latest', methods=['GET'])
+def get_latest_career_plan():
+    if 'user' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    plans = load_plans()
+    history = plans.get(session['user']['phone'], [])
+    if not history:
+        return jsonify({'success': True, 'plan': None})
+    return jsonify({'success': True, 'plan': history[-1]})
+
+
+@app.route('/api/plans', methods=['GET'])
+def list_plans():
+    if 'user' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    plans = load_plans()
+    items = plans.get(session['user']['phone'], [])
+    return jsonify({'success': True, 'items': list(reversed(items))})
+
+
+@app.route('/api/plans/<item_id>', methods=['DELETE'])
+def delete_plan(item_id):
+    if 'user' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    plans = load_plans()
+    phone = session['user']['phone']
+    history = [h for h in plans.get(phone, [])
+               if str(h.get('id')) != str(item_id)]
+    plans[phone] = history
+    save_plans(plans)
     return jsonify({'success': True})
 
 

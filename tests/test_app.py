@@ -234,6 +234,25 @@ class TestAnalysisAndMatching:
         r = user_client.post('/analyze_profile', data={'education': '本科'})
         assert r.status_code == 400
 
+    def test_profile_persists_in_session_after_api_me(self, user_client):
+        """Regression: /api/me pre-seeds an empty user_data into the session;
+        analyze_profile must still persist the profile (re-assign session key so
+        Flask's modified flag is set). Previously the profile silently vanished
+        and /career_plan/generate returned 400 for browser sessions."""
+        # Page load calls /api/me before the user submits the profile form.
+        assert user_client.get('/api/me').status_code == 200
+        r = user_client.post('/analyze_profile', data=PROFILE_FORM)
+        assert r.status_code == 200
+        assert r.get_json()['success'] is True
+        # The profile must now be visible in the session (cookie round-trip).
+        me = user_client.get('/api/me').get_json()
+        assert me['profile'].get('major') == '计算机科学与技术'
+        assert me['profile'].get('education') == '本科'
+        # And downstream features that depend on the profile must work.
+        r2 = user_client.post('/career_plan/generate', data={'career_analysis': ''})
+        assert r2.status_code == 200
+        assert r2.get_json()['success'] is True
+
     def test_search_jobs_with_llm(self, app_client, llm_success):
         app_client.post('/login', json={'phone': '13900000000', 'password': 'user123'})
         r = app_client.post('/search_jobs', data={'keyword': '算法', 'location': ''})

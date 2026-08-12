@@ -13,7 +13,7 @@
 ![Playwright](https://img.shields.io/badge/Playwright-Automation-2EAD33?style=flat-square&logo=playwright&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)
 ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)
-![Tests](https://img.shields.io/badge/tests-164%20passed-brightgreen?style=flat-square)
+![Tests](https://img.shields.io/badge/tests-165%20passed-brightgreen?style=flat-square)
 ![Docker](https://img.shields.io/badge/Docker-ready-2496ED?style=flat-square&logo=docker&logoColor=white)
 
 <br>
@@ -68,7 +68,7 @@ ZhiTuCareer+ 按真实产品的标准打造，而非玩具 demo：
 
 - **生产级架构**：多 Agent LLM 流水线 + **混合检索引擎**（倒排索引 + TF-IDF），在 LLM 精排前把数千条记录预筛为有界候选集，5000+ 职位依然快速
 - **永不崩溃**：LLM 不可用时，确定性**规则兜底引擎**接管，职业分析、职位匹配、课程推荐、模拟面试、职业规划全部离线可用
-- **工程化硬实力**：带文件锁的原子 JSON 存储（写入永不损坏）、TTL 缓存、限流鉴权、健壮 LLM JSON 解析、**164 个自动化测试**（含 5000 条规模基准）全绿
+- **工程化硬实力**：带文件锁的原子 JSON 存储（写入永不损坏）、TTL 缓存、限流鉴权、健壮 LLM JSON 解析、**165 个自动化测试**（含 5000 条规模基准）全绿
 - **产品级观感**：ECharts 市场数据洞察、分析历史、可搜索管理后台、精致的 Bootstrap 仪表盘
 - **零门槛体验**：内置演示账号 + `docker compose up`，数秒内跑起来
 
@@ -236,7 +236,7 @@ ZhituCareer/
 │   ├── login.html          # 登录 / 注册页
 │   ├── index.html          # 用户仪表盘（ECharts 洞察 + 历史记录）
 │   └── admin.html          # 管理后台
-├── tests/                  # 164 个 pytest 用例（含 5000 条规模测试）
+├── tests/                  # 165 个 pytest 用例（含 5000 条规模测试）
 ├── Dockerfile              # 一条命令构建容器
 ├── docker-compose.yml      # `docker compose up` 一键启动
 └── requirements.txt
@@ -253,7 +253,7 @@ ZhituCareer/
 - [x] AI 模拟面试（出题 + 逐题评分 + 总结）
 - [x] 长期职业生涯规划（5 年三阶段路线图）
 - [x] Docker 一键部署
-- [x] 164 个自动化测试
+- [x] 165 个自动化测试
 - [ ] 迁移 SQLite 以支持多 worker 并发写入
 - [ ] 简历（PDF / Word）解析
 - [ ] 求职进度追踪（收藏 / 状态管理）
@@ -271,7 +271,7 @@ ZhituCareer/
 | 检索 | 倒排索引 + TF-IDF 混合检索（中文 bigram 分词、中英文别名扩展） |
 | 前端 | Bootstrap 5 · Bootstrap Icons · 原生 ES6 |
 | 数据存储 | 原子 JSON 文件（可无缝迁移至 SQLite / MySQL，见 [data_base 分支](https://github.com/NoahIsARider/ZhituCareer/tree/data_base)） |
-| 测试 | pytest · 164 个用例 · 5000 条规模基准（见 [docs/TEST_REPORT.md](docs/TEST_REPORT.md)） |
+| 测试 | pytest · 165 个用例 · 5000 条规模基准（见 [docs/TEST_REPORT.md](docs/TEST_REPORT.md)） |
 
 ---
 
@@ -305,3 +305,25 @@ ZhituCareer/
 ## 📄 License
 
 本项目基于 **MIT License** 开源，详见 [LICENSE](LICENSE) 文件。
+
+---
+
+## 📎 附录：功能截图
+
+新增全链路职业功能的效果截图。
+
+### 职业分析结果
+
+![职业分析结果](docs/screenshots/dashboard-analysis.png)
+
+### AI 模拟面试 — 面试题目
+
+![模拟面试题目](docs/screenshots/interview-questions.png)
+
+### AI 模拟面试 — 回答评分
+
+![模拟面试评分](docs/screenshots/interview-scoring.png)
+
+### 长期职业生涯规划路线图
+
+![职业规划路线图](docs/screenshots/career-plan.png)

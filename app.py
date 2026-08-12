@@ -390,6 +390,10 @@ def analyze_profile():
         profile = current_user_data()
         for field in FORM_FIELDS:
             profile[field] = request.form.get(field, '').strip()
+        # Re-assign to mark the session modified: mutating the nested dict in
+        # place does NOT set Flask's session.modified, so the profile would
+        # never be persisted when user_data was pre-seeded (e.g. by /api/me).
+        session['user_data'] = profile
 
         if not all(profile.get(f) for f in FORM_FIELDS):
             return jsonify({'success': False, 'error': '请完整填写所有个人信息字段'}), 400

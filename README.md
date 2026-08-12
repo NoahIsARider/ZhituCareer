@@ -12,7 +12,7 @@ A one-stop career analysis platform built on **Flask + multi-agent collaboration
 ![Playwright](https://img.shields.io/badge/Playwright-Automation-2EAD33?style=flat-square&logo=playwright&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)
 ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)
-![Tests](https://img.shields.io/badge/tests-164%20passed-brightgreen?style=flat-square)
+![Tests](https://img.shields.io/badge/tests-165%20passed-brightgreen?style=flat-square)
 ![Docker](https://img.shields.io/badge/Docker-ready-2496ED?style=flat-square&logo=docker&logoColor=white)
 
 <br>
@@ -207,7 +207,7 @@ ZhituCareer/
 │   ├── login.html          # Login / register page
 │   ├── index.html          # User dashboard (ECharts insights + history)
 │   └── admin.html          # Admin panel
-├── tests/                  # 164 pytest cases incl. 5,000-record scale tests
+├── tests/                  # 165 pytest cases incl. 5,000-record scale tests
 ├── Dockerfile              # One-command container build
 ├── docker-compose.yml      # `docker compose up` → running platform
 └── requirements.txt
@@ -224,7 +224,7 @@ ZhituCareer/
 - [x] AI mock interview (question generation + answer scoring + session summary)
 - [x] Long-term career planning (5-year, three-phase roadmap)
 - [x] Docker one-command deployment
-- [x] 164 automated tests
+- [x] 165 automated tests
 - [ ] SQLite migration for concurrent multi-worker writes
 - [ ] Resume (PDF/Word) parsing
 - [ ] Job application tracking (favorites / status)
@@ -242,7 +242,7 @@ ZhituCareer/
 | Retrieval | Inverted index + TF-IDF hybrid search (Chinese bigram tokenization, English↔Chinese aliases) |
 | Frontend | Bootstrap 5 · Bootstrap Icons · vanilla ES6 |
 | Data Storage | Atomic JSON files (seamlessly migratable to SQLite / MySQL, see the [data_base branch](https://github.com/NoahIsARider/ZhituCareer/tree/data_base)) |
-| Testing | pytest · 164 cases · 5,000-record scale benchmarks (see [docs/TEST_REPORT.md](docs/TEST_REPORT.md)) |
+| Testing | pytest · 165 cases · 5,000-record scale benchmarks (see [docs/TEST_REPORT.md](docs/TEST_REPORT.md)) |
 
 ---
 
@@ -276,3 +276,25 @@ Any form of contribution is welcome!
 ## 📄 License
 
 This project is open-sourced under the **MIT License**; see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 📎 Appendix: Feature Screenshots
+
+More screenshots of the new full-chain career features.
+
+### Career Analysis Result
+
+![Career analysis result](docs/screenshots/dashboard-analysis.png)
+
+### AI Mock Interview — Questions
+
+![Mock interview questions](docs/screenshots/interview-questions.png)
+
+### AI Mock Interview — Answer Scoring
+
+![Mock interview scoring](docs/screenshots/interview-scoring.png)
+
+### Long-term Career Planning Roadmap
+
+![Career planning roadmap](docs/screenshots/career-plan.png)

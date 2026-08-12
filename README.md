@@ -196,7 +196,6 @@ ZhituCareer/
 │   ├── index.html          # User dashboard (ECharts insights + history)
 │   └── admin.html          # Admin panel
 ├── tests/                  # 128 pytest cases incl. 5,000-record scale tests
-├── .github/workflows/ci.yml   # GitHub Actions: lint + tests + coverage
 ├── Dockerfile              # One-command container build
 ├── docker-compose.yml      # `docker compose up` → running platform
 └── requirements.txt
@@ -211,7 +210,7 @@ ZhituCareer/
 - [x] Dashboard data insights (ECharts)
 - [x] Career analysis history
 - [x] Docker one-command deployment
-- [x] CI with 128 automated tests
+- [x] 128 automated tests
 - [ ] SQLite migration for concurrent multi-worker writes
 - [ ] Resume (PDF/Word) parsing
 - [ ] Job application tracking (favorites / status)

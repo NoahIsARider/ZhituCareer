@@ -13,7 +13,6 @@
 ![Playwright](https://img.shields.io/badge/Playwright-Automation-2EAD33?style=flat-square&logo=playwright&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)
 ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)
-![CI](https://github.com/NoahIsARider/ZhituCareer/actions/workflows/ci.yml/badge.svg)
 ![Tests](https://img.shields.io/badge/tests-128%20passed-brightgreen?style=flat-square)
 ![Docker](https://img.shields.io/badge/Docker-ready-2496ED?style=flat-square&logo=docker&logoColor=white)
 
@@ -226,7 +225,6 @@ ZhituCareer/
 │   ├── index.html          # 用户仪表盘（ECharts 洞察 + 历史记录）
 │   └── admin.html          # 管理后台
 ├── tests/                  # 128 个 pytest 用例（含 5000 条规模测试）
-├── .github/workflows/ci.yml   # GitHub Actions：lint + 测试 + 覆盖率
 ├── Dockerfile              # 一条命令构建容器
 ├── docker-compose.yml      # `docker compose up` 一键启动
 └── requirements.txt
@@ -241,7 +239,7 @@ ZhituCareer/
 - [x] 仪表盘数据洞察（ECharts）
 - [x] 职业分析历史记录
 - [x] Docker 一键部署
-- [x] CI 与 128 个自动化测试
+- [x] 128 个自动化测试
 - [ ] 迁移 SQLite 以支持多 worker 并发写入
 - [ ] 简历（PDF / Word）解析
 - [ ] 求职进度追踪（收藏 / 状态管理）
